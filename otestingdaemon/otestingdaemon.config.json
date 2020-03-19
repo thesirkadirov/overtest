@@ -1,0 +1,38 @@
+﻿{
+  
+  "database": {
+    "provider": "",
+    "connection_string": ""
+  },
+  
+  "general": {
+    "parallelism": 4,
+    "empty_delay": 1000
+  },
+  
+  "security": {
+    
+    /*
+     * ================
+     * "RUN_AS" feature
+     * ================
+     */
+    
+    "run_as": {
+      "enabled": true,
+      "username": "overtest",
+      "password": "overtest",
+      "domain": "sirkadirov.com"
+    }
+    
+  },
+  
+  "programming_languages": [
+    {
+      "id": "",
+      "plugin": "basic_compiler",
+      
+    }
+  ]
+  
+}
