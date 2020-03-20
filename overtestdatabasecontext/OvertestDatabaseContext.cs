@@ -234,23 +234,26 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
                  * [TestingApplicationSourceCode] owned class
                  */
                 
-                entity.OwnsOne(a => a.SourceCode);
-
-                entity.Property(a => a.SourceCode.SourceCode).IsUnicode().IsRequired();
-
-                entity.HasOne(a => a.SourceCode.ProgrammingLanguage)
-                    .WithMany()
-                    .HasForeignKey(a => a.SourceCode.ProgrammingLanguageId)
-                    .OnDelete(DeleteBehavior.Cascade);
+                entity.OwnsOne(a => a.SourceCode, builder =>
+                {
+                    builder.Property(c => c.SourceCode).IsUnicode().IsRequired();
+                    
+                    builder.HasOne(c => c.ProgrammingLanguage)
+                        .WithMany()
+                        .HasForeignKey(c => c.ProgrammingLanguageId)
+                        .OnDelete(DeleteBehavior.Cascade);
+                    
+                });
                 
                 /*
                  * [ApplicationTestingResults] owned class
                  */
                 
-                entity.OwnsOne(a => a.TestingResults);
-                
-                entity.Property(a => a.TestingResults.RawTestingResults).HasDefaultValue();
-                entity.Property(a => a.TestingResults.PassedTestsCount).IsRequired();
+                entity.OwnsOne(a => a.TestingResults, builder =>
+                {
+                    builder.Property(r => r.RawTestingResults).HasDefaultValue();
+                    builder.Property(r => r.PassedTestsCount).IsRequired();
+                });
                 
                 /*
                  * Other relationships

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 
 namespace Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TasksArchive.TestingData.Extras
 {
@@ -14,7 +13,7 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TasksArchive.Tes
         public DateTime LastStartupTime { get; set; }
         public DateTime LastOperationTime { get; set; }
         
-        public OSPlatform Platform { get; set; }
+        public string Platform { get; set; }
         public int ThreadsCount { get; set; }
         
     }

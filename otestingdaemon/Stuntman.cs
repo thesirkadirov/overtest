@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using NLog;
 using Sirkadirov.Overtest.Libraries.Shared.Database;
 using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TestingApplications;
 using Sirkadirov.Overtest.Libraries.Shared.Methods;
@@ -15,85 +16,92 @@ namespace Sirkadirov.Overtest.TestingDaemon
     {
 
         private readonly IConfiguration _configuration;
+        private readonly Logger _logger;
         
         
         public Stuntman(IConfiguration configuration)
         {
             _configuration = configuration;
+            _logger = LogManager.GetCurrentClassLogger();
         }
 
-        public async Task StartTheSight()
+        public void StartTheSight()
         {
-
-            await CreateSightParticlesAndWait();
-            
+            CreateSightParticlesAndWait();
         }
         
-        private async Task CreateSightParticlesAndWait()
+        private void CreateSightParticlesAndWait()
         {
+            
             var tasks = new List<Task>();
             
             for (var i = 0; i < _configuration.GetValue<int>("general:parallelism"); i++)
             {
+
+                var task = new Task(() => ExecuteSightParticle().Wait());
                 
-                var particle = SightParticle();
-                particle.Start();
-                
-                tasks.Add(particle);
+                task.Start();
+                tasks.Add(task);
                 
             }
+
+            Task.WaitAll(tasks.ToArray());
+
+        }
+
+        private async Task ExecuteSightParticle()
+        {
             
-            await Task.WhenAll(tasks);
-            
-            async Task SightParticle()
+            while (true)
             {
-                while (true)
+                        
+                try
                 {
                     
                     var dbContextOptionsBuilder = new DbContextOptionsBuilder().GetDbContextOptions(_configuration);
-                    
-                    await using var databaseContext = new OvertestDatabaseContext(dbContextOptionsBuilder.Options);
-                    await using var transaction = await databaseContext.Database.BeginTransactionAsync();
-                    
-                    try
+
+                    using (var databaseContext = new OvertestDatabaseContext(dbContextOptionsBuilder.Options))
                     {
                         
-                        var testingApplication = await databaseContext.TestingApplications
-                            .Where(a => a.Status == TestingApplication.ApplicationStatus.Waiting)
-                            .FirstOrDefaultAsync();
-                        
-                        if (testingApplication != null)
+                        using (var transaction = await databaseContext.Database.BeginTransactionAsync())
                         {
                             
+                            var testingApplication = await databaseContext.TestingApplications
+                                .Where(a => a.Status == TestingApplication.ApplicationStatus.Waiting)
+                                .FirstOrDefaultAsync();
+                            
+                            if (testingApplication != null)
+                            {
+                                
                                 testingApplication.Status = TestingApplication.ApplicationStatus.Selected;
                                 await databaseContext.SaveChangesAsync();
-                            
+                                
                                 await transaction.CommitAsync();
-                            
+                                
                                 // TODO: Call Waiter method
+                                
+                            }
+                            else
+                            {
+                                await transaction.RollbackAsync();
+                                await Task.Delay(_configuration.GetValue<int>("general:empty_delay"));
+                            }
                             
-                        }
-                        else
-                        {
-
-                            await transaction.RollbackAsync();
+                            await databaseContext.DisposeAsync();
                             
-                            await Task.Delay(_configuration.GetValue<int>("general:empty_delay"));
                         }
                         
                     }
-                    catch (Exception)
-                    {
-                        /* TODO! */
-                    }
-                    
-                    await databaseContext.DisposeAsync();
-                    
+
                 }
-                
-                // ReSharper disable once FunctionNeverReturns
-                
+                catch (Exception ex)
+                {
+                    _logger.Error(ex);
+                }
+                    
             }
+            
+            // ReSharper disable once FunctionNeverReturns
             
         }
         
