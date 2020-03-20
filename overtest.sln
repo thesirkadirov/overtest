@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "overtestprogramexecutor", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "otestingdaemon", "otestingdaemon\otestingdaemon.csproj", "{1FF80C52-FF03-412A-BA24-FAA76634BEF3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "overtestsharedmethods", "overtestsharedmethods\overtestsharedmethods.csproj", "{AE14A4C0-EB54-49FF-9E3C-BE132232A819}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -39,6 +41,10 @@ Global
 		{1FF80C52-FF03-412A-BA24-FAA76634BEF3}.Debug|x64.Build.0 = Debug|Any CPU
 		{1FF80C52-FF03-412A-BA24-FAA76634BEF3}.Release|x64.ActiveCfg = Release|Any CPU
 		{1FF80C52-FF03-412A-BA24-FAA76634BEF3}.Release|x64.Build.0 = Release|Any CPU
+		{AE14A4C0-EB54-49FF-9E3C-BE132232A819}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{AE14A4C0-EB54-49FF-9E3C-BE132232A819}.Debug|x64.Build.0 = Debug|Any CPU
+		{AE14A4C0-EB54-49FF-9E3C-BE132232A819}.Release|x64.ActiveCfg = Release|Any CPU
+		{AE14A4C0-EB54-49FF-9E3C-BE132232A819}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -48,6 +54,7 @@ Global
 		{A21025E9-8C0A-465F-964E-E4D5B71DA92E} = {9479493E-9304-4D34-A040-0928A7A43A8D}
 		{28E8CBEF-6CE5-4472-861D-B682A194C026} = {3CF1EE39-AFD4-4587-8248-9F924F6FAD09}
 		{1FF80C52-FF03-412A-BA24-FAA76634BEF3} = {9479493E-9304-4D34-A040-0928A7A43A8D}
+		{AE14A4C0-EB54-49FF-9E3C-BE132232A819} = {3CF1EE39-AFD4-4587-8248-9F924F6FAD09}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {44AC54C8-50C4-47D9-AF22-01E333180157}

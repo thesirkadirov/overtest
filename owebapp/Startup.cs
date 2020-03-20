@@ -1,15 +1,13 @@
 using System;
-using System.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Pomelo.EntityFrameworkCore.MySql.Storage;
 using Sirkadirov.Overtest.Libraries.Shared.Database;
 using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Identity;
+using Sirkadirov.Overtest.Libraries.Shared.Methods;
 
 namespace Sirkadirov.Overtest.WebApplication
 {
@@ -38,35 +36,7 @@ namespace Sirkadirov.Overtest.WebApplication
                 {
                     
                     // Add primary database context
-                    services.AddDbContext<OvertestDatabaseContext>(options =>
-                    {
-
-                        /*
-                         * Select database provider
-                         */
-
-                        switch (Configuration["application:database:provider"].ToUpper())
-                        {
-
-                            // Pomelo.EntityFrameworkCore.MySql
-                            case "MYSQL":
-                            case "MARIADB":
-                                options.UseMySql(
-                                    Configuration["server:database:connection_string"],
-                                    builder => { builder.CharSet(CharSet.Utf8); }
-                                );
-                                break;
-
-                            // Microsoft.EntityFrameworkCore.SqlServer
-                            case "SQLSERVER":
-                                options.UseSqlServer(Configuration["application:database:connection_string"]);
-                                break;
-
-                            default:
-                                throw new DataException("Overtest database provider is unknown or not specified!");
-                        }
-
-                    });
+                    services.AddDbContext<OvertestDatabaseContext>(options => options.GetDbContextOptions(Configuration));
                     
                     // Add primary identity services
                     services.AddIdentity<User, IdentityRole<Guid>>(options =>

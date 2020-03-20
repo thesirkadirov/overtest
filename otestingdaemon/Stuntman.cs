@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Sirkadirov.Overtest.Libraries.Shared.Database;
 using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TestingApplications;
-using Sirkadirov.Overtest.TestingDaemon.Helpers.Database;
+using Sirkadirov.Overtest.Libraries.Shared.Methods;
 
 namespace Sirkadirov.Overtest.TestingDaemon
 {
@@ -14,7 +14,8 @@ namespace Sirkadirov.Overtest.TestingDaemon
     public class Stuntman
     {
 
-        private IConfiguration _configuration;
+        private readonly IConfiguration _configuration;
+        
         
         public Stuntman(IConfiguration configuration)
         {
@@ -49,7 +50,9 @@ namespace Sirkadirov.Overtest.TestingDaemon
                 while (true)
                 {
                     
-                    await using var databaseContext = new OvertestDatabaseContext(DatabaseContextHelpers.GetDbContextOptions(_configuration));
+                    var dbContextOptionsBuilder = new DbContextOptionsBuilder().GetDbContextOptions(_configuration);
+                    
+                    await using var databaseContext = new OvertestDatabaseContext(dbContextOptionsBuilder.Options);
                     await using var transaction = await databaseContext.Database.BeginTransactionAsync();
                     
                     try

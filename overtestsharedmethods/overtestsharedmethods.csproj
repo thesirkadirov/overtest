@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <OutputType>Exe</OutputType>
         <TargetFramework>netcoreapp3.1</TargetFramework>
+        <RootNamespace>Sirkadirov.Overtest.Libraries.Shared.Methods</RootNamespace>
+        <IsPackable>false</IsPackable>
         <Company>Yurii Kadirov / Sirkadirov</Company>
-        <Product>Overtest Testing Daemon</Product>
-        <RootNamespace>Sirkadirov.Overtest.TestingDaemon</RootNamespace>
+        <Product>Overtest</Product>
     </PropertyGroup>
 
     <ItemGroup>
@@ -19,13 +19,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\overtestdatabasecontext\overtestdatabasecontext.csproj" />
-      <ProjectReference Include="..\overtestsharedmethods\overtestsharedmethods.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <None Update="otestingdaemon.config.json">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
     </ItemGroup>
 
 </Project>

@@ -65,17 +65,15 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
                  * Relationships
                  */
                 
-                entity
-                    .HasOne(u => u.Curator)
+                entity.HasOne(u => u.Curator)
                     .WithMany()
-                    .OnDelete(DeleteBehavior.Cascade)
-                    .HasForeignKey(u => u.CuratorId);
+                    .HasForeignKey(u => u.CuratorId)
+                    .OnDelete(DeleteBehavior.Cascade);
                 
-                entity
-                    .HasOne(u => u.UserGroup)
+                entity.HasOne(u => u.UserGroup)
                     .WithMany(g => g.Users)
-                    .OnDelete(DeleteBehavior.Cascade)
-                    .HasForeignKey(u => u.UserGroupId);
+                    .HasForeignKey(u => u.UserGroupId)
+                    .OnDelete(DeleteBehavior.Cascade);
                 
                 // UserGroups list defined in [UserGroup]
                 
@@ -95,13 +93,12 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
                 /*
                  * Relationships
                  */
-                
-                entity
-                    .HasOne(g => g.Curator)
+
+                entity.HasOne(g => g.Curator)
                     .WithMany(u => u.UserGroups)
-                    .OnDelete(DeleteBehavior.Cascade)
-                    .HasForeignKey(g => g.CuratorId);
-                
+                    .HasForeignKey(g => g.CuratorId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
             });
             
             /* ===== [TasksArchive] section ===== */
@@ -129,17 +126,17 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
                 /*
                  * Relationships
                  */
-                
-                entity
-                    .HasOne(t => t.Category)
+
+                entity.HasOne(t => t.Category)
                     .WithMany(c => c.ProgrammingTasks)
-                    .HasForeignKey(t => t.CategoryId);
-                
-                entity
-                    .HasOne(t => t.TestingData)
+                    .HasForeignKey(t => t.CategoryId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(t => t.TestingData)
                     .WithOne(d => d.ProgrammingTask)
-                    .HasForeignKey<ProgrammingTask>(t => t.TestingDataId);
-                
+                    .HasForeignKey<ProgrammingTask>(t => t.TestingDataId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
             });
             
             /*
@@ -151,7 +148,7 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
                 
                 entity.HasKey(d => d.Id);
 
-                entity.Property(d => d.TestingDataPackageFile).HasDefaultValue().IsRequired(true);
+                entity.Property(d => d.TestingDataPackageFile).HasDefaultValue().IsRequired();
                 
                 /*
                  * Relationships
@@ -240,10 +237,11 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
                 entity.OwnsOne(a => a.SourceCode);
 
                 entity.Property(a => a.SourceCode.SourceCode).IsUnicode().IsRequired();
-                    
+
                 entity.HasOne(a => a.SourceCode.ProgrammingLanguage)
                     .WithMany()
-                    .HasForeignKey(a => a.SourceCode.ProgrammingLanguageId);
+                    .HasForeignKey(a => a.SourceCode.ProgrammingLanguageId)
+                    .OnDelete(DeleteBehavior.Cascade);
                 
                 /*
                  * [ApplicationTestingResults] owned class
@@ -258,20 +256,17 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
                  * Other relationships
                  */
                 
-                entity
-                    .HasOne(a => a.Author)
+                entity.HasOne(a => a.Author)
                     .WithMany()
                     .HasForeignKey(a => a.AuthorId)
                     .OnDelete(DeleteBehavior.Cascade);
 
-                entity
-                    .HasOne(a => a.Competition)
+                entity.HasOne(a => a.Competition)
                     .WithMany()
                     .HasForeignKey(a => a.CompetitionId)
                     .OnDelete(DeleteBehavior.Cascade);
 
-                entity
-                    .HasOne(a => a.ProgrammingTask)
+                entity.HasOne(a => a.ProgrammingTask)
                     .WithMany()
                     .HasForeignKey(a => a.ProgrammingTaskId)
                     .OnDelete(DeleteBehavior.Cascade);
@@ -306,14 +301,13 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
                 entity.Property(c => c.UserExitAction).HasDefaultValue(Competition.CompetitionExitAction.Default).IsRequired();
                 
                 entity.Property(c => c.EnableWaitingPage).HasDefaultValue(false).IsRequired();
-                entity.Property(c => c.WaitingPageActivationTime).IsRequired();
+                entity.Property(c => c.WaitingPageActivationTime).HasDefaultValue(DateTime.MinValue).IsRequired();
                 
                 /*
                  * Relationships
                  */
                 
-                entity
-                    .HasOne(c => c.Curator)
+                entity.HasOne(c => c.Curator)
                     .WithMany()
                     .HasForeignKey(c => c.CuratorId)
                     .OnDelete(DeleteBehavior.Cascade);
@@ -339,14 +333,12 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
                  * Relationships
                  */
                 
-                entity
-                    .HasOne(t => t.ProgrammingTask)
+                entity.HasOne(t => t.ProgrammingTask)
                     .WithMany()
                     .HasForeignKey(t => t.ProgrammingTaskId)
                     .OnDelete(DeleteBehavior.Cascade);
 
-                entity
-                    .HasOne(t => t.Competition)
+                entity.HasOne(t => t.Competition)
                     .WithMany(c => c.CompetitionProgrammingTasks)
                     .HasForeignKey(t => t.CompetitionId)
                     .OnDelete(DeleteBehavior.Cascade);
@@ -365,9 +357,17 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
                 /*
                  * Relationships
                  */
-                
-                // TODO!
-                
+
+                entity.HasOne(u => u.Competition)
+                    .WithMany(c => c.CompetitionUsers)
+                    .HasForeignKey(u => u.CompetitionId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(u => u.User)
+                    .WithMany()
+                    .HasForeignKey(u => u.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
             });
 
         }

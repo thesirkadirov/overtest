@@ -1,21 +1,23 @@
 ﻿{
   
   "database": {
-    "provider": "",
-    "connection_string": ""
+    "provider": "mariadb",
+    "connection_string": "Server=127.0.0.1;Database=overtest;Uid=overtest;Pwd=overtest;SslMode=Preferred;"
   },
   
   "general": {
     "parallelism": 4,
-    "empty_delay": 1000
+    "empty_delay": 1000,
+    "paths": {
+      "cache_path": "D:\\overtest-data\\cache",
+      "temp_path": "D:\\overtest-data\\temp"
+    }
   },
   
   "security": {
     
     /*
-     * ================
-     * "RUN_AS" feature
-     * ================
+     * "RUN_AS" FEATURE
      */
     
     "run_as": {
@@ -28,11 +30,52 @@
   },
   
   "programming_languages": [
+    
+    /* GNU C++ */
+    
     {
       "id": "",
-      "plugin": "basic_compiler",
+      "compiler": {
+        "path": "",
+        "arguments": ""
+      },
+      "executor": {
+        "path": "",
+        "arguments": ""
+      }
+    }
+    
+  ],
+  
+  "diagnostics": {
+    
+    "logging": {
+      
+      "enabled": true,
+      
+      "targets": {
+        
+        "console": {
+          "enabled": true,
+          "levels": {
+            "minimum": "Trace",
+            "maximum": "Fatal"
+          }
+        },
+        
+        "files": {
+          "enabled": true,
+          "path": "D:\\overtest-data\\logs\\otestingdaemon\\",
+          "levels": {
+            "minimum": "Trace",
+            "maximum": "Fatal"
+          }
+        }
+        
+      }
       
     }
-  ]
+    
+  }
   
 }

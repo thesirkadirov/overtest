@@ -29,7 +29,7 @@
     "endpoints": [
       "http://127.0.0.1:8080/", // Localhost endpoint
       "http://10.1.0.100:8080/" // LAN endpoint (exposed to WAN)
-    ],
+    ]
     
   },
   
@@ -48,9 +48,9 @@
      */
 
     "database": {
-      "provider": "mysql",
-      "connection_string": "Server=127.0.0.1;Database=overtest;Uid=overtest;Pwd=overtest;SslMode=Preferred;"
-    },
+      "provider": "mariadb",
+      "connection_string": "Server=127.0.0.1;Database=overtest;Uid=overtestSSS;Pwd=overtest;SslMode=Preferred;"
+    }
     
   },
   
@@ -100,7 +100,7 @@
           "levels": {
             "minimum": "Trace",
             "maximum": "Fatal"
-          },
+          }
           
         },
         
@@ -110,8 +110,7 @@
           "enabled": true,
           
           // Specify path where the web server would store logs
-          "path": "./logs/owebapp/",
-
+          "path": "D:\\overtest-data\\logs\\owebapplication\\",
           /*
            * Specify minimum and maximum logging levels
            * for the specified logging target.
@@ -128,13 +127,13 @@
           "levels": {
             "minimum": "Trace",
             "maximum": "Fatal"
-          },
+          }
           
-        },
+        }
         
-      },
+      }
       
-    },
+    }
     
   }
   
