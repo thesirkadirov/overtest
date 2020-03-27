@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Competitions;
 using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Identity;
 using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TasksArchive;
@@ -56,7 +57,8 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TestingApplicati
         {
             public string RawTestingResults { get; set; }
             
-            public int PassedTestsCount { get; set; }
+            [Range(typeof(byte), "0", "100")]
+            public byte CompletionPercentage { get; set; }
         }
         
     }

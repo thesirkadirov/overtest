@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TasksArchive.TestingData;
 
 namespace Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TasksArchive
 {
@@ -21,8 +20,10 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TasksArchive
         public string Title { get; set; }
         public string Description { get; set; }
         
-        public int RatingPerTest { get; set; }
-        public int TestsCount { get; set; }
+        [Range(typeof(byte), "0", "100")]
+        public byte Difficulty { get; set; }
+        
+        public byte[] TestingDataPackageFile { get; set; }
         
         /*
          * Relationships
@@ -30,9 +31,6 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TasksArchive
         
         public ProgrammingTaskCategory Category { get; set; }
         public Guid CategoryId { get; set; }
-        
-        public ProgrammingTaskTestingData TestingData { get; set; }
-        public Guid TestingDataId { get; set; }
         
     }
     

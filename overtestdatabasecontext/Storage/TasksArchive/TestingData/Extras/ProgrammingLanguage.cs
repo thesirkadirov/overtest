@@ -13,12 +13,6 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TasksArchive.Tes
         
         public string SyntaxHighlightingOptions { get; set; }
         
-        public override bool Equals(object obj)
-        {
-            // ReSharper disable once PossibleNullReferenceException
-            return Id == (obj as ProgrammingLanguage).Id;
-        }
-        
     }
     
 }
