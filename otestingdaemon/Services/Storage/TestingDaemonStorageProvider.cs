@@ -19,13 +19,6 @@ namespace Sirkadirov.Overtest.TestingDaemon.Services.Storage
         private readonly IConfiguration _configuration;
         private readonly OvertestDatabaseContext _databaseContext;
         private readonly ILogger _logger;
-
-        private static readonly object TestingDataActualizationLocker;
-
-        static TestingDaemonStorageProvider()
-        {
-            TestingDataActualizationLocker = new object();
-        }
         
         public TestingDaemonStorageProvider(IConfiguration configuration, OvertestDatabaseContext databaseContext)
         {
@@ -45,11 +38,13 @@ namespace Sirkadirov.Overtest.TestingDaemon.Services.Storage
             
             foreach (var task in programmingTasksList)
             {
-                if (await ActualizeTestingData(task))
-                {
-                    _logger.Info($"Task's {task} testing data was out of date, now successfully updated!");
-                    updatedCount++;
-                }
+                
+                if (!await ActualizeTestingData(task))
+                    continue;
+                
+                _logger.Info($"Task's {task} testing data was out of date, now successfully updated!");
+                updatedCount++;
+                
             }
             
             _logger.Info($"Programming tasks in the database: {programmingTasksList.Count}, updated: {updatedCount}.");
@@ -141,12 +136,7 @@ namespace Sirkadirov.Overtest.TestingDaemon.Services.Storage
             }
             catch (Exception ex)
             {
-                
-                _logger.Warn(
-                    ex,
-                    $"An exception catched during {nameof(IsActualTestingData)} execution for programming task {programmingTaskId}! Marking as out-of-date."
-                );
-                
+                _logger.Warn(ex, $"An exception catched during {nameof(IsActualTestingData)} execution for programming task {programmingTaskId}! Marking as out-of-date.");
                 return false;
             }
 
@@ -154,6 +144,8 @@ namespace Sirkadirov.Overtest.TestingDaemon.Services.Storage
 
         public TempDirectoryAccessPoint GetTestingDataAccessPoint(Guid programmingTaskId)
         {
+            
+            _logger.Debug($"Executing {nameof(GetTestingDataAccessPoint)} method for programming task {programmingTaskId}...");
             
             var dataDirectoryConfiguration = _configuration.GetSection("general:storage");
             
@@ -164,6 +156,8 @@ namespace Sirkadirov.Overtest.TestingDaemon.Services.Storage
                 dataDirectoryConfiguration.GetValue<string>("custom_naming:temp_directory"),
                 Guid.NewGuid().ToString()
             );
+            
+            _logger.Debug($"{nameof(GetTestingDataAccessPoint)} for {programmingTaskId}: testing data access point path: {temporaryAccessPointPath}.");
             
             FileSystemSharedMethods.SecureCopyDirectory(testingDataPath, temporaryAccessPointPath);
             
