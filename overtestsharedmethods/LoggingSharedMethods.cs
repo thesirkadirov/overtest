@@ -8,7 +8,7 @@ using NLog.Targets;
 namespace Sirkadirov.Overtest.Libraries.Shared.Methods
 {
     
-    public static class Logging
+    public static class LoggingSharedMethods
     {
         
         public static LoggingConfiguration ConfigureLogging(this IConfiguration configuration)

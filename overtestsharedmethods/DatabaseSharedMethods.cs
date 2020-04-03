@@ -9,7 +9,7 @@ using CharSet = Pomelo.EntityFrameworkCore.MySql.Storage.CharSet;
 namespace Sirkadirov.Overtest.Libraries.Shared.Methods
 {
     
-    public static class Database
+    public static class DatabaseSharedMethods
     {
         
         public static DbContextOptionsBuilder GetDbContextOptions(this DbContextOptionsBuilder dbContextOptionsBuilder, IConfiguration configuration)

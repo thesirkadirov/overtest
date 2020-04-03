@@ -7,6 +7,7 @@ using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Competitions;
 using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Competitions.Extras;
 using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Identity;
 using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TasksArchive;
+using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TasksArchive.TestingData;
 using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TasksArchive.TestingData.Extras;
 using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TestingApplications;
 
@@ -17,11 +18,14 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
     public class OvertestDatabaseContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
     {
         
-        // ReSharper disable once UnusedAutoPropertyAccessor.Global
+        // ReSharper disable once UnusedMember.Global
         public DbSet<UserGroup> UserGroups { get; set; }
+        // ReSharper disable once UnusedMember.Global
+        public DbSet<UserPhoto> UserPhotos { get; set; }
         
         public DbSet<ProgrammingTask> ProgrammingTasks { get; set; }
         /* ||=> */ public DbSet<ProgrammingTaskCategory> ProgrammingTaskCategories { get; set; }
+        /* ||=> */ public DbSet<ProgrammingTaskTestingData> ProgrammingTaskTestingDatas { get; set; }
         
         public DbSet<ProgrammingLanguage> ProgrammingLanguages { get; set; }
         
@@ -73,7 +77,7 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
                     .HasForeignKey(u => u.UserGroupId)
                     .OnDelete(DeleteBehavior.Cascade);
                 
-                // UserGroups list defined in [UserGroup]
+                // UserPhoto defined in [UserPhoto]
                 
             });
             
@@ -93,10 +97,32 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
                  */
 
                 entity.HasOne(g => g.Curator)
-                    .WithMany(u => u.UserGroups)
+                    .WithMany()
                     .HasForeignKey(g => g.CuratorId)
                     .OnDelete(DeleteBehavior.Cascade);
 
+            });
+            
+            /*
+             * [UserPhoto] entity
+             */
+
+            modelBuilder.Entity<UserPhoto>(entity =>
+            {
+                
+                entity.HasKey(p => p.Id);
+
+                entity.Property(p => p.Source).IsRequired();
+                
+                /*
+                 * Relationships
+                 */
+                
+                entity.HasOne(p => p.User)
+                    .WithOne(u => u.UserPhoto)
+                    .HasForeignKey<User>(u => u.UserPhotoId)
+                    .OnDelete(DeleteBehavior.Cascade);
+                
             });
             
             /* ===== [TasksArchive] section ===== */
@@ -119,7 +145,6 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
                 entity.Property(t => t.Description).IsUnicode().IsRequired();
 
                 entity.Property(t => t.Difficulty).HasDefaultValue(100).IsRequired();
-                entity.Property(t => t.TestingDataPackageFile).IsRequired();
                 
                 /*
                  * Relationships
@@ -130,6 +155,29 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
                     .HasForeignKey(t => t.CategoryId)
                     .OnDelete(DeleteBehavior.Cascade);
                 
+            });
+            
+            /*
+             * [ProgrammingTaskTestingData] entity
+             */
+
+            modelBuilder.Entity<ProgrammingTaskTestingData>(entity =>
+            {
+                
+                entity.HasKey(d => d.Id);
+
+                entity.Property(d => d.DataPackageFile).IsRequired();
+                entity.Property(d => d.DataPackageHash).IsRequired();
+                
+                /*
+                 * Relationships
+                 */
+                
+                entity.HasOne(d => d.ProgrammingTask)
+                    .WithOne(d => d.TestingData)
+                    .HasForeignKey<ProgrammingTaskTestingData>(d => d.ProgrammingTaskId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
             });
             
             /*

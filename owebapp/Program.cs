@@ -1,10 +1,12 @@
 using System;
 using System.IO;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using NLog;
+using NLog.Extensions.Logging;
 using Sirkadirov.Overtest.Libraries.Shared.Methods;
 
 namespace Sirkadirov.Overtest.WebApplication
@@ -16,20 +18,24 @@ namespace Sirkadirov.Overtest.WebApplication
         private const string ConfigurationFileName = "owebapplication.config.json";
         private const string DefaultLoggerName = "OVERTEST_FATAL";
         
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            (await CreateHostBuilder(args)).Build().Run();
         }
 
-        private static IHostBuilder CreateHostBuilder(string[] args)
+        private static async Task<IHostBuilder> CreateHostBuilder(string[] args)
         {
             
             IConfiguration configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile(ConfigurationFileName)
                 .Build();
-
+            
+            // Configure logging methods
             ConfigureLogging();
+            
+            // Initialize the database
+            await configuration.GetDbContext(new NLogLoggerProvider()).InitializeDatabaseAsync();
             
             return Host.CreateDefaultBuilder(args).ConfigureWebHostDefaults(webBuilder =>
             {
@@ -37,7 +43,7 @@ namespace Sirkadirov.Overtest.WebApplication
                 webBuilder.UseKestrel(options =>
                 {
                     options.AddServerHeader = true;
-                    options.ConfigureEndpointDefaults(endpointOptions => { endpointOptions.Protocols = HttpProtocols.Http2; });
+                    options.ConfigureEndpointDefaults(endpointOptions => { endpointOptions.Protocols = HttpProtocols.Http1AndHttp2; });
                 });
                 webBuilder.UseIISIntegration();
                 

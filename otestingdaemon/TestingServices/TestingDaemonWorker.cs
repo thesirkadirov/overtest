@@ -9,7 +9,9 @@ using NLog;
 using NLog.Extensions.Logging;
 using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TestingApplications;
 using Sirkadirov.Overtest.Libraries.Shared.Methods;
+using Sirkadirov.Overtest.TestingDaemon.Services.Storage;
 using Sirkadirov.Overtest.TestingDaemon.TestingServices.Skeleton;
+using ILogger = NLog.ILogger;
 
 namespace Sirkadirov.Overtest.TestingDaemon.TestingServices
 {
@@ -18,7 +20,7 @@ namespace Sirkadirov.Overtest.TestingDaemon.TestingServices
     {
 
         private readonly IConfiguration _configuration;
-        private readonly Logger _logger;
+        private readonly ILogger _logger;
         private readonly ILoggerProvider _loggerProvider;
         
         public TestingDaemonWorker(IConfiguration configuration)
@@ -30,17 +32,22 @@ namespace Sirkadirov.Overtest.TestingDaemon.TestingServices
 
         public async Task Execute()
         {
-            await InitializeDatabase();
+            
+            await Initialize();
+            
             CreateSightParticlesAndWait();
+            
         }
 
-        private async Task InitializeDatabase()
+        private async Task Initialize()
         {
             
             await using var databaseContext = _configuration.GetDbContext(_loggerProvider);
             
             // Initialize the database
             await databaseContext.InitializeDatabaseAsync();
+
+            await new TestingDaemonStorageProvider(_configuration, databaseContext).ActualizeTestingData();
             
         }
         

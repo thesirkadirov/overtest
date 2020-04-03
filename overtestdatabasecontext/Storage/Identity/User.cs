@@ -32,8 +32,9 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Identity
         
         public UserGroup UserGroup { get; set; }
         public Guid? UserGroupId { get; set; }
-        
-        public List<UserGroup> UserGroups { get; set; }
+
+        public UserPhoto UserPhoto { get; set; }
+        public Guid? UserPhotoId { get; set; }
         
         /*
          * Methods

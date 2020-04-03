@@ -20,6 +20,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\overtestdatabasecontext\overtestdatabasecontext.csproj" />
+      <ProjectReference Include="..\overtestprogramexecutor\overtestprogramexecutor.csproj" />
       <ProjectReference Include="..\overtestsharedmethods\overtestsharedmethods.csproj" />
     </ItemGroup>
 

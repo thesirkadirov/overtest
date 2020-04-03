@@ -4,7 +4,6 @@ using Microsoft.Extensions.Configuration;
 using NLog;
 using Sirkadirov.Overtest.Libraries.Shared.Methods;
 using Sirkadirov.Overtest.TestingDaemon.TestingServices;
-using Sirkadirov.Overtest.TestingDaemon.TestingServices.Skeleton;
 
 namespace Sirkadirov.Overtest.TestingDaemon
 {

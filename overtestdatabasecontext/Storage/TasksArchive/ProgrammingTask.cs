@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TasksArchive.TestingData;
 
 namespace Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TasksArchive
 {
@@ -23,14 +24,15 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TasksArchive
         [Range(typeof(byte), "0", "100")]
         public byte Difficulty { get; set; }
         
-        public byte[] TestingDataPackageFile { get; set; }
-        
         /*
          * Relationships
          */
         
         public ProgrammingTaskCategory Category { get; set; }
         public Guid CategoryId { get; set; }
+        
+        public ProgrammingTaskTestingData TestingData { get; set; }
+        public Guid TestingDataId { get; set; }
         
     }
     

@@ -8,9 +8,14 @@
   "general": {
     "parallelism": 4,
     "empty_delay": 1000,
-    "paths": {
-      "cache_path": "D:\\overtest-data\\cache",
-      "temp_path": "D:\\overtest-data\\temp"
+    "storage": {
+      "path": "D:\\overtest-data\\",
+      "custom_naming": {
+        "testing_data_directory": "td",
+        "testing_applications_directory": "ta",
+        "temp_directory": "tmp",
+        "hash_file": "hash.dat"
+      }
     }
   },
   

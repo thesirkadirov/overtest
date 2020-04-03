@@ -27,10 +27,10 @@ bld/
 [Ll]og/
 [Bb]uild/
 [Pp]ublish/
-overtest-cache/
 [Cc]ache/
-admin_details.txt
 [Cc]onfiguration.*
+overtest-cache/
+node_modules/
 
 # Visual Studio 2015 cache/options directory
 .vs/
