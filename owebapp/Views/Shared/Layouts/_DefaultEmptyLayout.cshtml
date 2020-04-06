@@ -1,0 +1,26 @@
+﻿<!doctype html>
+<html lang="uk">
+
+<head>
+    <title>@ViewBag.PageTitle.ToString() | Overtest</title>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <meta name="author" content="Yurii Kadirov / Sirkadirov">
+    <meta name="generator" content="Overtest">
+
+    <link rel="stylesheet" href="~/bundle/webapp.bundle.css">
+    @await RenderSectionAsync("AdditionalStyles", false)
+</head>
+
+<body>
+
+@RenderBody()
+@await RenderSectionAsync("AdditionalScripts", false)
+
+<script src="~/bundle/webapp.bundle.js" defer></script>
+
+</body>
+
+</html>

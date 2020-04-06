@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 
@@ -69,16 +68,16 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Identity
         public bool IsAdministrator() => IsAdministrator(this);
         public bool IsCurator() => IsCurator(this);
         
-        public enum UserType
-        {
+    }
+    
+    public enum UserType
+    {
         
-            Anonymous,
-            Student,
-            Instructor,
-            Administrator,
-            SuperUser
-        
-        }
+        Anonymous,
+        Student,
+        Instructor,
+        Administrator,
+        SuperUser
         
     }
     

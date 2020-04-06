@@ -5,8 +5,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using NLog;
 using NLog.Extensions.Logging;
+using NLog.Web;
 using Sirkadirov.Overtest.Libraries.Shared.Methods;
 
 namespace Sirkadirov.Overtest.WebApplication
@@ -51,7 +53,13 @@ namespace Sirkadirov.Overtest.WebApplication
                 webBuilder.UseStartup<Startup>();
                 
                 webBuilder.UseUrls(configuration.GetSection("server:endpoints").Get<string[]>());
-                
+
+                webBuilder.ConfigureLogging(logging =>
+                {
+                    logging.ClearProviders();
+                    logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+                }).UseNLog();
+
             });
 
             void ConfigureLogging()

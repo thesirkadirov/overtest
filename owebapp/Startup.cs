@@ -1,11 +1,14 @@
 using System;
-using System.IO;
+using System.Globalization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Sirkadirov.Overtest.Libraries.Shared.Database;
 using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Identity;
@@ -30,7 +33,19 @@ namespace Sirkadirov.Overtest.WebApplication
             ConfigureDataStorageServices();
             
             services.AddControllersWithViews();
+            
             services.AddRazorPages().AddRazorRuntimeCompilation();
+
+            services.AddLocalization(options => options.ResourcesPath = "Localization");
+
+            services.AddMvc(options =>
+            {
+
+                // Require user to be authenticated by default
+                var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+                options.Filters.Add(new AuthorizeFilter(policy));
+
+            }).AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix).AddDataAnnotationsLocalization();
 
             void ConfigureDataStorageServices()
             {
@@ -94,18 +109,51 @@ namespace Sirkadirov.Overtest.WebApplication
 
             app.UseAuthentication();
             app.UseAuthorization();
-
+            
+            SetUpLocalization();
+            
             app.UseEndpoints(endpoints =>
             {
                 
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}"
-                );
+                endpoints.MapControllerRoute("default", "{controller=Welcome}/{action=Welcome}/{id?}");
                 
-                endpoints.MapRazorPages();
+                MapArea("Installation", "Installer", "Welcome");
+                MapArea("Administration", "Home", "Index");
+                MapArea("Competition", "Competitions", "List");
+                MapArea("Social", "Home", "Index");
                 
+                void MapArea(string areaName, string defaultController, string defaultAction)
+                {
+                    endpoints.MapAreaControllerRoute(
+                        name: areaName,
+                        areaName: areaName,
+                        pattern: $"{{area={areaName}}}/{{controller={defaultController}}}/{{action={defaultAction}}}/{{id?}}"
+                    );
+                }
+
             });
+
+            void SetUpLocalization()
+            {
+                
+                // Default culture (Glory to Ukraine!)
+                var defaultCulture = new CultureInfo("uk-UA");
+                
+                // Supported cultures list (UI and formats)
+                var supportedCultures = new[]
+                {
+                    defaultCulture
+                    // Other cultures coming soon
+                };
+                
+                app.UseRequestLocalization(new RequestLocalizationOptions
+                {
+                    DefaultRequestCulture = new RequestCulture(defaultCulture),
+                    SupportedCultures = supportedCultures,
+                    SupportedUICultures = supportedCultures
+                });
+                
+            }
             
         }
         
