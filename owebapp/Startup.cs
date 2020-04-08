@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -37,7 +38,9 @@ namespace Sirkadirov.Overtest.WebApplication
             services.AddRazorPages().AddRazorRuntimeCompilation();
 
             services.AddLocalization(options => options.ResourcesPath = "Localization");
-
+            
+            ConfigureAuthServices();
+            
             services.AddMvc(options =>
             {
 
@@ -47,6 +50,8 @@ namespace Sirkadirov.Overtest.WebApplication
 
             }).AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix).AddDataAnnotationsLocalization();
 
+            services.AddResponseCompression(options => options.EnableForHttps = true);
+            
             void ConfigureDataStorageServices()
             {
                 try
@@ -63,8 +68,13 @@ namespace Sirkadirov.Overtest.WebApplication
                          * Additional security configuration
                          */
                         
-                        options.Password.RequiredLength = 8;
                         options.User.RequireUniqueEmail = true;
+                        options.Password.RequireDigit = true;
+                        options.Password.RequiredLength = 8;
+                        options.Password.RequireLowercase = true;
+                        options.Password.RequireUppercase = true;
+                        options.Password.RequiredUniqueChars = 3;
+                        options.Password.RequireNonAlphanumeric = true;
                         
                         /*
                          * Disable account confirmation services
@@ -74,7 +84,7 @@ namespace Sirkadirov.Overtest.WebApplication
                         options.SignIn.RequireConfirmedAccount = false;
                         options.SignIn.RequireConfirmedEmail = false;
                         options.SignIn.RequireConfirmedPhoneNumber = false;
-                        
+
                     }).AddEntityFrameworkStores<OvertestDatabaseContext>();
                 
                 }
@@ -86,10 +96,24 @@ namespace Sirkadirov.Overtest.WebApplication
                     );
                 }
             }
+
+            void ConfigureAuthServices()
+            {
+
+                services.ConfigureApplicationCookie(options =>
+                {
+                    options.LoginPath = "/Auth/Authorization";
+                    options.LogoutPath = "/Auth/LogOut";
+                    options.AccessDeniedPath = "/Security/AccessDenied";
+                    options.ExpireTimeSpan = TimeSpan.FromDays(7);
+                    options.Cookie.Name = "OvertestAuthCookie";
+                });
+            }
             
         }
         
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        // ReSharper disable once UnusedMember.Global
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, OvertestDatabaseContext databaseContext)
         {
             
             if (env.IsDevelopment())
@@ -99,7 +123,7 @@ namespace Sirkadirov.Overtest.WebApplication
             }
             else
             {
-                app.UseStatusCodePagesWithReExecute("/System/Error/{0}");
+                app.UseStatusCodePagesWithReExecute("/Security/Error/{0}");
             }
 
             app.UseHttpsRedirection();
@@ -111,27 +135,25 @@ namespace Sirkadirov.Overtest.WebApplication
             app.UseAuthorization();
             
             SetUpLocalization();
+
+            app.UseResponseCompression();
             
             app.UseEndpoints(endpoints =>
             {
                 
-                endpoints.MapControllerRoute("default", "{controller=Welcome}/{action=Welcome}/{id?}");
-                
-                MapArea("Installation", "Installer", "Welcome");
-                MapArea("Administration", "Home", "Index");
-                MapArea("Competition", "Competitions", "List");
-                MapArea("Social", "Home", "Index");
-                
-                void MapArea(string areaName, string defaultController, string defaultAction)
-                {
-                    endpoints.MapAreaControllerRoute(
-                        name: areaName,
-                        areaName: areaName,
-                        pattern: $"{{area={areaName}}}/{{controller={defaultController}}}/{{action={defaultAction}}}/{{id?}}"
-                    );
-                }
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Welcome}/{action=Welcome}/{id?}"
+                );
+
+                endpoints.MapControllerRoute(
+                    name: "areas",
+                    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+                );
 
             });
+
+            databaseContext.Database.Migrate();
 
             void SetUpLocalization()
             {

@@ -1,7 +1,7 @@
 ﻿@using Microsoft.EntityFrameworkCore
 @{
     Layout = "Layouts/_DefaultEmptyLayout";
-    ViewBag.PageTitle = Localizer["Початок роботи з системою"].Value;
+    ViewBag.PageTitle = Localizer["Overtest"].Value;
     
     async Task<bool> IsInstallationNeeded()
     {
@@ -13,7 +13,7 @@
 {
     <div class="alert alert-warning alert-dismissible fade show">
         <strong><i class="fas fa-exclamation-triangle"></i> @Localizer["Увага!"]</strong> @Localizer["Необхідно завершити процес інсталяції системи, створивши суперкористувача та виконавши початкові налаштування."]
-        <a class="btn btn-sm btn-warning" asp-area="Installation" asp-controller="Installer" asp-action="Welcome">@Localizer["Перейти до встановлення"]</a>
+        <a class="btn btn-sm btn-warning" asp-area="Installation" asp-controller="InstallationWizard" asp-action="Welcome">@Localizer["Перейти до встановлення"]</a>
         <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span></button>
     </div>
 }
@@ -33,15 +33,15 @@
             @if (Context.User.Identity.IsAuthenticated)
             {
                 <span>
-                    <a href="#" class="btn btn-dark"><i class="fas fa-laptop-house"></i> @Localizer["Перейти до системи"]</a>
+                    <a asp-controller="Welcome" asp-action="Home" class="btn btn-dark"><i class="fas fa-laptop-house"></i> @Localizer["Перейти до системи"]</a>
                 </span>
             }
             else
             {
                 <span>
-                    <a href="#" class="btn btn-dark"><i class="fas fa-rocket"></i> @Localizer["Реєстрація"]</a>
-                    <a href="#" class="btn btn-outline-dark"><i class="fas fa-fingerprint"></i> @Localizer["Авторизація"]</a>
-                    <small class="d-block mt-1"><a href="#" class="text-dark">@Localizer["Втратили доступ до облікового запису?"]</a></small>
+                    <a asp-controller="Auth" asp-action="Registration" class="btn btn-dark"><i class="fas fa-rocket"></i> @Localizer["Реєстрація"]</a>
+                    <a asp-controller="Auth" asp-action="Authorization" class="btn btn-outline-dark"><i class="fas fa-fingerprint"></i> @Localizer["Авторизація"]</a>
+                    <small class="d-block mt-1"><a href="" class="text-dark" onclick="alert('@Localizer["Зверніться до свого куратора!"]'); return false;">@Localizer["Втратили доступ до облікового запису?"]</a></small>
                 </span>
             }
             

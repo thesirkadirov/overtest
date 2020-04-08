@@ -231,7 +231,9 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
                 entity.Property(a => a.ProcessingTime).HasDefaultValue(TimeSpan.Zero).IsRequired();
 
                 entity.Property(a => a.TestingType).IsRequired();
-                entity.Property(a => a.Status).HasDefaultValue(TestingApplication.ApplicationStatus.Waiting).IsRequired();
+                entity.Property(a => a.Status)
+                    .HasDefaultValue(TestingApplication.ApplicationStatus.Waiting)
+                    .IsRequired();
                 
                 /*
                  * [TestingApplicationSourceCode] owned class
@@ -254,8 +256,17 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
                 
                 entity.OwnsOne(a => a.TestingResults, builder =>
                 {
+                    
                     builder.Property(r => r.RawTestingResults).HasDefaultValue();
-                    builder.Property(r => r.CompletionPercentage).HasDefaultValue(0).IsRequired();
+                    
+                    builder.Property(r => r.CompletionPercentage)
+                        .HasDefaultValue(0)
+                        .IsRequired();
+                    
+                    builder.Property(r => r.SolutionAdjudgement)
+                        .HasDefaultValue(TestingApplication.ApplicationTestingResults.SolutionAdjudgementType.ZeroSolution)
+                        .IsRequired();
+                    
                 });
                 
                 /*
@@ -375,16 +386,6 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
                     .OnDelete(DeleteBehavior.Cascade);
 
             });
-            
-        }
-
-        public async Task InitializeDatabaseAsync()
-        {
-            
-            if (await Database.EnsureCreatedAsync())
-            {
-                /* Apply default data */
-            }
             
         }
         

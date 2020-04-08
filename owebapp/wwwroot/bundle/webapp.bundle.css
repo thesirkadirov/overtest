@@ -34,7 +34,7 @@ p.lead {
     color: var(--dark);
 }
 
-a, a:hover {
+a, a:hover, .btn-link, .btn-link:hover {
     color: var(--orange);
 }
 

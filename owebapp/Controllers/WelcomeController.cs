@@ -15,7 +15,7 @@ namespace Sirkadirov.Overtest.WebApplication.Controllers
         [Route("")]
         public IActionResult Welcome()
         {
-            return View("~/Views/WelcomeViews/Welcome.cshtml");
+            return View("~/Views/WelcomeController/Welcome.cshtml");
         }
         
         [HttpGet]

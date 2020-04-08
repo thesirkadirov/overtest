@@ -46,13 +46,11 @@
         <Folder Include="Areas\Administration\Views" />
         <Folder Include="Areas\Competition\Controllers" />
         <Folder Include="Areas\Competition\Views" />
-        <Folder Include="Areas\Installation\Views" />
         <Folder Include="Areas\Social\Controllers" />
         <Folder Include="Areas\Social\Views" />
         <Folder Include="Areas\TasksArchive\Controllers" />
         <Folder Include="Areas\TasksArchive\Views" />
         <Folder Include="Localization" />
-        <Folder Include="Views\AuthViews" />
         <Folder Include="wwwroot" />
     </ItemGroup>
     

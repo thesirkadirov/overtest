@@ -55,10 +55,21 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TestingApplicati
 
         public class ApplicationTestingResults
         {
+            
             public string RawTestingResults { get; set; }
             
             [Range(typeof(byte), "0", "100")]
             public byte CompletionPercentage { get; set; }
+
+            public SolutionAdjudgementType SolutionAdjudgement { get; set; }
+            
+            public enum SolutionAdjudgementType
+            {
+                ZeroSolution,
+                PartialSolution,
+                CombleteSolution
+            }
+            
         }
         
     }
