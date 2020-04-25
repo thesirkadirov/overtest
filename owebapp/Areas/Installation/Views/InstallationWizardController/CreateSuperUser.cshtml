@@ -1,0 +1,61 @@
+﻿@using Sirkadirov.Overtest.WebApplication.Areas.Installation.Controllers
+@model Sirkadirov.Overtest.WebApplication.Areas.Installation.Models.InstallationWizardController.SuperUserCreationModel
+@{
+    Layout = "_WizardLayout";
+    ViewBag.PageTitle = Localizer["Майстер встановлення Overtest"].Value;
+    ViewBag.WizardStepTitle = Localizer["Створення суперкористувача"].Value;
+    ViewBag.WizardCurrentStep = 2;
+    ViewBag.WizardTotalSteps = InstallationWizardController.WizardStepsTotalCount;
+}
+
+@section WizardPage {
+    
+    <form asp-area="Installation" asp-controller="InstallationWizard" asp-action="CreateSuperUser" class="needs-validation" novalidate>
+        
+        @Html.AntiForgeryToken()
+        
+        <div class="text-danger mt-2 mb-2">@Html.ValidationSummary()</div>
+        
+        <div class="form-group mt-2 mb-2">
+            <label asp-for="FullName">@Localizer["Повне ім'я:"]</label>
+            <input asp-for="FullName" type="text" class="form-control" placeholder="@Localizer["Іван Якович Франко"]"/>
+            <small class="form-text text-muted">
+                @Localizer["Вкажіть ім'я посадової особи, яка буде керувати програмним комплексом Overtest."]
+                @Localizer["Якщо така особа бажає залишитися анонімною, вкажіть будь-який псевдонім у цьому полі."]
+            </small>
+            <div class="text-danger mt-2 mb-2">@Html.ValidationMessageFor(m => m.FullName)</div>
+        </div>
+        
+        <div class="form-group mt-2 mb-2">
+            <label asp-for="Email">@Localizer["Адреса e-mail:"]</label>
+            <input asp-for="Email" type="email" class="form-control" placeholder="@Localizer["franko@lnu.edu.ua"]"/>
+            <small class="form-text text-muted">
+                @Localizer["Вказана адреса електронної пошти може використовуватись для надання важливих сповіщень та оновлень."]
+                @Localizer["Також, вона буде доступна усім користувачам системи."]
+                @Localizer["Ви зможете змінити її після авторизації у системі."]
+            </small>
+            <div class="text-danger mt-2 mb-2">@Html.ValidationMessageFor(m => m.Email)</div>
+        </div>
+        
+        <div class="form-group mt-2 mb-2">
+            <label asp-for="Password">@Localizer["Пароль:"]</label>
+            <input asp-for="Password" type="password" class="form-control" placeholder="@Localizer["***********"]"/>
+            <small class="form-text text-muted">@Localizer["Мінімальна довжина паролю - 8 символів. Детальніше про вимоги до паролів можна дізнатися у офіційних настановах з адміністрування та використання системи."]</small>
+            <div class="text-danger mt-2 mb-2">@Html.ValidationMessageFor(m => m.Password)</div>
+        </div>
+        
+        <div class="form-group mt-2 mb-2">
+            <label asp-for="PasswordRepeat">@Localizer["Повторіть введення паролю:"]</label>
+            <input asp-for="PasswordRepeat" type="password" class="form-control" placeholder="@Localizer["***********"]"/>
+            <small class="form-text text-muted">@Localizer["Повторіть введення новоствореного паролю."]</small>
+            <div class="text-danger mt-2 mb-2">@Html.ValidationMessageFor(m => m.PasswordRepeat)</div>
+        </div>
+        
+        <div class="mt-2 mb-2">
+            <button type="submit" class="btn btn-dark"><i class="fas fa-user-shield"></i> @Localizer["Створити користувача"]</button>
+            <a class="btn btn-link" href="https://docs.overtest.sirkadirov.com/" target="_blank"><i class="fas fa-question-circle"></i> @Localizer["Потрібна допомога?"]</a>
+        </div>
+        
+    </form>
+    
+}

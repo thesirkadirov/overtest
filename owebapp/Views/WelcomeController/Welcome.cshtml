@@ -1,15 +1,9 @@
-﻿@using Microsoft.EntityFrameworkCore
-@{
+﻿@{
     Layout = "Layouts/_DefaultEmptyLayout";
     ViewBag.PageTitle = Localizer["Overtest"].Value;
-    
-    async Task<bool> IsInstallationNeeded()
-    {
-        return !await DatabaseContext.Users.AnyAsync();
-    }
 }
 
-@if (await IsInstallationNeeded())
+@if (await DatabaseContext.IsInstallationRequiredAsync())
 {
     <div class="alert alert-warning alert-dismissible fade show">
         <strong><i class="fas fa-exclamation-triangle"></i> @Localizer["Увага!"]</strong> @Localizer["Необхідно завершити процес інсталяції системи, створивши суперкористувача та виконавши початкові налаштування."]

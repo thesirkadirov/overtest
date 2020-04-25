@@ -19,10 +19,8 @@
             </div>
             
             <div class="mt-2 mb-2">
-                
+                @await RenderSectionAsync("WizardPage", true)
             </div>
-            
-            @await RenderSectionAsync("WizardPage", true)
             
             <div class="progress" style="height: 1.5rem;">
               <div class="progress-bar bg-dark" style="width: @(currentProgressPercentage)%;">@ViewBag.WizardCurrentStep / @ViewBag.WizardTotalSteps</div>

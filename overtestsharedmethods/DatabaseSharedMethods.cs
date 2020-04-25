@@ -21,16 +21,26 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Methods
             
             var connectionString = configuration.GetValue<string>("database:connection_string");
             
+            // To workaround https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/projects
+            const string migrationsAssembly = "owebapp";
+            
             switch (configuration.GetValue<string>("database:provider").ToUpper())
             {
                 
                 case "MARIADB":
                 case "MYSQL":
-                    dbContextOptionsBuilder.UseMySql(connectionString, builder => builder.CharSet(CharSet.Utf8));
+                    dbContextOptionsBuilder.UseMySql(connectionString, builder =>
+                    {
+                        builder.CharSet(CharSet.Utf8);
+                        builder.MigrationsAssembly(migrationsAssembly);
+                    });
                     break;
                 
                 case "SQLSERVER":
-                    dbContextOptionsBuilder.UseSqlServer(connectionString);
+                    dbContextOptionsBuilder.UseSqlServer(connectionString, builder =>
+                    {
+                        builder.MigrationsAssembly(migrationsAssembly);
+                    });
                     break;
                 
                 default:

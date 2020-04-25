@@ -31,6 +31,7 @@ bld/
 [Cc]onfiguration.*
 overtest-cache/
 node_modules/
+owebapp/[Mm]igrations
 
 # Visual Studio 2015 cache/options directory
 .vs/

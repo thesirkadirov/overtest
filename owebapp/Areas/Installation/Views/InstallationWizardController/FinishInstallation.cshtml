@@ -1,0 +1,27 @@
+﻿@using Sirkadirov.Overtest.WebApplication.Areas.Installation.Controllers
+@{
+    Layout = "_WizardLayout";
+    ViewBag.PageTitle = Localizer["Майстер встановлення Overtest"].Value;
+    ViewBag.WizardStepTitle = Localizer["Завершення роботи майстра встановлення"].Value;
+    ViewBag.WizardCurrentStep = InstallationWizardController.WizardStepsTotalCount;
+    ViewBag.WizardTotalSteps = InstallationWizardController.WizardStepsTotalCount;
+}
+
+@section WizardPage {
+    
+    <p class="text-justify mt-3 mb-3">
+        @Localizer["Майстер інсталяції Overtest LMS вітає вас з успішним завершенням процесу встановлення та першочергового налаштування системи!"]
+        @Localizer["Після переходу на іншу сторінку, доступ до майстра буде анульовано: ніхто з користувачів системи не зможе отримати доступ до нього."]
+    </p>
+    
+    <div class="alert alert-success">
+        @Localizer["Детальніше про наступні кроки по налаштуванню системи ви дізнаєтеся після першого входу в систему."]
+        @Localizer["Безмежно вдячні вам за рішення розпочати використання Overtest у своїй роботі!"]
+    </div>
+    
+    <p class="mt-3 mb-3">
+        <a class="btn btn-outline-dark" asp-controller="Auth" asp-action="Authorization"><i class="fas fa-user-shield"></i> @Localizer["Увійти в систему"]</a>
+        <a class="btn btn-link" asp-controller="Welcome" asp-action="Welcome"><i class="fas fa-home"></i> @Localizer["Початкова сторінка"]</a>
+    </p>
+
+}

@@ -10,6 +10,8 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Identity
         public Guid Id { get; set; }
         
         public string DisplayName { get; set; }
+
+        public string AccessToken { get; set; }
         
         public User Curator { get; set; }
         public Guid CuratorId { get; set; }

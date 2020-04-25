@@ -1,8 +1,10 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Sirkadirov.Overtest.Libraries.Shared.Database.Storage;
 using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Competitions;
 using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Competitions.Extras;
 using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Identity;
@@ -34,6 +36,8 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
         public DbSet<Competition> Competitions { get; set; }
         /* ||=> */ public DbSet<CompetitionProgrammingTask> CompetitionProgrammingTasks { get; set; }
         /* ||=> */ public DbSet<CompetitionUser> CompetitionUsers { get; set; }
+        
+        public DbSet<ConfigurationStorage> ConfigurationStorages { get; set; }
 
         public OvertestDatabaseContext(DbContextOptions options) : base(options) { }
 
@@ -53,8 +57,8 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
                 
                 entity.HasIndex(u => u.Email).IsUnique();
 
-                entity.Property(u => u.FullName).IsUnicode().IsRequired();
-                entity.Property(u => u.InstitutionName).IsUnicode().HasDefaultValue();
+                entity.Property(u => u.FullName).IsUnicode().HasMaxLength(255).IsRequired();
+                entity.Property(u => u.InstitutionName).IsUnicode().HasMaxLength(255).HasDefaultValue();
 
                 entity.Property(u => u.Type).IsRequired();
                 
@@ -90,7 +94,20 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
 
                 entity.HasKey(g => g.Id);
                 
-                entity.HasIndex(g => new {g.CuratorId, Title = g.DisplayName}).IsUnique();
+                entity.HasIndex(g => new
+                {
+                    g.CuratorId,
+                    g.DisplayName
+                }).IsUnique();
+
+                entity.Property(g => g.DisplayName)
+                    .IsConcurrencyToken()
+                    .IsUnicode()
+                    .IsRequired();
+                
+                entity.Property(g => g.AccessToken)
+                    .HasMaxLength(255)
+                    .IsRequired(false);
                 
                 /*
                  * Relationships
@@ -167,7 +184,7 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
                 entity.HasKey(d => d.Id);
 
                 entity.Property(d => d.DataPackageFile).IsRequired();
-                entity.Property(d => d.DataPackageHash).IsRequired();
+                entity.Property(d => d.DataPackageHash).IsConcurrencyToken().IsRequired();
                 
                 /*
                  * Relationships
@@ -233,6 +250,7 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
                 entity.Property(a => a.TestingType).IsRequired();
                 entity.Property(a => a.Status)
                     .HasDefaultValue(TestingApplication.ApplicationStatus.Waiting)
+                    .IsConcurrencyToken()
                     .IsRequired();
                 
                 /*
@@ -386,6 +404,35 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
                     .OnDelete(DeleteBehavior.Cascade);
 
             });
+            
+            /* ===== [System] section ===== */
+            
+            /*
+             * [ConfigurationStorage] entity
+             */
+            
+            modelBuilder.Entity<ConfigurationStorage>(entity =>
+            {
+                
+                entity.HasKey(s => s.Key);
+                
+                entity.Property(s => s.Value)
+                    .IsUnicode()
+                    .IsConcurrencyToken()
+                    .IsRequired();
+                
+            });
+            
+        }
+        
+        public async Task<bool> IsInstallationRequiredAsync()
+        {
+            
+            var overtestInstallationFlag = await ConfigurationStorages
+                .Where(s => s.Key == ConfigurationStorage.CommonKeys.OvertestInstallationFinished)
+                .FirstOrDefaultAsync();
+            
+            return overtestInstallationFlag == null || overtestInstallationFlag.Value == false.ToString();
             
         }
         
