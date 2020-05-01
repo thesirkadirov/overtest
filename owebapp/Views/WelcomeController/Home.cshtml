@@ -1,0 +1,39 @@
+﻿@{
+    ViewBag.PageTitle = Localizer["Головна сторінка"].Value;
+}
+
+@section FullwidthSection
+{
+    <div class="jumbotron jumbotron-fluid bg-light">
+        <div class="container">
+            
+            <h1 class="display-4">@Localizer["Привіт! З чого почнемо?"]</h1>
+            
+            <p class="lead text-justify">
+                @Localizer["Щоб стати знавцем своєї справи, ніколи не припиняй свого навчання - воно дає тобі необмежені можливості для самореалізації, про які ти навіть не здогадуєшся."]
+                @Localizer["Overtest допоможе тобі з вивченням програмування, але твоє майбутнє завщди залишається тільки у твоїх руках - не змарнуй його!"]
+            </p>
+            
+            <a asp-area="TasksArchive" asp-controller="Archive" asp-action="List" class="btn btn-lg btn-dark"><i class="fas fa-compass"></i> @Localizer["Архів завдань"]</a>
+            
+        </div>
+    </div>
+}
+
+<div class="card-deck">
+    
+    @for (var i = 0; i < 3; i++)
+    {
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">@Localizer["Новий сервіс вже у розробці"]</h5>
+                <p class="card-text">
+                    @Localizer["Замість цього блоку вже скоро з'явиться новий сервіс, який дасть тобі змогу ще швидше знаходити те, що ти шукаєш."]
+                    @Localizer[""]
+                </p>
+                <p class="card-text"><small class="text-muted">@Localizer["З повагою, Sirkadirov."]</small></p>
+            </div>
+        </div>
+    }
+    
+</div>

@@ -28,22 +28,9 @@
     
     "endpoints": [
       "http://127.0.0.1:8080/", // Localhost endpoint
-      "http://10.1.0.100:8080/" // LAN endpoint (exposed to WAN)
+      "http://10.1.0.101:8080/" // LAN endpoint (exposed to WAN)
     ]
     
-  },
-
-  /*
-   * Database provider and connection string
-   * Available providers: mysql, mariadb, sqlserver
-   * 
-   * Visit https://overtest.sirkadirov.com/ to get
-   * detailed connection string format information.
-   */
-
-  "database": {
-    "provider": "mariadb",
-    "connection_string": "Server=127.0.0.1;Database=overtest;Uid=overtest;Pwd=overtest;SslMode=Preferred;"
   },
   
   /*

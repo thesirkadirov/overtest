@@ -11,4 +11,7 @@ import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import '../node_modules/@fortawesome/fontawesome-free/css/all.min.css';
 
 // Application-wide styles
-import './webapp.css'
+import './src/site.css'
+
+// Application-wide scripts
+import './src/site.js'

@@ -1,10 +1,5 @@
 ﻿{
   
-  "database": {
-    "provider": "mariadb",
-    "connection_string": "Server=127.0.0.1;Database=overtest;Uid=overtest;Pwd=overtest;SslMode=Preferred;"
-  },
-  
   "general": {
     "parallelism": 4,
     "empty_delay": 1000,
@@ -29,7 +24,7 @@
       "enabled": true,
       "username": "overtest",
       "password": "overtest",
-      "domain": "sirkadirov.com"
+      "domain": ""
     }
     
   },

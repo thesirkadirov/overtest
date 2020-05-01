@@ -65,7 +65,6 @@ namespace Sirkadirov.Overtest.WebApplication
                 AppDomain.CurrentDomain.UnhandledException += (sender, eventArgs) =>
                 {
                     LogManager.GetLogger(DefaultLoggerName).Fatal(eventArgs.ExceptionObject);
-                    Environment.Exit(1);
                 };
 
             }

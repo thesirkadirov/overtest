@@ -58,7 +58,7 @@ namespace Sirkadirov.Overtest.WebApplication
                 {
                     
                     // Add primary database context
-                    services.AddDbContext<OvertestDatabaseContext>(options => options.GetDbContextOptions(Configuration));
+                    services.AddDbContext<OvertestDatabaseContext>();
                     
                     // Add primary identity services
                     services.AddIdentity<User, IdentityRole<Guid>>(options =>

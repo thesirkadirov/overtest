@@ -1,5 +1,6 @@
 ﻿"use strict";
 
+let webpack = require("webpack");
 let path = require("path");
 let miniCssExtractPlugin = require('mini-css-extract-plugin');
 
@@ -58,5 +59,9 @@ module.exports = {
             chunkFilename: '[id].bundle.css',
             ignoreOrder: false
         }),
+        new webpack.ProvidePlugin({
+            $: "jquery",
+            jQuery: "jquery"
+        })
     ]
 };

@@ -23,16 +23,16 @@
     </PropertyGroup>
     
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.2" />
+        <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.3" />
         <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.2" />
+        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.3" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.3" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.2" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.2" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.2" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.2" />
-        <PackageReference Include="NLog" Version="4.6.8" />
-        <PackageReference Include="NLog.Web.AspNetCore" Version="4.9.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.3" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.3" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.3" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.3" />
+        <PackageReference Include="NLog" Version="4.7.0" />
+        <PackageReference Include="NLog.Web.AspNetCore" Version="4.9.2" />
         <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="3.1.1" />
     </ItemGroup>
     
@@ -48,10 +48,8 @@
         <Folder Include="Areas\Competition\Views" />
         <Folder Include="Areas\Social\Controllers" />
         <Folder Include="Areas\Social\Views" />
-        <Folder Include="Areas\TasksArchive\Controllers" />
-        <Folder Include="Areas\TasksArchive\Views" />
         <Folder Include="Localization" />
-        <Folder Include="wwwroot" />
+        <Folder Include="Migrations" />
     </ItemGroup>
     
     <ItemGroup>
@@ -59,6 +57,23 @@
             <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
             <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        </Content>
+        <Content Update="wwwroot\manifest.json">
+          <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+          <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        </Content>
+        <Content Update="Views\WelcomeController\Home.cshtml">
+          <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+          <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        </Content>
+        <Content Update="Areas\TasksArchive\Views\ArchiveController\List.cshtml">
+          <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+          <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        </Content>
+        <Content Update="Views\Shared\ViewComponents\Shared\UserNavbar\ScrollNavigationItems.cshtml">
+          <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+          <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
         </Content>
     </ItemGroup>
     

@@ -1,0 +1,43 @@
+﻿@using Sirkadirov.Overtest.WebApplication.Extensions.HtmlHelpers
+
+@{
+    Func<dynamic, object> RenderItem(string area, string controller, string action, string linkIcon, string linkText) => 
+    @<a asp-area="@area" asp-controller="@controller" asp-action="@action" class="nav-link @Html.EnsureRequestedClassAdded(Html.IsActiveLink(area, controller, action))">
+        <i class="@linkIcon"></i> @linkText
+    </a>;
+}
+
+@if (Html.IsSameAreaName(""))
+{
+    
+    @* Home area navigation links *@
+    
+    @RenderItem("", "Welcome", "Home", "fas fa-house-user", Localizer["Головна сторінка"].Value)(null)
+    @RenderItem("", "Welcome", "Welcome", "fas fa-code-branch", Localizer["Початок роботи"].Value)(null)
+    
+    <a class="nav-link" href="https://docs.overtest.sirkadirov.com/" target="_blank">
+        <i class="fas fa-book"></i> @Localizer["Документація"]
+    </a>
+    
+    <a class="nav-link" href="https://overtest.sirkadirov.com/" target="_blank">
+        <i class="fas fa-rocket"></i> @Localizer["Про Overtest"]
+    </a>
+    
+}
+else if (Html.IsSameAreaName("TasksArchive"))
+{
+    
+    @* Tasks Archive area navigation links *@
+    
+    @RenderItem("TasksArchive", "Archive", "List", "fas fa-archive", Localizer["Архів завдань"].Value)(null)
+    @RenderItem("TasksArchive", "Archive", "Pending", "fas fa-sticky-note", Localizer["Відкладені завдання"].Value)(null)
+    
+}
+else if (Html.IsSameAreaName("Social"))
+{
+    
+    @* Social area navigation links *@
+    
+    @RenderItem("Social", "Users", "Profile", "fas fa-id-card", Localizer["Мій профіль"].Value)(null)
+    
+}

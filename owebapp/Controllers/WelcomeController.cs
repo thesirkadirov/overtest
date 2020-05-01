@@ -22,7 +22,7 @@ namespace Sirkadirov.Overtest.WebApplication.Controllers
         [Route(nameof(Home))]
         public IActionResult Home()
         {
-            throw new NotImplementedException();
+            return View("~/Views/WelcomeController/Home.cshtml");
         }
         
     }

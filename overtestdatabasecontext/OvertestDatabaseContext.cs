@@ -1,9 +1,14 @@
 using System;
+using System.Data;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Pomelo.EntityFrameworkCore.MySql.Storage;
 using Sirkadirov.Overtest.Libraries.Shared.Database.Storage;
 using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Competitions;
 using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Competitions.Extras;
@@ -39,7 +44,52 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
         
         public DbSet<ConfigurationStorage> ConfigurationStorages { get; set; }
 
-        public OvertestDatabaseContext(DbContextOptions options) : base(options) { }
+        public OvertestDatabaseContext() {  }
+        
+        public OvertestDatabaseContext(DbContextOptions options) : base(options) {  }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            
+            base.OnConfiguring(optionsBuilder);
+
+            const string databaseConfigurationFileName = "overtest.database.config.json";
+
+            var databaseConfiguration = new ConfigurationBuilder()
+                .SetBasePath(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location))
+                .AddJsonFile(databaseConfigurationFileName, false, false)
+                .Build();
+            
+            var databaseConnectionString = databaseConfiguration.GetValue<string>("database:connection_string");
+            
+            // To workaround https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/projects
+            const string migrationsAssembly = "owebapp";
+            
+            switch (databaseConfiguration.GetValue<string>("database:provider").ToUpper())
+            {
+                
+                case "MARIADB":
+                case "MYSQL":
+                    optionsBuilder.UseMySql(databaseConnectionString, builder =>
+                    {
+                        builder.CharSet(CharSet.Utf8);
+                        builder.MigrationsAssembly(migrationsAssembly);
+                    });
+                    break;
+                
+                case "SQLSERVER":
+                    optionsBuilder.UseSqlServer(databaseConnectionString, builder =>
+                    {
+                        builder.MigrationsAssembly(migrationsAssembly);
+                    });
+                    break;
+                
+                default:
+                    throw new DataException("You are using an unknown database provider!");
+                
+            }
+
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -94,14 +144,7 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
 
                 entity.HasKey(g => g.Id);
                 
-                entity.HasIndex(g => new
-                {
-                    g.CuratorId,
-                    g.DisplayName
-                }).IsUnique();
-
                 entity.Property(g => g.DisplayName)
-                    .IsConcurrencyToken()
                     .IsUnicode()
                     .IsRequired();
                 
@@ -113,9 +156,9 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
                  * Relationships
                  */
 
-                entity.HasOne(g => g.Curator)
+                entity.HasOne(g => g.GroupCurator)
                     .WithMany()
-                    .HasForeignKey(g => g.CuratorId)
+                    .HasForeignKey(g => g.GroupCuratorId)
                     .OnDelete(DeleteBehavior.Cascade);
 
             });
@@ -166,7 +209,12 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
                 /*
                  * Relationships
                  */
-
+                
+                entity.HasOne(d => d.TestingData)
+                    .WithOne(d => d.ProgrammingTask)
+                    .HasForeignKey<ProgrammingTask>(d => d.TestingDataId)
+                    .OnDelete(DeleteBehavior.Cascade);
+                
                 entity.HasOne(t => t.Category)
                     .WithMany(c => c.ProgrammingTasks)
                     .HasForeignKey(t => t.CategoryId)
@@ -190,10 +238,7 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
                  * Relationships
                  */
                 
-                entity.HasOne(d => d.ProgrammingTask)
-                    .WithOne(d => d.TestingData)
-                    .HasForeignKey<ProgrammingTaskTestingData>(d => d.ProgrammingTaskId)
-                    .OnDelete(DeleteBehavior.Cascade);
+                // ProgrammingTask relationship defined in [ProgrammingTask]
 
             });
             

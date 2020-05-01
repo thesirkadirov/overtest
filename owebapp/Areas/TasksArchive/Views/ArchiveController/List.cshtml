@@ -1,0 +1,17 @@
+﻿@model Sirkadirov.Overtest.WebApplication.Models.Shared.PaginatedListModel<Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TasksArchive.ProgrammingTask>
+@{
+    ViewBag.PageTitle = Localizer["Архів завдань"].Value;
+}
+
+@section FullwidthSection
+{
+    <div class="jumbotron jumbotron-fluid bg-white pt-5 pb-5">
+        <div class="container">
+            
+            <h3 class="m-0">@Localizer["Архів завдань"]</h3>
+            
+            <a class="text-dark" href=""><i class="fas fa-angle-left"></i> @Localizer["Повернутися назад"]</a>
+            
+        </div>
+    </div>
+}

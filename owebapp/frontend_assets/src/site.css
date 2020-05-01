@@ -1,0 +1,99 @@
+﻿/* Bootstrap overrides */
+
+:root {
+    --orange: #fe6700;
+    --primary: --orange !important;
+    --dark: #212121;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--dark);
+    font-weight: bold;
+}
+
+p.lead {
+    font-size: 1.4rem;
+}
+
+.btn, pre, .alert {
+    border-radius: 0;
+}
+
+.alert-warning, .alert-light, .alert-info, .alert-secondary {
+    color: var(--dark);
+}
+
+a, a:hover, .btn-link, .btn-link:hover {
+    color: var(--orange);
+}
+
+/* Custom styles */
+
+.content-v-align-center {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+/* Navbar scroller */
+
+.nav-scroller {
+    position: relative;
+    z-index: 2;
+    height: 2.75rem;
+    overflow-y: hidden;
+    margin-top: 60px;
+}
+
+.nav-scroller .nav {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: nowrap;
+    flex-wrap: nowrap;
+    padding-bottom: 1rem;
+    margin-top: -1px;
+    overflow-x: auto;
+    color: rgba(255, 255, 255, .75);
+    text-align: center;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+}
+
+.nav-underline .nav-link {
+    padding-top: .75rem;
+    padding-bottom: .75rem;
+    font-size: .875rem;
+    color: var(--gray-dark);
+}
+
+.nav-underline .nav-link:hover {
+    color: var(--orange);
+}
+
+.nav-underline .active {
+    font-weight: 500;
+    color: var(--orange);
+}
+
+/* Web application preloader */
+
+div.row.row-preloader {
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    width: 100%;
+    height: 100%;
+
+    z-index: 10000;
+    margin: 0;
+
+    background: var(--white);
+
+}
+
+div.row.row-preloader div.spinner-border {
+    color: var(--orange);
+}

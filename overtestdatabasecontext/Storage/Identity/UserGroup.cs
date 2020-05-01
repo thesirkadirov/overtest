@@ -13,8 +13,8 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Identity
 
         public string AccessToken { get; set; }
         
-        public User Curator { get; set; }
-        public Guid CuratorId { get; set; }
+        public User GroupCurator { get; set; }
+        public Guid GroupCuratorId { get; set; }
         
         public List<User> Users { get; set; }
         

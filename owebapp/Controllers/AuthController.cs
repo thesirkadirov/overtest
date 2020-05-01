@@ -105,6 +105,7 @@ namespace Sirkadirov.Overtest.WebApplication.Controllers
                             return LocalRedirect(authorizationModel.ReturnUrl);
                         
                         return RedirectToAction("Home", "Welcome");
+                        
                     }
                     
                 }
