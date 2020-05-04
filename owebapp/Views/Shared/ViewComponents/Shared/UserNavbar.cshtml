@@ -1,17 +1,20 @@
 ﻿@using Sirkadirov.Overtest.WebApplication.ViewComponents.Shared
 @using Sirkadirov.Overtest.WebApplication.Extensions.HtmlHelpers
 @using Microsoft.AspNetCore.Html
+@using System.Linq
+@using System.Security.Claims
+@using Microsoft.EntityFrameworkCore
 
 @model Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Identity.User
 
-<nav class="navbar navbar-global navbar-expand-lg navbar-light bg-white fixed-top" style="min-height: 60px;">
+<nav class="navbar navbar-global navbar-expand-lg bg-white fixed-top">
   <div class="container">
     
     <a class="navbar-brand font-weight-bold" asp-controller="Welcome" asp-action="Home"><i class="fas fa-trophy"></i> Overtest</a>
     
-    <button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#@nameof(UserNavbarViewComponent)">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+    <a class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#@nameof(UserNavbarViewComponent)">
+      <span class="fas fa-bars text-dark"></span>
+    </a>
 
     <div class="collapse navbar-collapse" id="@nameof(UserNavbarViewComponent)">
       
@@ -47,12 +50,39 @@
       @* User menu *@
       <ul class="navbar-nav">
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle text-dark" href="#" data-toggle="dropdown"><i class="fas fa-user-circle"></i> <span class="d-md-none d-lg-none d-xl-none">@Localizer["Користувач"]</span></a>
-          <div class="dropdown-menu">
-            <a class="dropdown-item" href="#"><i class="fas fa-id-card"></i> @Localizer["Моя сторінка"]</a>
-            <a class="dropdown-item" href="#"><i class="fas fa-user-edit"></i> @Localizer["Редагувати сторінку"]</a>
+          <a class="nav-link dropdown-toggle text-dark" href="#" data-toggle="dropdown">
+            <i class="fas fa-user-circle"></i> <span class="d-md-none d-lg-none d-xl-none">@Localizer["Користувач"]</span>
+          </a>
+          <div class="dropdown-menu dropdown-menu-right">
+            
+            @{
+              var userFullName = await DatabaseContext.Users
+                .Where(u => u.Id.ToString() == User.FindFirstValue(ClaimTypes.NameIdentifier))
+                .Select(u => u.FullName)
+                .FirstAsync();
+            }
+            
+            <a class="dropdown-item pt-3 pb-3" asp-area="Social" asp-controller="Users" asp-action="Profile">
+              <p class="m-0 lead text-dark text-center">
+                <i class="fas fa-user-circle"></i> @userFullName
+              </p>
+            </a>
+
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" asp-controller="Auth" asp-action="LogOut"><i class="fas fa-sign-out-alt"></i> @Localizer["Вийти з системи"]</a>
+
+            <a class="dropdown-item" asp-area="Social" asp-controller="Users" asp-action="Profile">
+              <i class="fas fa-id-card"></i> @Localizer["Моя сторінка"]
+            </a>
+            <a class="dropdown-item" href="#">
+              <i class="fas fa-user-edit"></i> @Localizer["Редагувати сторінку"]
+            </a>
+
+            <div class="dropdown-divider"></div>
+
+            <a class="dropdown-item" asp-controller="Auth" asp-action="LogOut">
+              <i class="fas fa-sign-out-alt"></i> @Localizer["Вийти з системи"]
+            </a>
+
           </div>
         </li>
       </ul>

@@ -15,3 +15,6 @@ import './src/site.css'
 
 // Application-wide scripts
 import './src/site.js'
+
+global.$ = require("jquery");
+global.jQuery = global.$;

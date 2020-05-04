@@ -1,4 +1,6 @@
-﻿/* Bootstrap overrides */
+﻿/*
+ * Bootstrap overrides
+ */
 
 :root {
     --orange: #fe6700;
@@ -6,6 +8,7 @@
     --dark: #212121;
 }
 
+/* Headings */
 h1, h2, h3, h4, h5, h6 {
     color: var(--dark);
     font-weight: bold;
@@ -15,33 +18,80 @@ p.lead {
     font-size: 1.4rem;
 }
 
-.btn, pre, .alert {
+/* Border radius */
+.btn, pre, .alert, .form-control {
     border-radius: 0;
 }
 
+/* Alerts */
 .alert-warning, .alert-light, .alert-info, .alert-secondary {
     color: var(--dark);
 }
 
+/* Links */
 a, a:hover, .btn-link, .btn-link:hover {
     color: var(--orange);
 }
 
-/* Custom styles */
+/* Buttons */
+.btn.btn-circle {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+}
+
+/* Pagination */
+.pagination .page-link, .pagination .page-link:hover, .pagination .disabled .page-link {
+    color: var(--orange);
+}
+.pagination .page-item.active .page-link, .pagination .page-item.active .page-link:hover {
+    background-color: var(--orange);
+    color: var(--white);
+    border-color: var(--orange);
+}
+
+/*
+ * Custom styles
+ */
 
 .content-v-align-center {
     margin-top: auto;
     margin-bottom: auto;
 }
 
-/* Navbar scroller */
+.no-selection-allowed {
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
+/*
+ * Global user navigation bar
+ */
+
+.navbar-global {
+    min-height: 56px;
+}
+.navbar-global a, .navbar-global .navbar-toggler .navbar-toggler-icon {
+    color: var(--dark);
+}
+.navbar-global .nav-link.active {
+    color: var(--orange);
+    background: none;
+}
+
+/*
+ * Navbar scroller
+ */
 
 .nav-scroller {
     position: relative;
     z-index: 2;
     height: 2.75rem;
     overflow-y: hidden;
-    margin-top: 60px;
+    margin-top: 56px;
 }
 
 .nav-scroller .nav {
@@ -58,23 +108,25 @@ a, a:hover, .btn-link, .btn-link:hover {
     -webkit-overflow-scrolling: touch;
 }
 
-.nav-underline .nav-link {
+.nav-scroller .nav-underline .nav-link {
     padding-top: .75rem;
     padding-bottom: .75rem;
     font-size: .875rem;
     color: var(--gray-dark);
 }
 
-.nav-underline .nav-link:hover {
+.nav-scroller .nav-underline .nav-link:hover {
     color: var(--orange);
 }
 
-.nav-underline .active {
+.nav-scroller .nav-underline .active {
     font-weight: 500;
     color: var(--orange);
 }
 
-/* Web application preloader */
+/*
+ * Web application preloader
+ */
 
 div.row.row-preloader {
 

@@ -12,11 +12,13 @@ $(window).on('load', function() {
 /*
  * Enable Bootstrap features
  */
+
 $('[data-toggle="tooltip"]').tooltip();
 
 /*
  * Global navigation bar stylization
  */
+
 if ($(".navbar-global").length)
 {
 
@@ -38,4 +40,17 @@ if ($(".navbar-global").length)
 
     });
 
+}
+
+/*
+ * Shadow text copy
+ */
+
+window.CopyTextToClipboard = function (text) {
+    let $temp = $('<input>');
+    $("body").append($temp);
+    $temp.val(text);
+    $temp.select();
+    document.execCommand("copy");
+    $temp.remove();
 }

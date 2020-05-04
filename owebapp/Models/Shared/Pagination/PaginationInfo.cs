@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 
-namespace Sirkadirov.Overtest.WebApplication.Models.Shared
+namespace Sirkadirov.Overtest.WebApplication.Models.Shared.Pagination
 {
     
-    public class PaginatedListModel<T>
+    public class PaginationInfo
     {
-        
+            
         public int CurrentPage { get; set; }
         public int ItemsPerPage { get; set; }
         public int TotalItems { get; set; }
@@ -14,9 +13,10 @@ namespace Sirkadirov.Overtest.WebApplication.Models.Shared
         public int PreviousItemsCount => (CurrentPage - 1) * ItemsPerPage;
         public int FirstItemId => PreviousItemsCount + 1;
         public int TotalPages => (int) Math.Ceiling(TotalItems / (double) ItemsPerPage);
-        
-        public List<T> ItemsList { get; set; }
-        
+
+        public bool HasPreviousPage => CurrentPage > 1;
+        public bool HasNextPage => CurrentPage < TotalPages;
+            
     }
     
 }

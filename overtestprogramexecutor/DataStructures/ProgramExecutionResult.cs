@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace Sirkadirov.Overtest.Libraries.Shared.ProgramExecutor.DataStructures
+﻿namespace Sirkadirov.Overtest.Libraries.Shared.ProgramExecutor.DataStructures
 {
     
     public class ProgramExecutionResult

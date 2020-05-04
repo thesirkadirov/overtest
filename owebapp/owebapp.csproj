@@ -46,8 +46,6 @@
         <Folder Include="Areas\Administration\Views" />
         <Folder Include="Areas\Competition\Controllers" />
         <Folder Include="Areas\Competition\Views" />
-        <Folder Include="Areas\Social\Controllers" />
-        <Folder Include="Areas\Social\Views" />
         <Folder Include="Localization" />
         <Folder Include="Migrations" />
     </ItemGroup>
@@ -72,6 +70,26 @@
           <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
         </Content>
         <Content Update="Views\Shared\ViewComponents\Shared\UserNavbar\ScrollNavigationItems.cshtml">
+          <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+          <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        </Content>
+        <Content Update="Views\Shared\ViewComponents\Shared\Pagination.cshtml">
+          <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+          <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        </Content>
+        <Content Update="Views\Shared\ViewComponents\Shared\ServiceHeader.cshtml">
+          <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+          <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        </Content>
+        <Content Update="Areas\Social\Views\UsersController\UserProfile.cshtml">
+          <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+          <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        </Content>
+        <Content Update="Views\Shared\ViewComponents\Shared\DropleftMenu.cshtml">
+          <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+          <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        </Content>
+        <Content Update="Views\Shared\ViewComponents\DropleftMenu\CommonSupportDropleftMenuItems.cshtml">
           <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
           <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
         </Content>

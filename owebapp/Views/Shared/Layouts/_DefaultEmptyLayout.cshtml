@@ -13,6 +13,10 @@
 
     <link rel="stylesheet" href="~/bundle/webapp.bundle.css">
     @await RenderSectionAsync("AdditionalStyles", false)
+    
+    <script src="~/bundle/webapp.bundle.js"></script>
+    @await RenderSectionAsync("AdditionalHeaderScripts", false)
+    
 </head>
 
 <body>
@@ -27,8 +31,7 @@
 
 @RenderBody()
 
-@await RenderSectionAsync("AdditionalScripts", false)
-<script src="~/bundle/webapp.bundle.js"></script>
+@await RenderSectionAsync("AdditionalFooterScripts", false)
 
 </body>
 

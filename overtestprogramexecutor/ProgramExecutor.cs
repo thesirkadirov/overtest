@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -256,7 +255,7 @@ namespace Sirkadirov.Overtest.Libraries.Shared.ProgramExecutor
                 }
                 
             }
-            catch (ExecutionException ex)
+            catch (ExecutionException)
             {
                 throw;
             }

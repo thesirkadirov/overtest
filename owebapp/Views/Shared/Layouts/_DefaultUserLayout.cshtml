@@ -13,3 +13,10 @@
 <main class="container mt-0 mb-0">
     @RenderBody()
 </main>
+
+@section AdditionalHeaderScripts {
+    @await RenderSectionAsync("AdditionalHeaderScripts", false)
+}
+@section AdditionalFooterScripts {
+    @await RenderSectionAsync("AdditionalFooterScripts", false)
+}

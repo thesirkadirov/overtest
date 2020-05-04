@@ -1,0 +1,5 @@
+﻿@using Microsoft.AspNetCore.Http.Extensions
+
+<a class="dropdown-item" onclick="CopyTextToClipboard('@Context.Request.GetDisplayUrl()'); return false;" href="#">
+    <i class="fas fa-link"></i> @Localizer["Копіювати посилання"]
+</a>

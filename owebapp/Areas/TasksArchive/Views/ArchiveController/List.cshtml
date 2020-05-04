@@ -1,17 +1,116 @@
-﻿@model Sirkadirov.Overtest.WebApplication.Models.Shared.PaginatedListModel<Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TasksArchive.ProgrammingTask>
+﻿@using Microsoft.EntityFrameworkCore
+@using Sirkadirov.Overtest.WebApplication.ViewComponents.Shared
+@model Sirkadirov.Overtest.WebApplication.Models.Shared.Pagination.PaginatedListModel<Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TasksArchive.ProgrammingTask>
 @{
     ViewBag.PageTitle = Localizer["Архів завдань"].Value;
+
+    var taskCategoriesList = await DatabaseContext.ProgrammingTaskCategories
+        .OrderBy(c => c.DisplayName)
+        .Select(c => new KeyValuePair<Guid, string>(c.Id, c.DisplayName))
+        .ToListAsync();
+    
 }
 
 @section FullwidthSection
 {
-    <div class="jumbotron jumbotron-fluid bg-white pt-5 pb-5">
-        <div class="container">
-            
-            <h3 class="m-0">@Localizer["Архів завдань"]</h3>
-            
-            <a class="text-dark" href=""><i class="fas fa-angle-left"></i> @Localizer["Повернутися назад"]</a>
-            
+    
+    @{
+        Func<dynamic, object> DrawDropleftMenu() => 
+            @<span>
+                    
+                <partial name="ViewComponents/DropleftMenu/CommonSupportDropleftMenuItems" />
+                    
+            </span>;
+    }
+    
+    @(await Component.InvokeAsync<ServiceHeaderViewComponent>(new ServiceHeaderViewComponent.HeaderModel
+    {
+        PageTitle = Localizer["Архів завдань"].Value,
+        MenuDrawer = new ServiceHeaderViewComponent.HeaderModel.MenuDrawerData
+        {
+            Enabled = true,
+            DrawMenuItems = DrawDropleftMenu()
+        }
+    }))
+    
+}
+
+<form class="mb-3" asp-area="TasksArchive" asp-controller="Archive" asp-action="List" method="get">
+    <div class="input-group">
+        
+        @if (!string.IsNullOrWhiteSpace((string)ViewData["SearchQuery"]) || !string.IsNullOrWhiteSpace((string)ViewData["SelectedCategoryId"]))
+        {
+            <div class="input-group-prepend">
+                <a class="btn btn-dark" asp-area="TasksArchive" asp-controller="Archive" asp-action="List"><i class="fas fa-times-circle"></i></a>
+            </div>
+        }
+        
+        <input name="searchQuery" type="text" class="form-control" placeholder="@Localizer["Вкажіть ваш пошуковий запит"]" value="@ViewData["SearchQuery"]">
+        
+        <div class="input-group-append w-25">
+            <select name="category" class="form-control">
+                <option value="">@Localizer["Усі категорії"]</option>
+                @if (taskCategoriesList.Count > 0)
+                {
+                    foreach (var (categoryId, categoryDisplayName) in taskCategoriesList)
+                    {
+                        <option value="@categoryId" selected="@(ViewData["SelectedCategoryId"].ToString() == categoryId.ToString())">@categoryDisplayName</option>
+                    }
+                }
+                else
+                {
+                    <option>@Localizer["Категорії завдань відсутні :("]</option>
+                }
+            </select>
         </div>
+        
+        <div class="input-group-append">
+            <button class="btn btn-dark"><i class="fas fa-search"></i></button>
+        </div>
+        
+    </div>
+</form>
+
+@if (Model.ItemsList.Count > 0)
+{
+    
+    @*
+        TODO: Реалізувати обчислення статистики вирішуваності завдань
+    *@
+    
+    <div class="row row-cols-1 row-cols-md-3">
+        @foreach(var programmingTask in Model.ItemsList)
+        {
+            <div class="col mb-4 d-flex align-items-stretch">
+                <div class="card w-100">
+                    <div class="card-body d-flex">
+                        <div class="align-self-center">
+                            <a
+                                class="h5 m-0 d-block card-title font-weight-bold text-dark text-decoration-none stretched-link"
+                                asp-area="TasksArchive" asp-controller="ProgrammingTask" asp-action="View" asp-route-id="@programmingTask.Id">@programmingTask.Title</a>
+                            <span>@taskCategoriesList.FirstOrDefault(c => c.Key == programmingTask.CategoryId).Value</span>
+                        </div>
+                        <div class="align-self-center ml-auto text-right text-muted">
+                            <samp class="d-block">@programmingTask.Difficulty% <i class="fas fa-award"></i></samp>
+                            <samp class="d-block">N/A <i class="fas fa-poll"></i></samp>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    
+    @(await Component.InvokeAsync<PaginationViewComponent>(Model.Pagination))
+}
+else
+{
+    <div class="alert alert-light">
+        <h5 class="alert-heading"><i class="fas fa-heart-broken"></i> @Localizer["За цим пошуковим запитом нічого не знайдено!"]</h5>
+        <p class="m-0">
+            @Localizer["Дуже шкода, але за вказаними параметрами пошуку нам не вдалося знайти жодного завдання."]
+            @Localizer["Можливо, слід переформулювати запит і спробувати ще раз?"]
+            @Localizer["Шукай поради по навігації Архівом завдань у настановах з використання Overtest, або звернися за допомогою до свого куратора чи адміністратора системи."]
+            @Localizer["Нехай тобі щастить!"]
+        </p>
     </div>
 }

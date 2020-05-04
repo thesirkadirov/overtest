@@ -13,19 +13,19 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Sirkadirov.Overtest.Libraries.Shared.Database;
 using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Identity;
-using Sirkadirov.Overtest.Libraries.Shared.Methods;
 
 namespace Sirkadirov.Overtest.WebApplication
 {
     
     public class Startup
     {
-        
-        private IConfiguration Configuration { get; }
+
+        // ReSharper disable once NotAccessedField.Local
+        private readonly IConfiguration _configuration;
         
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            _configuration = configuration;
         }
         
         public void ConfigureServices(IServiceCollection services)

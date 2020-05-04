@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Sirkadirov.Overtest.Libraries.Shared.Database;
 using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TasksArchive;
-using Sirkadirov.Overtest.WebApplication.Models.Shared;
+using Sirkadirov.Overtest.WebApplication.Models.Shared.Pagination;
 
 namespace Sirkadirov.Overtest.WebApplication.Areas.TasksArchive.Controllers
 {
@@ -25,14 +25,25 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.TasksArchive.Controllers
         }
         
         [HttpGet]
-        [Route(nameof(List) + "/{page:int:min(1)?}")]
+        [Route("")]
+        [Route(nameof(List))]
+        [Route("/TasksArchive")]
         public async Task<IActionResult> List(int page = 1, string category = "", string searchQuery = "")
         {
 
+            if (page < 1)
+                return NotFound();
+            
+            ViewData["SelectedCategoryId"] = category;
+            ViewData["SearchQuery"] = searchQuery;
+            
             var model = new PaginatedListModel<ProgrammingTask>
             {
-                CurrentPage = page,
-                ItemsPerPage = ItemsPerPage
+                Pagination = new PaginationInfo
+                {
+                    CurrentPage = page,
+                    ItemsPerPage = ItemsPerPage
+                }
             };
 
             var databaseQuery = _databaseContext.ProgrammingTasks
@@ -45,10 +56,16 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.TasksArchive.Controllers
                 .ThenBy(t => t.CategoryId)
                 .ThenBy(t => t.Title);
 
-            model.TotalItems = await databaseQuery.CountAsync();
+            model.Pagination.TotalItems = await databaseQuery.CountAsync();
+            
+            if (model.Pagination.TotalItems <= 0 && page > 1)
+                return NotFound();
+            
+            if (model.Pagination.TotalItems > 0 && model.Pagination.TotalPages < page)
+                return NotFound();
             
             model.ItemsList = await databaseQuery
-                .Skip(model.PreviousItemsCount).Take(ItemsPerPage)
+                .Skip(model.Pagination.PreviousItemsCount).Take(ItemsPerPage)
                 .Select(t => new ProgrammingTask
                 {
                     Id = t.Id,
