@@ -121,11 +121,6 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
                  * Relationships
                  */
                 
-                entity.HasOne(u => u.Curator)
-                    .WithMany()
-                    .HasForeignKey(u => u.CuratorId)
-                    .OnDelete(DeleteBehavior.Cascade);
-                
                 entity.HasOne(u => u.UserGroup)
                     .WithMany(g => g.Users)
                     .HasForeignKey(u => u.UserGroupId)

@@ -30,6 +30,7 @@ else if (Html.IsSameAreaName("TasksArchive"))
     @* Tasks Archive area navigation links *@
     
     @RenderItem("TasksArchive", "Archive", "List", "fas fa-archive", Localizer["Архів завдань"].Value)(null)
+    @RenderItem("TasksArchive", "Archive", "Categories", "fas fa-list-alt", Localizer["Категорії завдань"].Value)(null)
     @RenderItem("TasksArchive", "Archive", "Pending", "fas fa-sticky-note", Localizer["Відкладені завдання"].Value)(null)
     
 }

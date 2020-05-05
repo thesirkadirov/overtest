@@ -63,22 +63,12 @@ namespace Sirkadirov.Overtest.WebApplication.Controllers
                         _localizer["Користувача зі вказаною адресою електронної пошти не знайдено!"].Value
                     );
                 }
-                else if (!user.IsApprovedUser())
+                else if (user.IsBanned)
                 {
-                    if (user.IsBanned)
-                    {
-                        ModelState.AddModelError(
-                            nameof(AuthorizationModel.Email),
-                            _localizer["Ваш обліковий запис було заблоковано за порушення умов роботи з системою!"].Value
-                        );
-                    }
-                    else
-                    {
-                        ModelState.AddModelError(
-                            nameof(AuthorizationModel.Email),
-                            _localizer["Ваш обліковий запис ще не отримав підтвердження від обраного при реєстрації в системі куратора!"].Value
-                        );
-                    }
+                    ModelState.AddModelError(
+                        nameof(AuthorizationModel.Email),
+                        _localizer["Ваш обліковий запис було заблоковано за порушення умов роботи з системою!"].Value
+                    );
                 }
                 else
                 {
@@ -107,15 +97,17 @@ namespace Sirkadirov.Overtest.WebApplication.Controllers
                         return RedirectToAction("Home", "Welcome");
                         
                     }
+                    else
+                    {
+                        ModelState.AddModelError(
+                            nameof(AuthorizationModel.Email),
+                            _localizer["Перевірте правильність введеної вами інформації! Можливо, вам слід скористатися сервісом відновлення доступу до системи?"].Value
+                        );
+                    }
                     
                 }
                 
             }
-            
-            ModelState.AddModelError(
-                nameof(AuthorizationModel.Email),
-                _localizer["Перевірте правильність введеної вами інформації! Можливо, вам слід скористатися сервісом відновлення доступу до системи?"].Value
-            );
             
             return View("~/Views/AuthController/Authorization.cshtml", authorizationModel);
             

@@ -104,7 +104,6 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.Installation.Controllers
                     UserName = model.Email,
                     Email = model.Email,
                     
-                    CuratorId = null,
                     UserGroupId = null,
                     
                     Registered = DateTime.UtcNow,

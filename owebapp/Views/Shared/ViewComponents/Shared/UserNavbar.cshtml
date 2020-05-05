@@ -7,6 +7,10 @@
 
 @model Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Identity.User
 
+@{
+  var PermissionsOperator = Model.GetPermissionsOperator();
+}
+
 <nav class="navbar navbar-global navbar-expand-lg bg-white fixed-top">
   <div class="container">
     
@@ -27,22 +31,35 @@
             </li>;
         }
         
-        @CreateAreaLink("", "Welcome", "Home", "fas fa-home", Localizer["Головна"].Value)(null)
-        
-        @CreateAreaLink("TasksArchive", "Archive", "List", "fas fa-folder", Localizer["Архів завдань"].Value)(null)
-        
-        @CreateAreaLink("Social", "Users", "List", "fas fa-users", Localizer["Користувачі"].Value)(null)
+        @if (PermissionsOperator.IsUserTypeSetApprovedUser())
+        {
+          
+          @CreateAreaLink("", "Welcome", "Home", "fas fa-home", Localizer["Головна"].Value)(null)
+          
+          @CreateAreaLink("TasksArchive", "Archive", "List", "fas fa-folder", Localizer["Архів завдань"].Value)(null)
+          
+          @CreateAreaLink("Social", "Users", "List", "fas fa-users", Localizer["Користувачі"].Value)(null)
+          
+        }
         
         @if (Model.Type == UserType.Student)
         {
           @* Competitions *@
-          @CreateAreaLink("Competition", "Competitions", "List", "fas fa-snowboarding", Localizer["Змагання"].Value)(null)
+          @CreateAreaLink("Competition", "Competitions", "Join", "fas fa-snowboarding", Localizer["Змагання"].Value)(null)
         }
         
-        @if (Model.Type != UserType.Anonymous && Model.Type != UserType.Student)
+        @if (PermissionsOperator.IsUserTypeSetCurator())
         {
+          
           @* Administration *@
-          @CreateAreaLink("Administration", "Welcome", "Home", "fas fa-user-shield", Localizer["Адміністрування"].Value)(null)
+          
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown"><i class="fas fa-user-shield"></i> @Localizer["Адміністрування"]</a>
+            <div class="dropdown-menu">
+              <a class="dropdown-item"><strong>Coming soon</strong></a>
+            </div>
+          </li>
+          
         }
         
       </ul>
@@ -96,7 +113,7 @@
 
 <div class="nav-scroller bg-white shadow-sm">
   <div class="container">
-    <nav class="nav nav-underline justify-content-lg-center">
+    <nav class="nav nav-underline justify-content-lg-center pb-3">
       
       <partial name="~/Views/Shared/ViewComponents/Shared/UserNavbar/ScrollNavigationItems.cshtml"/>
       

@@ -81,13 +81,13 @@
     <div class="row row-cols-1 row-cols-md-3">
         @foreach(var programmingTask in Model.ItemsList)
         {
-            <div class="col mb-4 d-flex align-items-stretch">
+            <div class="col mb-4 h-100">
                 <div class="card w-100">
                     <div class="card-body d-flex">
                         <div class="align-self-center">
                             <a
                                 class="h5 m-0 d-block card-title font-weight-bold text-dark text-decoration-none stretched-link"
-                                asp-area="TasksArchive" asp-controller="ProgrammingTask" asp-action="View" asp-route-id="@programmingTask.Id">@programmingTask.Title</a>
+                                asp-area="TasksArchive" href="">@programmingTask.Title</a>
                             <span>@taskCategoriesList.FirstOrDefault(c => c.Key == programmingTask.CategoryId).Value</span>
                         </div>
                         <div class="align-self-center ml-auto text-right text-muted">

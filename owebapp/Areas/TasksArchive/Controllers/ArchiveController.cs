@@ -50,7 +50,7 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.TasksArchive.Controllers
                 .Where(t =>
                     t.Enabled &&
                     (!string.IsNullOrWhiteSpace(category) && t.CategoryId.ToString() == category) &&
-                    EF.Functions.Like(t.Title, $"%{searchQuery}%")
+                    (t.Id.ToString() == searchQuery || EF.Functions.Like(t.Title, $"%{searchQuery}%"))
                 )
                 .OrderBy(t => t.Difficulty)
                 .ThenBy(t => t.CategoryId)
@@ -75,6 +75,20 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.TasksArchive.Controllers
                 }).ToListAsync();
             
             return View(ViewsDirectoryPath + "List.cshtml", model);
+        }
+
+        [HttpGet]
+        [Route(nameof(Categories))]
+        public async Task<IActionResult> Categories()
+        {
+
+            var categoriesList = await _databaseContext.ProgrammingTaskCategories
+                .OrderBy(c => c.DisplayName)
+                .ThenBy(c => c.Id)
+                .ToListAsync();
+
+            return View(ViewsDirectoryPath + "Categories.cshtml", categoriesList);
+
         }
         
     }

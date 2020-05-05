@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
+using Sirkadirov.Overtest.Libraries.Shared.Database.Operators;
 
 namespace Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Identity
 {
@@ -26,9 +27,6 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Identity
          * Relationships
          */
         
-        public User Curator { get; set; }
-        public Guid? CuratorId { get; set; }
-        
         public UserGroup UserGroup { get; set; }
         public Guid? UserGroupId { get; set; }
 
@@ -39,34 +37,9 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Identity
          * Methods
          */
         
-        public static bool IsSuperUser(User user)
-        {
-            return user.Type == UserType.SuperUser;
-        }
-        
-        public static bool IsApprovedUser(User user)
-        {
-            return user.IsSuperUser() || (
-                       !user.IsBanned
-                       && user.CuratorId != null
-                       && user.UserGroupId != null
-                   );
-        }
-
-        public static bool IsAdministrator(User user)
-        {
-            return user.Type == UserType.Administrator || user.IsSuperUser();
-        }
-
-        public static bool IsCurator(User user)
-        {
-            return user.Type == UserType.Instructor || user.IsAdministrator();
-        }
-        
-        public bool IsSuperUser() => IsSuperUser(this);
-        public bool IsApprovedUser() => IsApprovedUser(this);
-        public bool IsAdministrator() => IsAdministrator(this);
-        public bool IsCurator() => IsCurator(this);
+        // Get permissions operator
+        public OvertestUserPermissionsOperator GetPermissionsOperator()
+            => new OvertestUserPermissionsOperator(this);
         
     }
     
