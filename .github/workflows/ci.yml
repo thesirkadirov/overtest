@@ -30,7 +30,7 @@ jobs:
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 3.1.x
+          dotnet-version: 3.x
       - name: Setup Node.JS
         uses: actions/setup-node@v1.4.2
         with:
