@@ -11,8 +11,8 @@
     @{
         Func<dynamic, object> DrawDropleftMenu() => 
             @<span>
-                    
-                <partial name="ViewComponents/DropleftMenu/CommonSupportDropleftMenuItems" />
+                
+                <partial name="ViewComponents/Shared/DropleftMenu/CommonSupportDropleftMenuItems" />
                 
             </span>;
     }
@@ -66,12 +66,12 @@
 }
 else
 {
-    <div class="alert alert-light">
-        <h5 class="alert-heading"><i class="fas fa-heart-broken"></i> @Localizer["Категорій завдань не знайдено!"]</h5>
-        <p class="m-0">
-            @Localizer["Дуже шкода, але за адміністратори системи ще не додали жодної категорії для завдань з програмування, яка могла б відображатися на цій сторінці."]
-            @Localizer["Можливо, у вас немає відповідного дозволу для перегляду цієї інформації?"]
-            @Localizer["Можливо, вам слід завітати на цю сторінку пізніше, або ж зв'язатися зі своїм куратором."]
+    <div class="alert alert-light text-center">
+        <h5 class="alert-heading m-0"><i class="fas fa-heart-broken"></i> @Localizer["Категорізація завдань відсутня"]</h5>
+        <p class="mt-2 mb-2">
+            @Localizer["Доступних для перегляду категорій не знайдено."]
+            @Localizer["Можливо, вам слід скористатися пошуком по Архіву завдань?"]
         </p>
+        <a class="btn btn-light" asp-action="List"><i class="fas fa-archive"></i> @Localizer["Перейти до Архіву завдань"]</a>
     </div>
 }

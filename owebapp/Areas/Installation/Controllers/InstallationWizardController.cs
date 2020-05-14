@@ -1,9 +1,11 @@
 ﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NLog;
 using Sirkadirov.Overtest.Libraries.Shared.Database;
 using Sirkadirov.Overtest.Libraries.Shared.Database.Storage;
 using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Identity;
@@ -22,11 +24,15 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.Installation.Controllers
         private readonly UserManager<User> _userManager;
         
         public const int WizardStepsTotalCount = 3;
+
+        public ILogger _logger;
         
         public InstallationWizardController(OvertestDatabaseContext databaseContext, UserManager<User> userManager)
         {
             _databaseContext = databaseContext;
             _userManager = userManager;
+
+            _logger = LogManager.GetCurrentClassLogger();
         }
 
         [NonAction]
@@ -100,6 +106,7 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.Installation.Controllers
                     IsBanned = false,
                     
                     FullName = model.FullName,
+                    InstitutionName = model.InstitutionName,
 
                     UserName = model.Email,
                     Email = model.Email,

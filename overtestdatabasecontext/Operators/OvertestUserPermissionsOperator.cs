@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Identity;
 
 namespace Sirkadirov.Overtest.Libraries.Shared.Database.Operators
@@ -45,25 +48,60 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database.Operators
         
         #region EDIT_ACCESS_RIGHTS
         
-        public Guid GetUserCuratorId() => GetUserCuratorId(_user);
-        public bool CanBeEditedBy(User editor) => CanBeEditedBy(_user, editor);
+        public Guid? GetUserCuratorId() => GetUserCuratorId(_user);
         
-        public static Guid GetUserCuratorId(User user)
+        public static Guid? GetUserCuratorId(User user)
         {
+
+            if (user.UserGroupId == null)
+                return null;
+            
+            if (user.UserGroup == null)
+                throw new NullReferenceException(nameof(UserGroup));
+            
             return user.UserGroup.GroupCuratorId;
         }
-
-        public static bool CanBeEditedBy(User edited, User editor)
+        
+        public static async Task<bool> GetUserDataEditPermission(OvertestDatabaseContext databaseContext, Guid editedUserId, Guid editorUserId)
         {
-
-            if (edited.Id == editor.Id)
-                return true;
-
-            if (IsUserTypeSetSuperUser(editor) && !IsUserTypeSetSuperUser(edited))
+            
+            if (editedUserId == editorUserId)
                 return true;
             
-            if (GetUserCuratorId(edited) == editor.Id)
-                return true;
+            try
+            {
+                
+                if (await databaseContext.Users.Where(u => u.Id == editedUserId || u.Id == editorUserId).CountAsync() != 2)
+                    return false;
+
+                if (await databaseContext.Users.Where(u => u.Id == editorUserId && u.Type == UserType.SuperUser).AnyAsync())
+                    return true;
+
+                var editedUserCuratorId = await databaseContext.Users
+                    .Where(u => u.Id == editedUserId)
+                    .Include(u => u.UserGroup)
+                    .Select(u => u.UserGroup.GroupCuratorId)
+                    .FirstAsync();
+
+                if (editedUserCuratorId == editorUserId)
+                    return true;
+
+                var editedUserHeadCuratorId = await databaseContext.Users
+                    .Where(u => u.Id == editedUserId)
+                    .Include(u => u.UserGroup)
+                    .ThenInclude(g => g.GroupCurator)
+                    .ThenInclude(u => u.UserGroup)
+                    .Select(u => u.UserGroup.GroupCurator.UserGroup.GroupCuratorId)
+                    .FirstAsync();
+
+                if (editedUserHeadCuratorId == editorUserId)
+                    return true;
+                
+            }
+            catch
+            {
+                return false;
+            }
             
             return false;
 

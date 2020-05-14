@@ -1,93 +1,163 @@
 ﻿@using Sirkadirov.Overtest.WebApplication.ViewComponents.Shared
+@using Sirkadirov.Overtest.Libraries.Shared.Database.Operators
 @model Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Identity.User
 @{
     ViewBag.PageTitle = string.Format(Localizer["Профіль користувача {0}"].Value, Model.FullName);
 }
 
-<div id="profileHeader" class="d-flex mt-5 mb-5">
+@section FullwidthSection
+{
     
-    <div class="align-self-center">
-        <div class="media no-selection-allowed">
+    <div class="border-bottom m-0">
+        
+        <div class="container pt-5 pb-5">
+            
+            <div id="profileHeader" class="d-flex">
+                
+                <div class="align-self-center">
+                    <div class="media no-selection-allowed">
+            
+                        <style>
+                            .profile-photo {
+                                width: 100px;
+                                height: 100px;
+                                border-radius: 50%;
+                                background-color: var(--dark) !important;
+                                color: var(--white) !important;
+                            }
+                            .profile-photo.has-photo {
+                                background-image: url('https://via.placeholder.com/100');
+                                background-size: cover;
+                            }
+                            .profile-photo.has-photo .photo-placeholder {
+                                display: none;
+                            }
+                            .profile-photo:hover.has-photo .photo-placeholder{
+                                display: inline;
+                            }
+                            .profile-photo.user-online {
+                                border-style: solid;
+                                border-width: 5px;
+                                border-color: var(--success);
+                            }
+                        </style>
+            
+                        <div class="profile-photo user-online shadow-lg mr-4 d-flex justify-content-center align-self-center" title="@string.Format(Localizer["Остання дія виконана користувачем у {0} о {1}"].Value, Model.LastSeen.ToLongDateString(), Model.LastSeen.ToLongTimeString())">
+                            @if (Model.UserPhotoId == null)
+                            {
+                                <span class="photo-placeholder h1 font-weight-bold mt-auto mb-auto">@Model.FullName[0].ToString().ToUpper()</span>
+                            }
+                        </div>
+            
+                        <div class="media-body align-self-center text-wrap">
+                            <h3 class="m-0 text-break" title="@Model.FullName">@Model.FullName</h3>
+                            <h5 class="mt-1 mb-1 text-break font-weight-light">@Model.InstitutionName</h5>
+                            <span class="m-0">
+                                @switch (Model.Type)
+                                {
+                                    case UserType.SuperUser:
+                                        <span class="text-danger"><i class="fas fa-user-secret"></i> @Localizer["Суперадміністратор"]</span>
+                                        break;
+                                    case UserType.Administrator:
+                                        <span class="text-muted"><i class="fas fa-user-shield"></i> @Localizer["Адміністратор"]</span>
+                                        break;
+                                    case UserType.Instructor:
+                                        <span class="text-muted"><i class="fas fa-user-tie"></i> @Localizer["Інструктор"]</span>
+                                        break;
+                                    case UserType.Student:
+                                        <span class="text-muted"><i class="fas fa-user-graduate"></i> @Localizer["Студент"]</span>
+                                        break;
+                                    case UserType.Anonymous:
+                                        <span class="text-muted"><i class="fas fa-ghost"></i> Ich weiß es nicht</span>
+                                        break;
+                                }
+                            </span>
+                        </div>
+            
+                    </div>
+                </div>
+                
+                <div class="align-self-center ml-auto">
+                    
+                    @{
+                        Func<dynamic, object> DrawDropleftMenu() => 
+                            @<span>
+                                
+                                <partial name="ViewComponents/Shared/DropleftMenu/CommonSupportDropleftMenuItems"/>
 
-            <style>
-                .profile-photo {
-                    width: 100px;
-                    height: 100px;
-                    border-radius: 50%;
-                    background-color: var(--dark) !important;
-                    color: var(--white) !important;
-                }
-                .profile-photo.has-photo {
-                    background-image: url('https://via.placeholder.com/100');
-                    background-size: cover;
-                }
-                .profile-photo.has-photo .photo-placeholder {
-                    display: none;
-                }
-                .profile-photo:hover.has-photo .photo-placeholder{
-                    display: inline;
-                }
-                .profile-photo.user-online {
-                    border-style: solid;
-                    border-width: 5px;
-                    border-color: var(--success);
-                }
-            </style>
+                                <div class="dropdown-divider"></div>
 
-            <div class="profile-photo user-online shadow-lg mr-4 d-flex justify-content-center align-self-center" title="@string.Format(Localizer["Остання дія виконана користувачем {0}"].Value, Model.LastSeen)">
-                @if (Model.UserPhotoId == null)
-                {
-                    <span class="photo-placeholder h1 font-weight-bold mt-auto mb-auto">@Model.FullName[0].ToString().ToUpper()</span>
-                }
-            </div>
+                                @if (await OvertestUserPermissionsOperator.GetUserDataEditPermission(DatabaseContext, Model.Id, new Guid(UserManager.GetUserId(Context.User))))
+                                {
+                                    <a class="dropdown-item" asp-area="Social" asp-controller="UserConfiguration" asp-action="EditPersonalInfo" asp-route-userId="@Model.Id">
+                                        <i class="fas fa-user-edit"></i> @Localizer["Редагувати профіль"]
+                                    </a>
+                                }
 
-            <div class="media-body align-self-center text-wrap">
-                <h3 class="m-0 text-break" title="@Model.FullName">@Model.FullName</h3>
-                <h5 class="mt-1 mb-1 text-break font-weight-light">@Model.InstitutionName</h5>
-                <span class="m-0">
-                    @switch (Model.Type)
-                    {
-                        case UserType.SuperUser:
-                            <span class="text-danger"><i class="fas fa-user-secret"></i> @Localizer["Суперадміністратор"]</span>
-                            break;
-                        case UserType.Administrator:
-                            <span class="text-muted"><i class="fas fa-user-shield"></i> @Localizer["Адміністратор"]</span>
-                            break;
-                        case UserType.Instructor:
-                            <span class="text-muted"><i class="fas fa-user-tie"></i> @Localizer["Інструктор"]</span>
-                            break;
-                        case UserType.Student:
-                            <span class="text-muted"><i class="fas fa-user-graduate"></i> @Localizer["Студент"]</span>
-                            break;
-                        case UserType.Anonymous:
-                            <span class="text-muted"><i class="fas fa-ghost"></i> Ich weiß es nicht</span>
-                            break;
+                            </span>;
                     }
-                </span>
+                    
+                    @(await Component.InvokeAsync<DropleftMenuViewComponent>(DrawDropleftMenu()))
+                    
+                </div>
+                
             </div>
-
+            
         </div>
+        
     </div>
     
-    <div class="align-self-center ml-auto">
+}
+
+
+
+<div class="row m-0">
+    <div class="col-md-4">
         
         @{
-            Func<dynamic, object> DrawDropleftMenu() => 
-                @<span>
-                    
-                    <partial name="ViewComponents/DropleftMenu/CommonSupportDropleftMenuItems" />
-                    
-                    <div class="dropdown-divider"></div>
-                    
-                    <a class="dropdown-item" href="#">
-                        <i class="fas fa-user-edit"></i> @Localizer["Редагувати профіль"]
-                    </a>
-                    
-                </span>;
+            Func<dynamic, object> DrawListGroupItem(string displayName, string value, string link = null) =>
+                @<div class="list-group-item border-0">
+                    <h5 class="mb-1">@displayName</h5>
+                    <p class="mb-0">@value</p>
+                    @if (!string.IsNullOrWhiteSpace(link))
+                    {
+                        <a href="@link" class="stretched-link"></a>
+                    }
+                </div>;
         }
         
-        @(await Component.InvokeAsync<DropleftMenuViewComponent>(DrawDropleftMenu()))
+        <div class="list-group shadow-sm mt-3 mb-3">
+
+            @DrawListGroupItem(Localizer["Адреса електронної пошти"].Value, Model.Email, $"mailto:{Model.Email}")(null)
+
+            @if (Model.UserGroupId != null)
+            {
+                
+                @DrawListGroupItem(Localizer["Група"].Value, Model.UserGroup.DisplayName, Url.Action("UserGroup", "Rating", new { area = "Social", groupId = Model.UserGroupId }))(null)
+            }
+            else
+            {
+                @DrawListGroupItem(Localizer["Група"].Value, Localizer["Не належить до жодної з груп"].Value)(null)
+            }
+
+        </div>
+        
+        <div class="list-group shadow-sm mt-3 mb-3">
+            
+            @DrawListGroupItem(
+                Localizer["Остання дія в системі"].Value,
+                string.Format(Localizer["{0} о {1}"].Value, Model.LastSeen.ToLongDateString(), Model.LastSeen.ToLongTimeString())
+            )(null)
+            
+            @DrawListGroupItem(
+                Localizer["Дата і час реєстрації"].Value,
+                string.Format(Localizer["{0} о {1}"].Value, Model.Registered.ToLongDateString(), Model.Registered.ToLongTimeString())
+            )(null)
+            
+        </div>
         
     </div>
-    
+    <div class="col-md-8">
+        
+    </div>
 </div>

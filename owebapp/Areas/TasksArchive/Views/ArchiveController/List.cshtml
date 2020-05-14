@@ -17,9 +17,9 @@
     @{
         Func<dynamic, object> DrawDropleftMenu() => 
             @<span>
-                    
-                <partial name="ViewComponents/DropleftMenu/CommonSupportDropleftMenuItems" />
-                    
+                
+                <partial name="ViewComponents/Shared/DropleftMenu/CommonSupportDropleftMenuItems" />
+                
             </span>;
     }
     
@@ -104,13 +104,11 @@
 }
 else
 {
-    <div class="alert alert-light">
-        <h5 class="alert-heading"><i class="fas fa-heart-broken"></i> @Localizer["За цим пошуковим запитом нічого не знайдено!"]</h5>
-        <p class="m-0">
+    <div class="alert alert-light text-center">
+        <h5 class="alert-heading m-0"><i class="fas fa-heart-broken"></i> @Localizer["За вашим пошуковим запитом нічого не знайдено!"]</h5>
+        <p class="mt-2 mb-2">
             @Localizer["Дуже шкода, але за вказаними параметрами пошуку нам не вдалося знайти жодного завдання."]
-            @Localizer["Можливо, слід переформулювати запит і спробувати ще раз?"]
-            @Localizer["Шукай поради по навігації Архівом завдань у настановах з використання Overtest, або звернися за допомогою до свого куратора чи адміністратора системи."]
-            @Localizer["Нехай тобі щастить!"]
         </p>
+        <a class="btn btn-light" asp-action="List"><i class="fas fa-archive"></i> @Localizer["Перейти до Архіву завдань"]</a>
     </div>
 }

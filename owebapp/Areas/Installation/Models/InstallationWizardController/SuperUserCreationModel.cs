@@ -7,8 +7,7 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.Installation.Models.Installat
     {
         
         [Required]
-        [MinLength(2)]
-        [MaxLength(100)]
+        [MinLength(2), MaxLength(255)]
         [DataType(DataType.Text)]
         public string FullName { get; set; }
         
@@ -26,7 +25,12 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.Installation.Models.Installat
         [DataType(DataType.Password)]
         [Compare(nameof(Password))]
         public string PasswordRepeat { get; set; }
-        
+
+        [Required]
+        [MinLength(2), MaxLength(255)]
+        [DataType(DataType.Text)]
+        public string InstitutionName { get; set; }
+
     }
     
 }

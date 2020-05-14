@@ -40,7 +40,9 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.Social.Controllers
         {
             
             var userInfo = await _databaseContext.Users
+                .AsNoTracking()
                 .Where(u => u.Id == userId)
+                .Include(u => u.UserGroup)
                 .FirstOrDefaultAsync();
             
             if (userInfo == null)

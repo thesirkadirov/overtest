@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TasksArchive.TestingData;
 
 namespace Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TasksArchive
 {
@@ -14,7 +13,7 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TasksArchive
         public DateTime Created { get; set; }
         
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        public DateTime LastTestingDataModification { get; set; }
+        public DateTime LastModification { get; set; }
         
         public bool Enabled { get; set; }
         
@@ -24,15 +23,27 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TasksArchive
         [Range(typeof(byte), "0", "100")]
         public byte Difficulty { get; set; }
         
+        public ProgrammingTaskTestingData TestingData { get; set; }
+        
         /*
          * Relationships
          */
         
         public ProgrammingTaskCategory Category { get; set; }
-        public Guid CategoryId { get; set; }
+        public Guid? CategoryId { get; set; }
         
-        public ProgrammingTaskTestingData TestingData { get; set; }
-        public Guid TestingDataId { get; set; }
+        /*
+         * Owned classes
+         */
+        
+        [Serializable]
+        public class ProgrammingTaskTestingData
+        {
+            
+            public byte[] DataPackageFile { get; set; }
+            public string DataPackageHash { get; set; }
+            
+        }
         
     }
     

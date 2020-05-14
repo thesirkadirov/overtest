@@ -6,6 +6,8 @@
         <Company>Yurii Kadirov / Sirkadirov</Company>
         <Product>Overtest Testing Daemon</Product>
         <RootNamespace>Sirkadirov.Overtest.TestingDaemon</RootNamespace>
+        <Configurations>Release;Debug</Configurations>
+        <Platforms>x64</Platforms>
     </PropertyGroup>
 
     <ItemGroup>

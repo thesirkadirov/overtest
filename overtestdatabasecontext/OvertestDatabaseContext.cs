@@ -14,7 +14,6 @@ using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Competitions;
 using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Competitions.Extras;
 using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Identity;
 using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TasksArchive;
-using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TasksArchive.TestingData;
 using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TasksArchive.TestingData.Extras;
 using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TestingApplications;
 
@@ -32,7 +31,6 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
         
         public DbSet<ProgrammingTask> ProgrammingTasks { get; set; }
         /* ||=> */ public DbSet<ProgrammingTaskCategory> ProgrammingTaskCategories { get; set; }
-        /* ||=> */ public DbSet<ProgrammingTaskTestingData> ProgrammingTaskTestingDatas { get; set; }
         
         public DbSet<ProgrammingLanguage> ProgrammingLanguages { get; set; }
         
@@ -192,7 +190,7 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
                 entity.HasKey(t => t.Id);
 
                 entity.Property(t => t.Created).IsRequired();
-                entity.Property(t => t.LastTestingDataModification).IsRequired();
+                entity.Property(t => t.LastModification).IsRequired();
 
                 entity.Property(t => t.Enabled).HasDefaultValue(true).IsRequired();
                 
@@ -200,41 +198,22 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
                 entity.Property(t => t.Description).IsUnicode().IsRequired();
 
                 entity.Property(t => t.Difficulty).HasDefaultValue(100).IsRequired();
+
+                entity.OwnsOne(t => t.TestingData, ownedEntity =>
+                {
+                    ownedEntity.Property(d => d.DataPackageFile).HasDefaultValue().IsRequired(false);
+                    ownedEntity.Property(d => d.DataPackageHash).HasDefaultValue(string.Empty).IsRequired(false);
+                });
                 
                 /*
                  * Relationships
                  */
-                
-                entity.HasOne(d => d.TestingData)
-                    .WithOne(d => d.ProgrammingTask)
-                    .HasForeignKey<ProgrammingTask>(d => d.TestingDataId)
-                    .OnDelete(DeleteBehavior.Cascade);
                 
                 entity.HasOne(t => t.Category)
                     .WithMany(c => c.ProgrammingTasks)
                     .HasForeignKey(t => t.CategoryId)
                     .OnDelete(DeleteBehavior.Cascade);
                 
-            });
-            
-            /*
-             * [ProgrammingTaskTestingData] entity
-             */
-
-            modelBuilder.Entity<ProgrammingTaskTestingData>(entity =>
-            {
-                
-                entity.HasKey(d => d.Id);
-
-                entity.Property(d => d.DataPackageFile).IsRequired();
-                entity.Property(d => d.DataPackageHash).IsConcurrencyToken().IsRequired();
-                
-                /*
-                 * Relationships
-                 */
-                
-                // ProgrammingTask relationship defined in [ProgrammingTask]
-
             });
             
             /*
@@ -317,7 +296,7 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
                     
                     builder.Property(r => r.RawTestingResults).HasDefaultValue();
                     
-                    builder.Property(r => r.CompletionPercentage)
+                    builder.Property(r => r.GivenDifficulty)
                         .HasDefaultValue(0)
                         .IsRequired();
                     

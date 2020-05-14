@@ -19,7 +19,7 @@
 
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
         <EnvironmentName>Production</EnvironmentName>
-        <OutputPath>../build/</OutputPath>
+        <OutputPath>../build/owebapp/</OutputPath>
     </PropertyGroup>
     
     <ItemGroup>

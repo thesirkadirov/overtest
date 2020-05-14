@@ -15,7 +15,7 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.TasksArchive.Controllers
     {
 
         private const string ViewsDirectoryPath = "~/Areas/TasksArchive/Views/ArchiveController/";
-        private const int ItemsPerPage = 20;
+        private const int ItemsPerPage = 27;
         
         private readonly OvertestDatabaseContext _databaseContext;
         
@@ -47,6 +47,7 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.TasksArchive.Controllers
             };
 
             var databaseQuery = _databaseContext.ProgrammingTasks
+                .AsNoTracking()
                 .Where(t =>
                     t.Enabled &&
                     (!string.IsNullOrWhiteSpace(category) && t.CategoryId.ToString() == category) &&
@@ -83,6 +84,7 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.TasksArchive.Controllers
         {
 
             var categoriesList = await _databaseContext.ProgrammingTaskCategories
+                .AsNoTracking()
                 .OrderBy(c => c.DisplayName)
                 .ThenBy(c => c.Id)
                 .ToListAsync();

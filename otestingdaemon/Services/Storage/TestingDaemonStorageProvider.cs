@@ -26,20 +26,33 @@ namespace Sirkadirov.Overtest.TestingDaemon.Services.Storage
             _databaseContext = databaseContext;
             _logger = LogManager.GetCurrentClassLogger();
         }
+
+        public async Task<bool> VerifyTaskAndTestingDataExistsAsync(Guid programmingTaskId)
+        {
+            return await _databaseContext.ProgrammingTasks
+                .Where(t => 
+                    t.Id == programmingTaskId &&
+                    t.TestingData.DataPackageFile != null &&
+                    t.TestingData.DataPackageHash != null
+                ).AnyAsync();
+        }
         
-        public async Task<bool> ActualizeTestingData()
+        public async Task<bool> ActualizeTestingDataAsync()
         {
             
             _logger.Info("Got a request to actualize testing data for all tasks.");
             
-            var programmingTasksList = await _databaseContext.ProgrammingTasks.Select(t => t.Id).ToListAsync();
+            var programmingTasksList = await _databaseContext.ProgrammingTasks
+                .Where(t => t.TestingData.DataPackageFile != null && t.TestingData.DataPackageHash != null)
+                .Select(t => t.Id)
+                .ToListAsync();
 
             var updatedCount = 0;
             
             foreach (var task in programmingTasksList)
             {
                 
-                if (!await ActualizeTestingData(task))
+                if (!await ActualizeTestingDataAsync(task))
                     continue;
                 
                 _logger.Info($"Task's {task} testing data was out of date, now successfully updated!");
@@ -53,37 +66,41 @@ namespace Sirkadirov.Overtest.TestingDaemon.Services.Storage
 
         }
 
-        public async Task<bool> ActualizeTestingData(Guid programmingTaskId)
+        public async Task<bool> ActualizeTestingDataAsync(Guid programmingTaskId)
         {
             
             // No need to actualize testing data
             if (await IsActualTestingData(programmingTaskId))
-                return false;
+                return true;
+            
+            // Query actual testing data and it's hash code
+            var queryResult = await _databaseContext.ProgrammingTasks
+                .Where(t => t.Id == programmingTaskId)
+                .Select(t => new
+                {
+                    t.TestingData.DataPackageFile,
+                    t.TestingData.DataPackageHash
+                })
+                .FirstAsync();
             
             // Get local testing data path
             var testingDataLocalPath = GetTestingDataPathByProgrammingTaskId(programmingTaskId);
             
             // Delete old and create new directory for testing data
             FileSystemSharedMethods.SecureRecreateDirectory(testingDataLocalPath);
-            
-            // Query actual testing data and it's hash code
-            var queryResult = await _databaseContext.ProgrammingTaskTestingDatas
-                .Where(d => d.ProgrammingTaskId == programmingTaskId)
-                .Select(d => new {d.DataPackageFile, d.DataPackageHash})
-                .FirstOrDefaultAsync();
-            
+
             // ReSharper disable once ConvertToUsingDeclaration
             await using (var fileStream = new MemoryStream(queryResult.DataPackageFile))
             {
-                
+
                 // Testing data is stored as ZIP archive, we need to read it
                 using var zipArchive = new ZipArchive(fileStream, ZipArchiveMode.Read, false, Encoding.UTF8);
-                
+
                 // Extract archive contents to newly created directory
                 zipArchive.ExtractToDirectory(testingDataLocalPath, true);
-                
+
             }
-            
+
             // Save testing data hash into a file
             await File.WriteAllTextAsync(
                 Path.Combine(
@@ -99,49 +116,58 @@ namespace Sirkadirov.Overtest.TestingDaemon.Services.Storage
             
         }
         
-        public async Task<bool> IsActualTestingData(Guid programmingTaskId)
+        public async Task<bool> IsActualTestingData(Guid programmingTaskId, bool withoutExistenceVerification = false)
         {
-
-            try
-            {
-                
-                _logger.Debug($"Executing {nameof(IsActualTestingData)} for programming task {programmingTaskId}...");
-                
-                var externalHash = await _databaseContext.ProgrammingTaskTestingDatas
-                    .Where(d => d.ProgrammingTaskId == programmingTaskId)
-                    .Select(d => d.DataPackageHash)
-                    .FirstOrDefaultAsync();
-
-                var testingDataPath = GetTestingDataPathByProgrammingTaskId(programmingTaskId);
-
-                if (!Directory.Exists(testingDataPath))
-                {
-                    _logger.Debug($"{nameof(IsActualTestingData)}: No cache directory found for task {programmingTaskId}! Returning {false.ToString()}.");
-                    return false;
-                }
             
-                var localHash = await File.ReadAllTextAsync(
-                    Path.Combine(
-                        testingDataPath,
-                        _configuration.GetValue<string>("general:storage:custom_naming:hash_file")
-                    )
-                );
+            _logger.Debug($"Executing {nameof(IsActualTestingData)} for programming task {programmingTaskId}...");
 
-                var isActual = localHash == externalHash;
-                
-                _logger.Debug($"{nameof(IsActualTestingData)}: programming task {programmingTaskId} local hash: {localHash}, external hash: {externalHash}. {(isActual ? "Actual" : "Out-of-date")}.");
-
-                return isActual;
-
-            }
-            catch (Exception ex)
+            if (!withoutExistenceVerification)
+                await PrivateVerifyTestingDataExistsOrThrowAsync(programmingTaskId);
+            
+            var externalHash = await _databaseContext.ProgrammingTasks
+                .Where(t => t.Id == programmingTaskId)
+                .Select(t => t.TestingData.DataPackageHash)
+                .FirstAsync();
+            
+            var testingDataPath = GetTestingDataPathByProgrammingTaskId(programmingTaskId);
+            
+            if (!Directory.Exists(testingDataPath))
             {
-                _logger.Warn(ex, $"An exception catched during {nameof(IsActualTestingData)} execution for programming task {programmingTaskId}! Marking as out-of-date.");
+                _logger.Debug($"{nameof(IsActualTestingData)}: No cache directory found for task {programmingTaskId}! Returning {false.ToString()}.");
                 return false;
             }
-
+            
+            var localHash = await File.ReadAllTextAsync(
+                Path.Combine(
+                    testingDataPath,
+                    _configuration.GetValue<string>("general:storage:custom_naming:hash_file")
+                )
+            );
+            
+            var isActual = localHash == externalHash;
+            
+            _logger.Debug($"{nameof(IsActualTestingData)}: programming task {programmingTaskId} local hash: {localHash}, external hash: {externalHash}. {(isActual ? "Actual" : "Out-of-date")}.");
+            
+            return isActual;
+            
         }
 
+        private async Task PrivateVerifyTestingDataExistsOrThrowAsync(Guid programmingTaskId)
+        {
+            
+            if (await VerifyTaskAndTestingDataExistsAsync(programmingTaskId))
+                return;
+            
+            var exception = new FileNotFoundException(
+                $"Testing data for task with ID {programmingTaskId} was not found!",
+                programmingTaskId.ToString()
+            );
+            
+            _logger.Error(exception);
+            throw exception;
+            
+        }
+        
         public TempDirectoryAccessPoint GetTestingDataAccessPoint(Guid programmingTaskId)
         {
             

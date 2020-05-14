@@ -44,7 +44,7 @@ namespace Sirkadirov.Overtest.TestingDaemon.TestingServices
             
             await using var databaseContext = _configuration.GetDbContext(_loggerProvider);
 
-            await new TestingDaemonStorageProvider(_configuration, databaseContext).ActualizeTestingData();
+            await new TestingDaemonStorageProvider(_configuration, databaseContext).ActualizeTestingDataAsync();
             
         }
         
