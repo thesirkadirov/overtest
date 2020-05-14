@@ -1,0 +1,47 @@
+name: Overtest continuous integration
+
+on:
+  release:
+    types: [published, created, edited]
+  push:
+    branches:
+      - master
+      - develop
+      - release/**
+  pull_request:
+    branches:
+      - master
+      - develop
+      - feature/**
+
+jobs:
+  build_ubuntu:
+    name: Build for ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+
+    steps:
+      - uses: actions/checkout@master
+        
+      - name: Install tools and dependencies (solution-wide)
+        run: |
+          dotnet tool restore
+          dotnet restore
+      - name: Dependencies and migrations for OWebApp project
+        working-directory: ./owebapp
+        run: |
+          npm install
+          npm run execute-webpack
+          dotnet ef migrations remove
+          dotnet ef migrations add initial
+        
+      - name: Build
+        run: |
+          dotnet build --configuration Release --no-restore
+      
+      - name: Test
+        run: dotnet test --no-restore --verbosity normal
