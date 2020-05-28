@@ -1,0 +1,100 @@
+﻿@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Diagnostics
+@{
+    // ReSharper disable once NotResolvedInText
+    var statusCode = ViewData["StatusCode"] as int?;
+    var requestId = Context.Connection.Id;
+    
+    Layout = "Layouts/_DefaultEmptyLayout";
+    ViewBag.PageTitle = string.Format(Localizer["Помилка {0} | Overtest"].Value, statusCode);
+    
+    var reExecuteFeature = Context.Features.Get<IStatusCodeReExecuteFeature>();
+    var exceptionHandlerFeature = Context.Features.Get<IExceptionHandlerFeature>();
+
+    async Task<string> GetErrorReportingLink()
+    {
+
+        var baseSuperUserDataRequest = DatabaseContext.Users.Where(u => u.Type == UserType.SuperUser);
+        
+        if (await baseSuperUserDataRequest.AnyAsync())
+        {
+            return $"mailto:{await baseSuperUserDataRequest.AsNoTracking().Select(u => u.Email).FirstAsync()}";
+        }
+        
+        return "https://overtest.sirkadirov.com/";
+        
+    }
+    
+}
+
+<main class="container">
+    
+    <div class="row mt-5 mb-5 pt-5 pb-5">
+        
+        <div class="col-md-6 content-v-align-center text-center no-selection-allowed">
+            <img src="~/assets/svg/illustrations/undraw_blank_canvas.svg" class="w-100" alt="Overtest" data-toggle="collapse" data-target="#advancedInfo"/>
+        </div>
+        
+        <div class="col-md-6 content-v-align-center p-3">
+            
+            <h3 class="m-0 no-selection-allowed">@Localizer["Внутрішня помилка Overtest"]</h3>
+            
+            @if (statusCode == 403)
+            {
+                <p class="lead mt-3 mb-3 no-selection-allowed">
+                    @Localizer["Вам не вистачає наявних прав доступу для перегляду цієї інформації."]
+                    @Localizer["Якщо ж це не так, зв'яжіться зі своїм куратором чи адміністратором системи."]
+                </p>
+            }
+            else
+            {
+                <p class="lead mt-3 mb-3 no-selection-allowed">
+                    @Localizer["На жаль, системі не вдалося обробити ваш запит."]
+                    @Localizer["Спробуйте повторити ваш запит пзніше, або скористатися системною панеллю навігації."]
+                </p>
+            }
+            
+            <div class="collapse mt-3 mb-3" id="advancedInfo">
+                <div class="card">
+                    <div class="card-body">
+                        
+                        <ul class="mt-3 mb-3">
+                            <li>@string.Format(Localizer["Request id: {0}"].Value, requestId)</li>
+                            <li>@string.Format(Localizer["Received status code: {0}"].Value, statusCode)</li>
+                        </ul>
+                        
+                        @if (reExecuteFeature != null)
+                        {
+                            <ul class="mt-3 mb-3">
+                                <li>@string.Format(Localizer["Base path: {0}"].Value, reExecuteFeature.OriginalPathBase)</li>
+                                <li>@string.Format(Localizer["Requested service: {0}"].Value, reExecuteFeature.OriginalPath)</li>
+                                <li>@string.Format(Localizer["Request string: {0}"].Value, reExecuteFeature.OriginalQueryString)</li>
+                            </ul>
+                        }
+                        
+                        @if (exceptionHandlerFeature != null)
+                        {
+                            <ul class="mt-3 mb-3">
+                                <li>@string.Format(Localizer["HResult: {0}"].Value, exceptionHandlerFeature.Error.HResult)</li>
+                                <li>@string.Format(Localizer["Exception: {0}"].Value, exceptionHandlerFeature.Error.Source)</li>
+                            </ul>
+                        }
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="m-0 no-selection-allowed">
+                
+                <a class="btn btn-dark" asp-controller="Welcome" asp-action="Welcome"><i class="fas fa-home"></i> @Localizer["Головна сторінка"]</a>
+
+                <a class="btn btn-link" target="_blank" href="@(await GetErrorReportingLink())"><i class="fas fa-hands-helping"></i> @Localizer["Повідомити про помилку"]</a>
+                
+            </div>
+            
+            
+            
+        </div>
+    </div>
+    
+</main>

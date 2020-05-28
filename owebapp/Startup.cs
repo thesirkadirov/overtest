@@ -121,10 +121,8 @@ namespace Sirkadirov.Overtest.WebApplication
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
             }
-            else
-            {
-                app.UseStatusCodePagesWithReExecute("/Security/Error/{0}");
-            }
+            
+            app.UseStatusCodePagesWithReExecute("/Security/Error/{0}");
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

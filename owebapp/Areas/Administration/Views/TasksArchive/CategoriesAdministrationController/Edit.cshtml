@@ -1,0 +1,54 @@
+﻿@using Sirkadirov.Overtest.WebApplication.ViewComponents.Shared
+@model Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TasksArchive.ProgrammingTaskCategory
+@{
+    ViewBag.PageTitle = Model != null
+        ? string.Format(Localizer["Редагування категорії завдань \"{0}\""].Value, Model.DisplayName)
+        : Localizer["Створення нової категорії завдань"].Value;
+}
+
+@section FullwidthSection
+{
+
+    @(await Component.InvokeAsync<ServiceHeaderViewComponent>(new ServiceHeaderViewComponent.HeaderModel
+    {
+        PageTitle = Model == null ? Localizer["Створення категорії"].Value : Model.DisplayName,
+        SubtitleLink = new ServiceHeaderViewComponent.HeaderModel.IconLinkData
+        {
+            Enabled = true,
+            LinkDestination = Url.Action("Categories", "Archive", new { area = "TasksArchive" }),
+            LinkIcon = "fas fa-chevron-left",
+            LinkText = Localizer["Категорії завдань"].Value
+        }
+    }))
+
+}
+
+<form asp-area="Administration" asp-controller="CategoriesAdministration" asp-action="Edit">
+    
+    @Html.AntiForgeryToken()
+    
+    <div class="text-danger mt-2 mb-2">@Html.ValidationSummary()</div>
+    
+    <div class="form-group">
+        <label asp-for="DisplayName">@Localizer["Назва категорії"]</label>
+        <input asp-for="DisplayName" type="text" class="form-control" placeholder="@Localizer["Вступ у програмування"]">
+        <small class="form-text text-muted">@Localizer["Назва категорії має бути короткою, змістовною і унікальною - це потрібно для того, щоб користувачам було легше знайти необхідні завдання."]</small>
+        <div class="text-danger mt-2 mb-2">@Html.ValidationMessageFor(m => m.DisplayName)</div>
+    </div>
+    
+    <div class="form-group">
+        <label asp-for="Description">@Localizer["Опис категорії"]</label>
+        <textarea asp-for="Description" type="text" class="form-control" placeholder="@Localizer["Спробуйте себе у ролі розробника програмного забезпечення."]"></textarea>
+        <small class="form-text text-muted">
+            @Localizer["Введіть невеликий опис категорії завдань."]
+            @Localizer["Він буде відображатися на сторінці перегляду доступних категорій завдань усім користувачам системи."]
+        </small>
+        <div class="text-danger mt-2 mb-2">@Html.ValidationMessageFor(m => m.Description)</div>
+    </div>
+    
+    <div class="text-right">
+        <button class="btn btn-link" type="reset" title="@Localizer["Повернути початкові налаштування"]"><i class="fas fa-window-close"></i> @Localizer["Зкинути"]</button>
+        <button class="btn btn-dark" type="submit"><i class="fas fa-save"></i> @Localizer["Зберегти"]</button>
+    </div>
+    
+</form>

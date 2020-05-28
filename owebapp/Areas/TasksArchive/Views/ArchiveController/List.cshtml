@@ -8,7 +8,6 @@
         .OrderBy(c => c.DisplayName)
         .Select(c => new KeyValuePair<Guid, string>(c.Id, c.DisplayName))
         .ToListAsync();
-    
 }
 
 @section FullwidthSection
@@ -35,26 +34,35 @@
     
 }
 
-<form class="mb-3" asp-area="TasksArchive" asp-controller="Archive" asp-action="List" method="get">
+<form class="mb-3 no-selection-allowed" asp-area="TasksArchive" asp-controller="Archive" asp-action="List" method="get">
     <div class="input-group">
         
-        @if (!string.IsNullOrWhiteSpace((string)ViewData["SearchQuery"]) || !string.IsNullOrWhiteSpace((string)ViewData["SelectedCategoryId"]))
+        @if (!string.IsNullOrWhiteSpace(ViewData["SearchQuery"] as string) || ViewData["SelectedCategoryId"] is Guid)
         {
             <div class="input-group-prepend">
                 <a class="btn btn-dark" asp-area="TasksArchive" asp-controller="Archive" asp-action="List"><i class="fas fa-times-circle"></i></a>
             </div>
         }
         
-        <input name="searchQuery" type="text" class="form-control" placeholder="@Localizer["Вкажіть ваш пошуковий запит"]" value="@ViewData["SearchQuery"]">
+        <input name="searchQuery" type="text" class="form-control" placeholder="@Localizer["Вкажіть ваш пошуковий запит"]" value="@(ViewData["SearchQuery"] as string)">
         
         <div class="input-group-append w-25">
             <select name="category" class="form-control">
-                <option value="">@Localizer["Усі категорії"]</option>
+                
+                @{
+                    string InsertSelectedAttributeIfNeeded(Guid? currentCategoryId)
+                    {
+                        return ViewData["SelectedCategoryId"] as Guid? == currentCategoryId ? "selected" : "";
+                    }
+                }
+                
+                <!option value="" @InsertSelectedAttributeIfNeeded(null)>@Localizer["Усі категорії"]</!option>
+                
                 @if (taskCategoriesList.Count > 0)
                 {
                     foreach (var (categoryId, categoryDisplayName) in taskCategoriesList)
                     {
-                        <option value="@categoryId" selected="@(ViewData["SelectedCategoryId"].ToString() == categoryId.ToString())">@categoryDisplayName</option>
+                        <!option value="@categoryId.ToString()" @InsertSelectedAttributeIfNeeded(categoryId)>@categoryDisplayName</!option>
                     }
                 }
                 else
@@ -71,6 +79,26 @@
     </div>
 </form>
 
+@if (ViewData["SelectedCategoryId"] is Guid)
+{
+
+    var categoryId = ViewData["SelectedCategoryId"] as Guid?;
+    var categoryTitle = taskCategoriesList.First(c => c.Key == categoryId).Value;
+    var categoryDescription = await DatabaseContext.ProgrammingTaskCategories
+        .Where(c => c.Id == categoryId)
+        .Select(c => c.Description)
+        .AsNoTracking()
+        .FirstAsync();
+    
+    <div class="card mt-0 mb-3 no-selection-allowed">
+        <div class="card-body">
+            <h5 class="card-title">@categoryTitle</h5>
+            @categoryDescription
+            
+        </div>
+    </div>
+}
+
 @if (Model.ItemsList.Count > 0)
 {
     
@@ -78,7 +106,7 @@
         TODO: Реалізувати обчислення статистики вирішуваності завдань
     *@
     
-    <div class="row row-cols-1 row-cols-md-3">
+    <div class="row row-cols-1 row-cols-md-3 no-selection-allowed">
         @foreach(var programmingTask in Model.ItemsList)
         {
             <div class="col mb-4 h-100">
@@ -104,7 +132,7 @@
 }
 else
 {
-    <div class="alert alert-light text-center">
+    <div class="alert alert-light text-center no-selection-allowed">
         <h5 class="alert-heading m-0"><i class="fas fa-heart-broken"></i> @Localizer["За вашим пошуковим запитом нічого не знайдено!"]</h5>
         <p class="mt-2 mb-2">
             @Localizer["Дуже шкода, але за вказаними параметрами пошуку нам не вдалося знайти жодного завдання."]

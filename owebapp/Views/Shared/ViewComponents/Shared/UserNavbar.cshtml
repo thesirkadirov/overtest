@@ -11,7 +11,7 @@
   var PermissionsOperator = Model.GetPermissionsOperator();
 }
 
-<nav class="navbar navbar-global navbar-expand-lg bg-white fixed-top">
+<nav class="navbar navbar-global navbar-expand-lg bg-white fixed-top no-selection-allowed">
   <div class="container">
     
     <a class="navbar-brand font-weight-bold" asp-controller="Welcome" asp-action="Home"><i class="fas fa-trophy"></i> Overtest</a>
@@ -109,14 +109,20 @@
   </div>
 </nav>
 
+@* Hidden spacer (for fixed navbar) *@
+<div style="margin-top: 56px;"></div>
+
 @* Scroll navigation bar *@
 
-<div class="nav-scroller bg-white border-bottom">
+<nav class="navbar navbar-global-scroller navbar-scroller navbar-expand-lg navbar-light bg-white no-selection-allowed">
   <div class="container">
-    <nav class="nav nav-underline justify-content-lg-center pb-3">
+    <ul class="navbar-nav">
       
       <partial name="~/Views/Shared/ViewComponents/Shared/UserNavbar/ScrollNavigationItems.cshtml"/>
       
-    </nav>
+    </ul>
   </div>
-</div>
+</nav>
+
+@* Border line (navigation scroller independent) *@
+<div class="m-0 border-bottom"></div>

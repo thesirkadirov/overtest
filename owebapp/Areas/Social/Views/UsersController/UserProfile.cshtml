@@ -8,7 +8,7 @@
 @section FullwidthSection
 {
     
-    <div class="border-bottom m-0">
+    <div class="border-bottom m-0 no-selection-allowed">
         
         <div class="container pt-5 pb-5">
             
@@ -117,7 +117,7 @@
         @{
             Func<dynamic, object> DrawListGroupItem(string displayName, string value, string link = null) =>
                 @<div class="list-group-item border-0">
-                    <h5 class="mb-1">@displayName</h5>
+                    <h5 class="mb-1 no-selection-allowed">@displayName</h5>
                     <p class="mb-0">@value</p>
                     @if (!string.IsNullOrWhiteSpace(link))
                     {
@@ -140,6 +140,15 @@
                 @DrawListGroupItem(Localizer["Група"].Value, Localizer["Не належить до жодної з груп"].Value)(null)
             }
 
+        </div>
+        
+        <div class="list-group shadow-sm mt-3 mb-3">
+            
+            @DrawListGroupItem(
+                Localizer["Унікальний ідентифікатор"].Value,
+                Model.Id.ToString()
+            )(null)
+                    
         </div>
         
         <div class="list-group shadow-sm mt-3 mb-3">

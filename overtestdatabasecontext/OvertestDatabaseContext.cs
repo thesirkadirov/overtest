@@ -70,7 +70,7 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
                 case "MYSQL":
                     optionsBuilder.UseMySql(databaseConnectionString, builder =>
                     {
-                        builder.CharSet(CharSet.Utf8);
+                        builder.CharSet(CharSet.Utf32);
                         builder.MigrationsAssembly(migrationsAssembly);
                     });
                     break;

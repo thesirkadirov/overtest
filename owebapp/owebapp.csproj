@@ -43,8 +43,6 @@
     
     <ItemGroup>
         <Folder Include="Areas\Administration\Controllers\Social" />
-        <Folder Include="Areas\Administration\Controllers\TasksArchive" />
-        <Folder Include="Areas\Administration\Views" />
         <Folder Include="Areas\Competition\Controllers" />
         <Folder Include="Areas\Competition\Views" />
         <Folder Include="Localization" />
@@ -99,6 +97,14 @@
           <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
         </Content>
         <Content Update="Areas\TasksArchive\Views\ArchiveController\Categories.cshtml">
+          <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+          <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        </Content>
+        <Content Update="Areas\Administration\Views\TasksArchive\CategoriesAdministrationController\Edit.cshtml">
+          <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+          <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        </Content>
+        <Content Update="Views\SecurityController\Error.cshtml">
           <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
           <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
         </Content>

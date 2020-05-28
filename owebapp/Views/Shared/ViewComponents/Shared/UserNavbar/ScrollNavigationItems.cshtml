@@ -2,9 +2,11 @@
 
 @{
     Func<dynamic, object> RenderItem(string area, string controller, string action, string linkIcon, string linkText) => 
-    @<a asp-area="@area" asp-controller="@controller" asp-action="@action" class="nav-link @Html.EnsureRequestedClassAdded(Html.IsActiveLink(area, controller, action))">
-        <i class="@linkIcon"></i> @linkText
-    </a>;
+    @<li class="nav-item">
+        <a class="nav-link @Html.EnsureRequestedClassAdded(Html.IsActiveLink(area, controller, action))" asp-area="@area" asp-controller="@controller" asp-action="@action">
+            <i class="@linkIcon"></i> @linkText
+        </a>
+    </li>;
 }
 
 @if (Html.IsSameAreaName(""))
@@ -15,13 +17,17 @@
     @RenderItem("", "Welcome", "Home", "fas fa-house-user", Localizer["Головна сторінка"].Value)(null)
     @RenderItem("", "Welcome", "Welcome", "fas fa-code-branch", Localizer["Початок роботи"].Value)(null)
     
-    <a class="nav-link" href="https://docs.overtest.sirkadirov.com/" target="_blank">
-        <i class="fas fa-book"></i> @Localizer["Документація"]
-    </a>
+    <li class="nav-item">
+        <a class="nav-link" href="https://docs.overtest.sirkadirov.com/" target="_blank">
+            <i class="fas fa-book"></i> @Localizer["Документація"]
+        </a>
+    </li>
     
-    <a class="nav-link" href="https://overtest.sirkadirov.com/" target="_blank">
-        <i class="fas fa-rocket"></i> @Localizer["Про Overtest"]
-    </a>
+    <li class="nav-item">
+        <a class="nav-link" href="https://overtest.sirkadirov.com/" target="_blank">
+            <i class="fas fa-rocket"></i> @Localizer["Про Overtest"]
+        </a>
+    </li>
     
 }
 else if (Html.IsSameAreaName("TasksArchive"))

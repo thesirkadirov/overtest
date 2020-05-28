@@ -3,6 +3,8 @@
 
 @{
     ViewBag.PageTitle = Localizer["Категорії завдань"].Value;
+    var currentUser = await UserManager.GetUserAsync(Context.User);
+    var permissionsOperator = currentUser.GetPermissionsOperator();
 }
 
 @section FullwidthSection
@@ -13,6 +15,13 @@
             @<span>
                 
                 <partial name="ViewComponents/Shared/DropleftMenu/CommonSupportDropleftMenuItems" />
+                
+                <div class="dropdown-divider"></div>
+                
+                @if (permissionsOperator.IsUserTypeSetAdministrator())
+                {
+                    <a class="dropdown-item" asp-area="Administration" asp-controller="CategoriesAdministration" asp-action="Create"><i class="fas fa-file"></i> @Localizer["Створити категорію"]</a>
+                }
                 
             </span>;
     }
@@ -39,27 +48,45 @@
 
 @if (Model.Count > 0)
 {
-    <div class="row row-cols-1 row-cols-md-3">
+    <div class="card-columns no-selection-allowed">
         
         @foreach (var tasksCategory in Model)
         {
-            
-            <div class="col mb-4">
-                <div class="card h-100">
-                    <div class="card-body">
+            <div class="card">
+                
+                <div class="card-body position-relative">
+                    
+                    <a class="d-block h5 m-0 font-weight-bold text-dark text-decoration-none stretched-link"
+                       asp-area="TasksArchive"
+                       asp-controller="Archive"
+                       asp-action="List"
+                       asp-route-category="@tasksCategory.Id">@tasksCategory.DisplayName</a>
+                    
+                    @if (!string.IsNullOrWhiteSpace(tasksCategory.Description))
+                    {
+                        <p class="card-text mt-2 mb-0">@tasksCategory.Description</p>
+                    }
+                    
+                </div>
+                
+                @if (permissionsOperator.IsUserTypeSetAdministrator())
+                {
+                    <div class="card-footer">
                         
-                        <a class="d-block h5 font-weight-bold text-dark text-decoration-none stretched-link"
-                           asp-area="TasksArchive"
-                           asp-controller="Archive"
-                           asp-action="List"
-                           asp-route-category="@tasksCategory.Id">@tasksCategory.DisplayName</a>
+                        @* Edit category link *@
+                        <a class="btn btn-warning btn-sm" title="@Localizer["Редагувати інформацію про категорію"]" asp-area="Administration" asp-controller="CategoriesAdministration" asp-action="Edit" asp-route-categoryId="@tasksCategory.Id">
+                            <i class="fas fa-pen"></i> @Localizer["Змінити"]
+                        </a>
                         
-                        <p class="card-text mb-0">@tasksCategory.Description</p>
+                        @* Remove category link *@
+                        <a class="btn btn-danger text-white btn-sm" title="@Localizer["Видалити категорію"]">
+                            <i class="fas fa-trash"></i> @Localizer["Видалити"]
+                        </a>
                         
                     </div>
-                </div>
+                }
+                
             </div>
-            
         }
         
     </div>

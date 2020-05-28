@@ -9,19 +9,21 @@ namespace Sirkadirov.Overtest.WebApplication.Controllers
     public class WelcomeController : Controller
     {
         
+        private const string ViewsDirectoryPath = "~/Views/WelcomeController/";
+        
         [HttpGet]
         [AllowAnonymous]
         [Route("")]
         public IActionResult Welcome()
         {
-            return View("~/Views/WelcomeController/Welcome.cshtml");
+            return View(ViewsDirectoryPath + "Welcome.cshtml");
         }
         
         [HttpGet]
         [Route(nameof(Home))]
         public IActionResult Home()
         {
-            return View("~/Views/WelcomeController/Home.cshtml");
+            return View(ViewsDirectoryPath + "Home.cshtml");
         }
         
     }

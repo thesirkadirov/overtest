@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +14,7 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.TasksArchive.Controllers
     [Route("/TasksArchive/Archive")]
     public class ArchiveController : Controller
     {
-
+        
         private const string ViewsDirectoryPath = "~/Areas/TasksArchive/Views/ArchiveController/";
         private const int ItemsPerPage = 27;
         
@@ -28,7 +29,7 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.TasksArchive.Controllers
         [Route("")]
         [Route(nameof(List))]
         [Route("/TasksArchive")]
-        public async Task<IActionResult> List(int page = 1, string category = "", string searchQuery = "")
+        public async Task<IActionResult> List(int page = 1, Guid? category = null, string searchQuery = "")
         {
 
             if (page < 1)
@@ -50,7 +51,7 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.TasksArchive.Controllers
                 .AsNoTracking()
                 .Where(t =>
                     t.Enabled &&
-                    (!string.IsNullOrWhiteSpace(category) && t.CategoryId.ToString() == category) &&
+                    (category != null && t.CategoryId == category) &&
                     (t.Id.ToString() == searchQuery || EF.Functions.Like(t.Title, $"%{searchQuery}%"))
                 )
                 .OrderBy(t => t.Difficulty)

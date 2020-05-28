@@ -1,18 +1,48 @@
-﻿@{
+﻿@using Microsoft.Extensions.Hosting
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment WebHostEnvironment
+@{
     Layout = "Layouts/_DefaultEmptyLayout";
     ViewBag.PageTitle = Localizer["Overtest"].Value;
 }
 
-@if (await DatabaseContext.IsInstallationRequiredAsync())
+@if (!WebHostEnvironment.IsProduction())
 {
-    <div class="alert alert-warning alert-dismissible fade show">
-        <strong><i class="fas fa-exclamation-triangle"></i> @Localizer["Увага!"]</strong> @Localizer["Необхідно завершити процес інсталяції системи, створивши суперкористувача та виконавши початкові налаштування."]
-        <a class="btn btn-sm btn-warning" asp-area="Installation" asp-controller="InstallationWizard" asp-action="Welcome">@Localizer["Перейти до встановлення"]</a>
-        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span></button>
+    <div class="alert alert-danger no-selection-allowed">
+        <div class="container">
+            
+            <strong><i class="fas fa-exclamation-triangle"></i> @Localizer["Увага!"]</strong>
+            
+            @string.Format(
+                Localizer["Overtest працює у середовищі {0}, що потенціально може спричинити витік чутливої інформації, такої як токени, повнотекстові помилки, системна інформація, тощо."].Value,
+                WebHostEnvironment.EnvironmentName
+            )
+            
+            @Localizer["Продовжуйте роботу з Overtest лише у тому випадку, якщо ви займаєтеся її розробкою чи тестуванням."]
+            
+            <strong>@Localizer["Якщо ви - не адміністратор системи, негайно припиніть використання цього веб-додатку!"]</strong>
+            
+            <a class="btn btn-sm btn-light" target="_blank" href="https://overtest.sirkadirov.com/">@Localizer["Технічна підтримка"]</a>
+            
+        </div>
     </div>
 }
 
-<main class="container">
+@if (await DatabaseContext.IsInstallationRequiredAsync())
+{
+    <div class="alert alert-warning no-selection-allowed">
+        <div class="container">
+            
+            <strong><i class="fas fa-exclamation-triangle"></i> @Localizer["Увага!"]</strong>
+            
+            @Localizer["Необхідно завершити процес інсталяції системи, створивши суперкористувача та виконавши початкові налаштування."]
+            
+            <a class="btn btn-sm btn-light" asp-area="Installation" asp-controller="InstallationWizard" asp-action="Welcome">@Localizer["Встановити"]</a>
+            
+        </div>
+    </div>
+}
+
+<main class="container no-selection-allowed">
     
     <div class="row mt-5 mb-5 pt-5 pb-5">
         
@@ -27,7 +57,7 @@
             @if (Context.User.Identity.IsAuthenticated)
             {
                 <span>
-                    <a asp-controller="Welcome" asp-action="Home" class="btn btn-dark"><i class="fas fa-laptop-house"></i> @Localizer["Перейти до системи"]</a>
+                    <a asp-controller="Welcome" asp-action="Home" class="btn btn-dark"><i class="fas fa-laptop-house"></i> @Localizer["Розпочати роботу"]</a>
                     <a asp-controller="Auth" asp-action="LogOut" class="btn btn-link"><i class="fas fa-door-open"></i> @Localizer["Вийти з системи"]</a>
                 </span>
             }
@@ -50,7 +80,7 @@
             <h5>@Localizer["Початок роботи з системою"]</h5>
             <p>
                 @Localizer["Спеціяльно для тебе ми створили зрозумілі настанови по роботі з системою, на які не треба марнувати багато часу."]
-                <a href="https://docs.overtest.sirkadirov.com/">@Localizer["Детальніше"] <i class="fas fa-external-link-alt"></i></a>
+                <a target="_blank" href="https://docs.overtest.sirkadirov.com/">@Localizer["Детальніше"] <i class="fas fa-external-link-alt"></i></a>
             </p>
         </div>
         
@@ -58,7 +88,7 @@
             <h5>@Localizer["Додатки та плагіни для IDE"]</h5>
             <p>
                 @Localizer["Використовуй увесь потенціял Overtest - з ним вивчення програмування стане ще зручнішим та швидшим."]
-                <a href="https://overtest.sirkadirov.com/">@Localizer["Детальніше"] <i class="fas fa-external-link-alt"></i></a>
+                <a target="_blank" href="https://overtest.sirkadirov.com/">@Localizer["Детальніше"] <i class="fas fa-external-link-alt"></i></a>
             </p>
         </div>
         
@@ -66,7 +96,7 @@
             <h5>@Localizer["Стань ченджмейкером"]</h5>
             <p>
                 @Localizer["Розкажи про Overtest своїм викладачам, друзям та знайомим - разом ми станемо рушіями змін, рушіями майбутнього!"]
-                <a href="https://overtest.sirkadirov.com/">@Localizer["Детальніше"] <i class="fas fa-external-link-alt"></i></a>
+                <a target="_blank" href="https://overtest.sirkadirov.com/">@Localizer["Детальніше"] <i class="fas fa-external-link-alt"></i></a>
             </p>
         </div>
         
@@ -74,8 +104,8 @@
     
     <footer>
         <p class="text-center mt-5 mb-5">
-            Copyright &copy; 2016-@DateTime.UtcNow.Year, <a href="https://sirkadirov.com/">Sirkadirov</a>.
-            Overtest is a <a class="text-dark" href="https://overtest.sirkadirov.com/">free software project</a>.
+            Copyright &copy; 2016-@DateTime.UtcNow.Year, <a target="_blank" href="https://sirkadirov.com/">Sirkadirov</a>.
+            Overtest is a <a target="_blank" class="text-dark" href="https://overtest.sirkadirov.com/">free software project</a>.
         </p>
     </footer>
     

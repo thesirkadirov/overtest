@@ -13,7 +13,7 @@ $(window).on('load', function() {
  * Enable Bootstrap features
  */
 
-$('[data-toggle="tooltip"]').tooltip();
+$('[title]').tooltip();
 
 /*
  * Global navigation bar stylization
@@ -35,6 +35,12 @@ $(window).scroll(function (event) {
         $(".navbar-global").css("box-shadow", "none");
     }
 
+});
+
+$(window).on('load', function () {
+    if ($(".navbar.navbar-global-scroller.navbar-scroller ul.navbar-nav").children().length <= 0){
+        $(".navbar.navbar-global-scroller.navbar-scroller").hide();
+    }
 });
 
 /*

@@ -9,12 +9,14 @@ namespace Sirkadirov.Overtest.WebApplication.Controllers
     public class SecurityController : Controller
     {
         
+        private const string ViewsDirectoryPath = "~/Views/SecurityController/";
+        
         [HttpGet]
         [AllowAnonymous]
         [Route(nameof(AccessDenied))]
         public IActionResult AccessDenied()
         {
-            throw new NotImplementedException();
+            return Error(403);
         }
         
         [HttpGet]
@@ -22,7 +24,8 @@ namespace Sirkadirov.Overtest.WebApplication.Controllers
         [Route(nameof(Error) + "/{statusCode:int}")]
         public IActionResult Error(int statusCode)
         {
-            throw new NotImplementedException();
+            ViewData["StatusCode"] = statusCode;
+            return View(ViewsDirectoryPath + "Error.cshtml");
         }
 
         [HttpGet]
