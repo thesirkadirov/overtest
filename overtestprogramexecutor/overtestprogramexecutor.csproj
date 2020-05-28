@@ -10,6 +10,8 @@
         <PackageProjectUrl>https://overtest.sirkadirov.com/</PackageProjectUrl>
         <Company>Yurii Kadirov / Sirkadirov</Company>
         <Product>Overtest Program Executor Library</Product>
+        <Configurations>Release;Debug</Configurations>
+        <Platforms>x64</Platforms>
     </PropertyGroup>
 
 </Project>
