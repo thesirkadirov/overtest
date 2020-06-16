@@ -69,12 +69,12 @@ a, a:hover, .btn-link, .btn-link:hover {
 
 /* Pagination */
 .pagination .page-link, .pagination .page-link:hover, .pagination .disabled .page-link {
-    color: var(--orange);
+    color: var(--dark);
 }
 .pagination .page-item.active .page-link, .pagination .page-item.active .page-link:hover {
-    background-color: var(--orange);
+    background-color: var(--dark);
     color: var(--white);
-    border-color: var(--orange);
+    border-color: var(--dark);
 }
 
 /*

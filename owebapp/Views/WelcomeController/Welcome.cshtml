@@ -1,4 +1,5 @@
 ﻿@using Microsoft.Extensions.Hosting
+@using Sirkadirov.Overtest.Libraries.Shared.Database.Storage
 @inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment WebHostEnvironment
 @{
     Layout = "Layouts/_DefaultEmptyLayout";
@@ -27,7 +28,7 @@
     </div>
 }
 
-@if (await DatabaseContext.IsInstallationRequiredAsync())
+@if (!DatabaseContext.SystemConfiguration[ConfigurationStorage.CommonKeys.OvertestInstallationFinished].BoolValue)
 {
     <div class="alert alert-warning no-selection-allowed">
         <div class="container">

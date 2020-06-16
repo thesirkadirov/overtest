@@ -28,9 +28,7 @@ namespace Sirkadirov.Overtest.WebApplication.Controllers
             _localizer = localizer;
         }
         
-        [HttpGet]
-        [AllowAnonymous]
-        [Route(nameof(Authorization) + "/{returnUrl?}")]
+        [AllowAnonymous, HttpGet, Route(nameof(Authorization) + "/{returnUrl?}")]
         public IActionResult Authorization(string returnUrl = null)
         {
             return View("~/Views/AuthController/Authorization.cshtml",
@@ -42,10 +40,7 @@ namespace Sirkadirov.Overtest.WebApplication.Controllers
             );
         }
         
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        [Route(nameof(Authorization))]
+        [AllowAnonymous, HttpPost, ValidateAntiForgeryToken, Route(nameof(Authorization))]
         public async Task<IActionResult> Authorization(AuthorizationModel authorizationModel)
         {
             
@@ -113,25 +108,19 @@ namespace Sirkadirov.Overtest.WebApplication.Controllers
             
         }
         
-        [HttpGet]
-        [AllowAnonymous]
-        [Route(nameof(Registration))]
+        [AllowAnonymous, HttpGet, Route(nameof(Registration))]
         public IActionResult Registration()
         {
             throw new NotImplementedException();
         }
         
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        [Route(nameof(Registration))]
+        [AllowAnonymous, HttpPost, ValidateAntiForgeryToken, Route(nameof(Registration))]
         public async Task<IActionResult> Registration(RegistrationModel registrationModel)
         {
             throw new NotImplementedException();
         }
         
-        [HttpGet]
-        [Route(nameof(LogOut))]
+        [HttpGet, Route(nameof(LogOut))]
         public async Task<IActionResult> LogOut()
         {
             await _signInManager.SignOutAsync();

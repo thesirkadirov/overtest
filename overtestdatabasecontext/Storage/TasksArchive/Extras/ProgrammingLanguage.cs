@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TasksArchive.TestingData.Extras
+namespace Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TasksArchive.Extras
 {
     
     public class ProgrammingLanguage

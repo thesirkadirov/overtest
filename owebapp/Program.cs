@@ -42,7 +42,6 @@ namespace Sirkadirov.Overtest.WebApplication
                     options.AddServerHeader = true;
                     options.ConfigureEndpointDefaults(endpointOptions => { endpointOptions.Protocols = HttpProtocols.Http1AndHttp2; });
                 });
-                webBuilder.UseIISIntegration();
                 
                 webBuilder.UseConfiguration(configuration);
                 webBuilder.UseStartup<Startup>();
@@ -54,6 +53,11 @@ namespace Sirkadirov.Overtest.WebApplication
                     logging.ClearProviders();
                     logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
                 }).UseNLog();
+                
+                webBuilder.ConfigureAppConfiguration((hostingContext, config) =>
+                {
+                    config.AddConfiguration(configuration);
+                });
 
             });
 

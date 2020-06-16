@@ -15,7 +15,7 @@
     
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
         <EnvironmentName>Development</EnvironmentName>
-        <OutputPath>../build/</OutputPath>
+        <OutputPath>../build/owebapp/</OutputPath>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
@@ -46,6 +46,7 @@
         <Folder Include="Areas\Administration\Controllers\Social" />
         <Folder Include="Areas\Competition\Controllers" />
         <Folder Include="Areas\Competition\Views" />
+        <Folder Include="Areas\TasksArchive\Models" />
         <Folder Include="Localization" />
         <Folder Include="Migrations" />
     </ItemGroup>
@@ -106,6 +107,10 @@
           <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
         </Content>
         <Content Update="Views\SecurityController\Error.cshtml">
+          <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+          <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        </Content>
+        <Content Update="Areas\Social\Views\UsersController\List.cshtml">
           <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
           <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
         </Content>

@@ -51,7 +51,7 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.TasksArchive.Controllers
                 .AsNoTracking()
                 .Where(t =>
                     t.Enabled &&
-                    (category != null && t.CategoryId == category) &&
+                    (category != null || t.CategoryId == category) &&
                     (t.Id.ToString() == searchQuery || EF.Functions.Like(t.Title, $"%{searchQuery}%"))
                 )
                 .OrderBy(t => t.Difficulty)
@@ -77,6 +77,7 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.TasksArchive.Controllers
                 }).ToListAsync();
             
             return View(ViewsDirectoryPath + "List.cshtml", model);
+            
         }
 
         [HttpGet]

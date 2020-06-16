@@ -1,9 +1,7 @@
 using System;
 using System.Data;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -14,9 +12,12 @@ using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Competitions;
 using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Competitions.Extras;
 using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Identity;
 using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TasksArchive;
-using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TasksArchive.TestingData.Extras;
+using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TasksArchive.Extras;
 using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TestingApplications;
 
+// ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable MemberCanBePrivate.Global
 namespace Sirkadirov.Overtest.Libraries.Shared.Database
 {
     
@@ -24,9 +25,9 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
     public class OvertestDatabaseContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
     {
         
-        // ReSharper disable once UnusedMember.Global
+        /* ===== Database sets ===== */
+        
         public DbSet<UserGroup> UserGroups { get; set; }
-        // ReSharper disable once UnusedMember.Global
         public DbSet<UserPhoto> UserPhotos { get; set; }
         
         public DbSet<ProgrammingTask> ProgrammingTasks { get; set; }
@@ -40,12 +41,31 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
         /* ||=> */ public DbSet<CompetitionProgrammingTask> CompetitionProgrammingTasks { get; set; }
         /* ||=> */ public DbSet<CompetitionUser> CompetitionUsers { get; set; }
         
-        public DbSet<ConfigurationStorage> ConfigurationStorages { get; set; }
-
-        public OvertestDatabaseContext() {  }
+        public DbSet<ConfigurationStorage.ConfigurationKeyValuePair> SystemConfigurationStore { get; set; }
         
-        public OvertestDatabaseContext(DbContextOptions options) : base(options) {  }
-
+        /* ===== Constructors ===== */
+        
+        public OvertestDatabaseContext()
+        {
+            Initialize();
+        }
+        
+        public OvertestDatabaseContext(DbContextOptions options) : base(options)
+        {
+            Initialize();
+        }
+        
+        /* ===== Internal methods and features ===== */
+        
+        public ConfigurationStorage SystemConfiguration { get; private set; }
+        
+        private void Initialize()
+        {
+            SystemConfiguration = new ConfigurationStorage(this);
+        }
+        
+        /* ===== Overrides ===== */
+        
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             
@@ -86,6 +106,10 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
                     throw new DataException("You are using an unknown database provider!");
                 
             }
+            
+            // FOR DEBUG PURPOSES ONLY!
+            //optionsBuilder.EnableDetailedErrors();
+            //optionsBuilder.EnableSensitiveDataLogging();
 
         }
 
@@ -430,28 +454,14 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
              * [ConfigurationStorage] entity
              */
             
-            modelBuilder.Entity<ConfigurationStorage>(entity =>
+            modelBuilder.Entity<ConfigurationStorage.ConfigurationKeyValuePair>(entity =>
             {
                 
                 entity.HasKey(s => s.Key);
-                
-                entity.Property(s => s.Value)
-                    .IsUnicode()
-                    .IsConcurrencyToken()
-                    .IsRequired();
-                
+
+                entity.Property(s => s.Value);
+
             });
-            
-        }
-        
-        public async Task<bool> IsInstallationRequiredAsync()
-        {
-            
-            var overtestInstallationFlag = await ConfigurationStorages
-                .Where(s => s.Key == ConfigurationStorage.CommonKeys.OvertestInstallationFinished)
-                .FirstOrDefaultAsync();
-            
-            return overtestInstallationFlag == null || overtestInstallationFlag.Value == false.ToString();
             
         }
         

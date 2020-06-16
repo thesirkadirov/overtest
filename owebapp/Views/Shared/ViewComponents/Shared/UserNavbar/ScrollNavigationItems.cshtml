@@ -37,7 +37,9 @@ else if (Html.IsSameAreaName("TasksArchive"))
     
     @RenderItem("TasksArchive", "Archive", "List", "fas fa-archive", Localizer["Архів завдань"].Value)(null)
     @RenderItem("TasksArchive", "Archive", "Categories", "fas fa-list-alt", Localizer["Категорії"].Value)(null)
-    @RenderItem("TasksArchive", "Archive", "Pending", "fas fa-sticky-note", Localizer["Відкладені завдання"].Value)(null)
+    
+    @RenderItem("TasksArchive", "TestingApplications", "Pending", "fas fa-sticky-note", Localizer["Відкладені"].Value)(null)
+    @RenderItem("TasksArchive", "TestingApplications", "List", "fas fa-tasks", Localizer["Спроби"].Value)(null)
     
 }
 else if (Html.IsSameAreaName("Social"))
@@ -45,6 +47,7 @@ else if (Html.IsSameAreaName("Social"))
     
     @* Social area navigation links *@
     
+    @RenderItem("Social", "Users", "List", "fas fa-dragon", Localizer["Користувачі і рейтинг"].Value)(null)
     @RenderItem("Social", "Users", "Profile", "fas fa-id-card", Localizer["Мій профіль"].Value)(null)
     
 }

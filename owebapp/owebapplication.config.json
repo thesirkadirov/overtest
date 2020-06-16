@@ -1,119 +1,33 @@
 ﻿{
   
-  /*
-   * Web server configuration section
-   */
-  
   "server": {
-    
-    /*
-     * Endpoints is an array of strings which contains IPs,
-     * protocols and ports used by Overtest Web Application.
-     * 
-     * Currently, we don't allow specifying HTTPS protocol,
-     * only HTTP urls will be used. Support will be present
-     * in future releases or patches.
-     * 
-     * Expected endpoint format:
-     * http://<LAN_IP_address>:<port>/
-     * 
-     * Recommended for single machine testing:
-     * http://127.0.0.1:8080/
-     * 
-     * If you are using a router, you should use NAT
-     * or "port redirection" feature to expose application
-     * to the internet. Also, add firewall rules to allow
-     * inbound and outbound traffic from specified ports.
-     */
-    
     "endpoints": [
-      "http://127.0.0.1:8080/", // Localhost endpoint
-      "http://10.1.0.101:8080/" // LAN endpoint (exposed to WAN)
+      "http://127.0.0.1:8080/",
+      "http://10.1.0.100:8080/"
     ]
-    
   },
   
-  /*
-   * Diagnostic features section contains such features,
-   * as console and files logging, anonymous data sharing
-   * features (crash reports, diagnostics data collection,
-   * etc), debugging options and other useful features.
-   * 
-   * All third-party data collection is anonymous, see
-   * privacy policy on https://overtest.sirkadirov.com/.
-   */
-  
   "diagnostics": {
-    
-    /*
-     * Logging feature
-     */
-    
     "logging": {
-      
-      // Enable (true) or disable (false) logging subsystem
       "enabled": true,
-      
-      // Logging targets
       "targets": {
-        
-        // Console logging target
         "console": {
-
-          // Enable (true) or disable (false) logging target
           "enabled": true,
-          
-          /*
-           * Specify minimum and maximum logging levels
-           * for the specified logging target.
-           * 
-           * Defaults:
-           * =========
-           * minimum: Trace
-           * maximum: Fatal
-           * 
-           * Available levels:
-           * =================
-           * Trace -> Debug -> Info -> Warn -> Error -> Fatal
-           */
           "levels": {
             "minimum": "Trace",
             "maximum": "Fatal"
           }
-          
         },
-        
         "files": {
-
-          // Enable (true) or disable (false) logging target
           "enabled": true,
-          
-          // Specify path where the web server would store logs
-          "path": "D:\\overtest-data\\logs\\owebapplication\\",
-          /*
-           * Specify minimum and maximum logging levels
-           * for the specified logging target.
-           * 
-           * Defaults:
-           * =========
-           * minimum: Trace
-           * maximum: Fatal
-           * 
-           * Available levels:
-           * =================
-           * Trace -> Debug -> Info -> Warn -> Error -> Fatal
-           */
+          "path": "Z:\\overtest-data\\logs\\owebapp\\",
           "levels": {
             "minimum": "Trace",
             "maximum": "Fatal"
           }
-          
         }
-        
       }
-      
     }
-    
   }
   
 }

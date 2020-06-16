@@ -34,8 +34,8 @@
     
 }
 
-<form class="mb-3 no-selection-allowed" asp-area="TasksArchive" asp-controller="Archive" asp-action="List" method="get">
-    <div class="input-group">
+<form class="mb-3 p-0 no-selection-allowed" asp-area="TasksArchive" asp-controller="Archive" asp-action="List" method="get">
+    <div class="input-group shadow-sm">
         
         @if (!string.IsNullOrWhiteSpace(ViewData["SearchQuery"] as string) || ViewData["SelectedCategoryId"] is Guid)
         {
@@ -81,7 +81,7 @@
 
 @if (ViewData["SelectedCategoryId"] is Guid)
 {
-
+    
     var categoryId = ViewData["SelectedCategoryId"] as Guid?;
     var categoryTitle = taskCategoriesList.First(c => c.Key == categoryId).Value;
     var categoryDescription = await DatabaseContext.ProgrammingTaskCategories
@@ -90,13 +90,16 @@
         .AsNoTracking()
         .FirstAsync();
     
-    <div class="card mt-0 mb-3 no-selection-allowed">
-        <div class="card-body">
-            <h5 class="card-title">@categoryTitle</h5>
-            @categoryDescription
-            
+    if (!string.IsNullOrWhiteSpace(categoryDescription))
+    {
+        <div class="card rounded-lg shadow-sm mt-0 mb-3 no-selection-allowed">
+            <div class="card-body">
+                <h5 class="card-title">@categoryTitle</h5>
+                @categoryDescription
+            </div>
         </div>
-    </div>
+    }
+    
 }
 
 @if (Model.ItemsList.Count > 0)
@@ -110,7 +113,7 @@
         @foreach(var programmingTask in Model.ItemsList)
         {
             <div class="col mb-4 h-100">
-                <div class="card w-100">
+                <div class="card w-100 rounded-lg">
                     <div class="card-body d-flex">
                         <div class="align-self-center">
                             <a
@@ -129,14 +132,17 @@
     </div>
     
     @(await Component.InvokeAsync<PaginationViewComponent>(Model.Pagination))
+    
 }
 else
 {
-    <div class="alert alert-light text-center no-selection-allowed">
-        <h5 class="alert-heading m-0"><i class="fas fa-heart-broken"></i> @Localizer["За вашим пошуковим запитом нічого не знайдено!"]</h5>
-        <p class="mt-2 mb-2">
-            @Localizer["Дуже шкода, але за вказаними параметрами пошуку нам не вдалося знайти жодного завдання."]
-        </p>
-        <a class="btn btn-light" asp-action="List"><i class="fas fa-archive"></i> @Localizer["Перейти до Архіву завдань"]</a>
+    <div class="card shadow-sm no-selection-allowed">
+        <div class="card-body">
+            <h5 class="m-0"><i class="fas fa-heart-broken"></i> @Localizer["За вашим пошуковим запитом нічого не знайдено!"]</h5>
+            <p class="mt-2 mb-2">
+                @Localizer["Дуже шкода, але за вказаними параметрами пошуку нам не вдалося знайти жодного завдання."]
+            </p>
+            <a class="btn btn-light" asp-action="List"><i class="fas fa-archive"></i> @Localizer["Перейти до Архіву завдань"]</a>
+        </div>
     </div>
 }
