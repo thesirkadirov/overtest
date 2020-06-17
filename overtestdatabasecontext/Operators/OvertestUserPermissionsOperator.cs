@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -10,59 +12,92 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database.Operators
     public class OvertestUserPermissionsOperator
     {
 
-        private readonly User _user;
+        private readonly OvertestDatabaseContext _databaseContext;
         
-        public OvertestUserPermissionsOperator(User user)
+        public OvertestUserPermissionsOperator(OvertestDatabaseContext databaseContext)
         {
-            _user = user;
+            _databaseContext = databaseContext;
         }
         
-        #region USER_TYPESETS
+        #region User's type sets
         
-        public bool IsUserTypeSetSuperUser() => IsUserTypeSetSuperUser(_user);
-        public bool IsUserTypeSetAdministrator() => IsUserTypeSetAdministrator(_user);
-        public bool IsUserTypeSetCurator() => IsUserTypeSetCurator(_user);
-        public bool IsUserTypeSetApprovedUser() => IsUserTypeSetApprovedUser(_user);
-        
-        public static bool IsUserTypeSetSuperUser(User user)
-        {
-            return user.Type == UserType.SuperUser;
-        }
+        private async Task<UserType> GetUserTypeByIdAsync(Guid userId) =>
+            await _databaseContext.Users
+                .Where(u => u.Id == userId)
+                .Select(s => s.Type)
+                .FirstAsync();
 
-        public static bool IsUserTypeSetAdministrator(User user)
+        [SuppressMessage("ReSharper", "VariableHidesOuterVariable")]
+        public async Task<bool> VerifyUserTypeSetAsync(Guid userId, UserTypeSet awaitedTypeSet)
         {
-            return user.Type == UserType.Administrator || IsUserTypeSetSuperUser(user);
-        }
+            
+            if (!await UserExistsAsync(userId))
+                throw new KeyNotFoundException();
+            
+            var userType = await GetUserTypeByIdAsync(userId);
 
-        public static bool IsUserTypeSetCurator(User user)
-        {
-            return user.Type == UserType.Instructor || IsUserTypeSetAdministrator(user);
+            return awaitedTypeSet switch
+            {
+                UserTypeSet.ApprovedUser => IsApprovedUser(userId, userType),
+                UserTypeSet.Curator => IsCurator(userType),
+                UserTypeSet.Administrator => IsAdministrator(userType),
+                UserTypeSet.SuperUser => IsSuperUser(userType),
+                _ => throw new ArgumentException(null, nameof(awaitedTypeSet))
+            };
+            
+            static bool IsSuperUser(UserType userType) => userType == UserType.SuperUser;
+            static bool IsAdministrator(UserType userType) => userType == UserType.Administrator || IsSuperUser(userType);
+            static bool IsCurator(UserType userType) => userType == UserType.Instructor || IsAdministrator(userType);
+            bool IsApprovedUser(Guid userId, UserType userType) => IsSuperUser(userType) || _databaseContext.Users
+                .Any(u => u.Id == userId && u.IsBanned == false && u.UserGroupId != null);
+            
         }
         
-        public static bool IsUserTypeSetApprovedUser(User user)
+        public enum UserTypeSet
         {
-            return IsUserTypeSetSuperUser(user) || (!user.IsBanned && user.UserGroupId != null);
+            ApprovedUser,
+            Curator,
+            Administrator,
+            SuperUser
         }
         
         #endregion
         
-        #region EDIT_ACCESS_RIGHTS
+        public async Task<bool> UserExistsAsync(Guid userId) => await _databaseContext.Users.Where(u => u.Id == userId).AnyAsync();
         
-        public Guid? GetUserCuratorId() => GetUserCuratorId(_user);
+        #region Access rights
         
-        public static Guid? GetUserCuratorId(User user)
+        public async Task<Guid?> GetUserCuratorIdAsync(Guid userId)
         {
-
-            if (user.UserGroupId == null)
+            
+            if (!await UserExistsAsync(userId))
                 return null;
+
+            try
+            {
+                
+                var userGroupId = await _databaseContext.Users
+                    .Where(u => u.Id == userId)
+                    .Select(u => u.UserGroupId)
+                    .FirstAsync();
+                
+                if (userGroupId == null)
+                    return null;
+                
+                return await _databaseContext.UserGroups
+                    .Where(g => g.Id == userGroupId)
+                    .Select(s => s.GroupCuratorId)
+                    .FirstAsync();
+                
+            }
+            catch
+            {
+                return null;
+            }
             
-            if (user.UserGroup == null)
-                throw new NullReferenceException(nameof(UserGroup));
-            
-            return user.UserGroup.GroupCuratorId;
         }
-        
-        public static async Task<bool> GetUserDataEditPermission(OvertestDatabaseContext databaseContext, Guid editedUserId, Guid editorUserId)
+
+        public async Task<bool> GetUserDataEditPermissionAsync(Guid editedUserId, Guid editorUserId)
         {
             
             if (editedUserId == editorUserId)
@@ -71,29 +106,29 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database.Operators
             try
             {
                 
-                if (await databaseContext.Users.Where(u => u.Id == editedUserId || u.Id == editorUserId).CountAsync() != 2)
+                if (await _databaseContext.Users.Where(u => u.Id == editedUserId || u.Id == editorUserId).CountAsync() != 2)
                     return false;
-
-                if (await databaseContext.Users.Where(u => u.Id == editorUserId && u.Type == UserType.SuperUser).AnyAsync())
+                
+                if (await _databaseContext.Users.Where(u => u.Id == editorUserId && u.Type == UserType.SuperUser).AnyAsync())
                     return true;
-
-                var editedUserCuratorId = await databaseContext.Users
+                
+                var editedUserCuratorId = await _databaseContext.Users
                     .Where(u => u.Id == editedUserId)
                     .Include(u => u.UserGroup)
                     .Select(u => u.UserGroup.GroupCuratorId)
                     .FirstAsync();
-
+                
                 if (editedUserCuratorId == editorUserId)
                     return true;
-
-                var editedUserHeadCuratorId = await databaseContext.Users
+                
+                var editedUserHeadCuratorId = await _databaseContext.Users
                     .Where(u => u.Id == editedUserId)
                     .Include(u => u.UserGroup)
                     .ThenInclude(g => g.GroupCurator)
                     .ThenInclude(u => u.UserGroup)
                     .Select(u => u.UserGroup.GroupCurator.UserGroup.GroupCuratorId)
                     .FirstAsync();
-
+                
                 if (editedUserHeadCuratorId == editorUserId)
                     return true;
                 

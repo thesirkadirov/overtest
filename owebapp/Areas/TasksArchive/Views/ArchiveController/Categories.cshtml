@@ -1,10 +1,10 @@
 ﻿@using Sirkadirov.Overtest.WebApplication.ViewComponents.Shared
+@using Sirkadirov.Overtest.Libraries.Shared.Database.Operators
 @model List<Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TasksArchive.ProgrammingTaskCategory>
 
 @{
     ViewBag.PageTitle = Localizer["Категорії завдань"].Value;
-    var currentUser = await UserManager.GetUserAsync(Context.User);
-    var permissionsOperator = currentUser.GetPermissionsOperator();
+    var currentUserId = new Guid(UserManager.GetUserId(Context.User));
 }
 
 @section FullwidthSection
@@ -18,7 +18,7 @@
                 
                 <div class="dropdown-divider"></div>
                 
-                @if (permissionsOperator.IsUserTypeSetAdministrator())
+                @if (await DatabaseContext.UserPermissionsOperator.VerifyUserTypeSetAsync(currentUserId, OvertestUserPermissionsOperator.UserTypeSet.Administrator))
                 {
                     <a class="dropdown-item" asp-area="Administration" asp-controller="CategoriesAdministration" asp-action="Create"><i class="fas fa-file"></i> @Localizer["Створити категорію"]</a>
                 }
@@ -69,7 +69,7 @@
                     
                 </div>
                 
-                @if (permissionsOperator.IsUserTypeSetAdministrator())
+                @if (await DatabaseContext.UserPermissionsOperator.VerifyUserTypeSetAsync(currentUserId, OvertestUserPermissionsOperator.UserTypeSet.Administrator))
                 {
                     <div class="card-footer">
                         

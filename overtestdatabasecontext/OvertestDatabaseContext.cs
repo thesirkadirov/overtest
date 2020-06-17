@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Pomelo.EntityFrameworkCore.MySql.Storage;
+using Sirkadirov.Overtest.Libraries.Shared.Database.Operators;
 using Sirkadirov.Overtest.Libraries.Shared.Database.Storage;
 using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Competitions;
 using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Competitions.Extras;
@@ -59,9 +60,12 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
         
         public ConfigurationStorage SystemConfiguration { get; private set; }
         
+        public OvertestUserPermissionsOperator UserPermissionsOperator { get; private set; }
+        
         private void Initialize()
         {
             SystemConfiguration = new ConfigurationStorage(this);
+            UserPermissionsOperator = new OvertestUserPermissionsOperator(this);
         }
         
         /* ===== Overrides ===== */

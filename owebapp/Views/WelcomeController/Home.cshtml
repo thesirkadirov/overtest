@@ -4,17 +4,27 @@
 
 @section FullwidthSection
 {
-    <div class="jumbotron jumbotron-fluid bg-light no-selection-allowed">
+    <div class="jumbotron jumbotron-fluid bg-light border-bottom no-selection-allowed">
         <div class="container">
             
-            <h1 class="display-4">@Localizer["Привіт! З чого почнемо?"]</h1>
-            
-            <p class="lead text-justify">
-                @Localizer["Щоб стати знавцем своєї справи, ніколи не припиняй свого навчання - воно дає тобі необмежені можливості для самореалізації, про які ти навіть не здогадуєшся."]
-                @Localizer["Overtest допоможе тобі з вивченням програмування, але твоє майбутнє завжди залишається тільки у твоїх руках - не змарнуй його!"]
-            </p>
-            
-            <a asp-area="TasksArchive" asp-controller="Archive" asp-action="List" class="btn btn-lg btn-dark"><i class="fas fa-compass"></i> @Localizer["Архів завдань"]</a>
+            <div class="row">
+                
+                <div class="col-md-4 text-center mt-auto mb-auto">
+                    <img src="~/assets/svg/illustrations/undraw_To_the_stars.svg" class="w-75 mt-3 mb-3"/>
+                </div>
+                
+                <div class="col-md-8 mt-auto mb-auto">
+                    <h1 class="text-center text-md-left">@Localizer["Привіт! З чого почнемо?"]</h1>
+                    
+                    <p class="lead text-justify">
+                        @Localizer["Щоб стати знавцем своєї справи, ніколи не припиняй свого навчання - воно дає тобі необмежені можливості для самореалізації, про які ти навіть не здогадуєшся."]
+                        @Localizer["Overtest допоможе тобі з вивченням програмування, але твоє майбутнє завжди залишається тільки у твоїх руках - не змарнуй його!"]
+                    </p>
+                    
+                    <a asp-area="TasksArchive" asp-controller="Archive" asp-action="List" class="btn btn-lg btn-dark"><i class="fas fa-compass"></i> @Localizer["Архів завдань"]</a>
+                </div>
+                
+            </div>
             
         </div>
     </div>

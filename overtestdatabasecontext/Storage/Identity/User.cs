@@ -33,14 +33,6 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Identity
         public UserPhoto UserPhoto { get; set; }
         public Guid? UserPhotoId { get; set; }
         
-        /*
-         * Methods
-         */
-        
-        // Get permissions operator
-        public OvertestUserPermissionsOperator GetPermissionsOperator()
-            => new OvertestUserPermissionsOperator(this);
-        
     }
     
     public enum UserType

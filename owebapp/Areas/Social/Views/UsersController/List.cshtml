@@ -3,7 +3,14 @@
 @model Sirkadirov.Overtest.WebApplication.Models.Shared.Pagination.PaginatedListModel<Sirkadirov.Overtest.WebApplication.Areas.Social.Models.UsersController.UsersListItemModel>
 @{
     ViewBag.PageTitle = Localizer["Користувачі і рейтинг"].Value;
-
+    
+    /*
+     * Additional features
+     */
+    
+    /*
+     * User groups list
+     */
     var userGroupsList = await DatabaseContext.Users
         .Where(u => u.Type == UserType.Instructor || u.Type == UserType.Administrator || u.Type == UserType.SuperUser)
         .Join(
@@ -11,6 +18,7 @@
             user => user.Id, userGroup => userGroup.GroupCuratorId,
             (user, group) => new
             {
+                CuratorId = user.Id,
                 CuratorFullName = user.FullName,
                 UserGroupId = group.Id,
                 UserGroupDisplayName = group.DisplayName
@@ -91,8 +99,45 @@
             <button class="btn btn-block btn-dark rounded-lg" type="submit">@Localizer["Пошук"]</button>
             
         </form>
+        
+        @if ((ViewData["SpecifiedUsersGroupId"] as Guid?).HasValue || !string.IsNullOrEmpty(ViewData["SpecifiedInstitutionName"] as string) || !string.IsNullOrEmpty(ViewData["SpecifiedSearchQuery"] as string))
+        {
+            <div class="text-right">
+                <a class="small" asp-action="List" asp-route-page="1"><i class="fas fa-window-close"></i> Скинути параметри пошуку</a>
+            </div>
+        }
+        
     </div>
 </div>
+
+@if ((ViewData["SpecifiedUsersGroupId"] as Guid?).HasValue)
+{
+    var currentUserGroupId = ViewData["SpecifiedUsersGroupId"] as Guid?;
+    var currentUserGroup = userGroupsList.First(g => g.UserGroupId == currentUserGroupId);
+
+    if (currentUserGroup.CuratorId.ToString() == UserManager.GetUserId(Context.User))
+    {
+        <div class="card rounded-lg border-0 shadow mt-5 mb-0 no-selection-allowed">
+            <div class="card-body">
+                <h4>@currentUserGroup.UserGroupDisplayName</h4>
+                <div class="overflow-auto text-nowrap">
+                    <a class="btn btn-light d-md-inline-block rounded-lg" href="" title="@Localizer["Створіть нового користувача і додайте до цієї групи"]">
+                        <i class="fas fa-user-edit"></i> @Localizer["Створити користувача"]
+                    </a>
+                    <a class="btn btn-light rounded-lg" href="" title="@Localizer["Створіть публічне запрошувальне посилання, щоб ваші студенти швидко почали роботу з системою!"]">
+                        <i class="fas fa-share-alt"></i> @Localizer["Запросити"]
+                    </a>
+                    <a class="btn btn-light rounded-lg" href="">
+                        <i class="fas fa-users-cog"></i> @Localizer["Редагувати групу"]
+                    </a>
+                    <a class="btn btn-light rounded-lg" href="" title="@Localizer["Бажаєте видалити групу? Разом з нею видаляються усі її користувачі."]">
+                        <span class="text-danger"><i class="fas fa-trash"></i> @Localizer["Видалити групу"]</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+}
 
 <div class="mt-5 mb-5">
     @if (Model.ItemsList.Any())
@@ -102,11 +147,6 @@
             @foreach (var item in Model.ItemsList)
             {
                 
-                var userGroupName = await DatabaseContext.UserGroups
-                    .Where(g => g.Id == item.UserGroupId)
-                    .Select(g => g.DisplayName)
-                    .FirstOrDefaultAsync();
-    
                 <li class="list-group-item">
                     <div class="media">
                         <img src="https://via.placeholder.com/60" class="align-self-center rounded shadow-sm mr-3" style="width: 60px;" title="Аватар користувача">
@@ -118,7 +158,22 @@
                                 <small title="@Localizer["Навчальний заклад"]">@item.InstitutionName</small>
                             </div>
                             <h6 class="m-0">
-                                <span class="badge badge-light" title="@Localizer["Група користувача"]"><i class="fas fa-users"></i> @(!string.IsNullOrWhiteSpace(userGroupName) ? userGroupName : Localizer["Поза групою"].Value)</span>
+                                
+                                @if (item.UserGroupId == null)
+                                {
+                                    <span class="badge badge-light" title="@Localizer["Користувач не є членом жодної з існуючих груп."]">
+                                        <i class="fas fa-users"></i> @Localizer["Поза групою"]
+                                    </span>
+                                }
+                                else
+                                {
+                                    var userGroup = userGroupsList.First(g => g.UserGroupId == item.UserGroupId);
+                                    
+                                    <a class="badge badge-light" title="@string.Format(Localizer["Куратор: {0}"].Value, userGroup.CuratorFullName)" asp-action="List" asp-route-groupId="@item.UserGroupId">
+                                        <i class="fas fa-users"></i> @userGroup.UserGroupDisplayName
+                                    </a>
+                                }
+                                
                                 <span class="badge badge-light" title="@Localizer["Тип облікового запису"]"><i class="fas fa-user-shield"></i> @item.Type.ToString()</span>
                                 <span class="badge badge-success" title="@Localizer["Рейтинг"]"><i class="fas fa-fist-raised"></i> @item.Rating</span>
                             </h6>

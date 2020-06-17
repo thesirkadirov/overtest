@@ -87,9 +87,9 @@
 
                                 <div class="dropdown-divider"></div>
 
-                                @if (await OvertestUserPermissionsOperator.GetUserDataEditPermission(DatabaseContext, Model.Id, new Guid(UserManager.GetUserId(Context.User))))
+                                @if (await DatabaseContext.UserPermissionsOperator.GetUserDataEditPermissionAsync(Model.Id, new Guid(UserManager.GetUserId(Context.User))))
                                 {
-                                    <a class="dropdown-item" asp-area="Social" asp-controller="UserConfiguration" asp-action="EditPersonalInfo" asp-route-userId="@Model.Id">
+                                    <a class="dropdown-item">
                                         <i class="fas fa-user-edit"></i> @Localizer["Редагувати профіль"]
                                     </a>
                                 }
@@ -129,17 +129,19 @@
         <div class="list-group rounded-lg shadow-sm mt-3 mb-3">
 
             @DrawListGroupItem(Localizer["Адреса електронної пошти"].Value, Model.Email, $"mailto:{Model.Email}")(null)
-
+            
+            @DrawListGroupItem(Localizer["Навчальний заклад"].Value, Model.InstitutionName, Url.Action("List", "Users", new { Area = "Social", institutionName = Model.InstitutionName }))(null)
+            
             @if (Model.UserGroupId != null)
             {
                 
-                @DrawListGroupItem(Localizer["Група"].Value, Model.UserGroup.DisplayName, Url.Action("UserGroup", "Rating", new { area = "Social", groupId = Model.UserGroupId }))(null)
+                @DrawListGroupItem(Localizer["Група"].Value, Model.UserGroup.DisplayName, Url.Action("List", "Users", new { area = "Social", groupId = Model.UserGroupId }))(null)
             }
             else
             {
                 @DrawListGroupItem(Localizer["Група"].Value, Localizer["Не належить до жодної з груп"].Value)(null)
             }
-
+            
         </div>
         
         <div class="list-group rounded-lg shadow-sm mt-3 mb-3">

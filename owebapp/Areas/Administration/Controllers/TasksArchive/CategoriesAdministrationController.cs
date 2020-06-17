@@ -57,9 +57,7 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.Administration.Controllers
             
         }
         
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Route(nameof(Edit) + "/{categoryId:Guid?}")]
+        [HttpPost, ValidateAntiForgeryToken, Route(nameof(Edit) + "/{categoryId:Guid?}")]
         public async Task<IActionResult> Edit(ProgrammingTaskCategory model, Guid? categoryId = null)
         {
 

@@ -4,11 +4,12 @@
 @using System.Linq
 @using System.Security.Claims
 @using Microsoft.EntityFrameworkCore
+@using Sirkadirov.Overtest.Libraries.Shared.Database.Operators
 
 @model Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Identity.User
 
 @{
-  var PermissionsOperator = Model.GetPermissionsOperator();
+  var currentUserId = new Guid(UserManager.GetUserId(Context.User));
 }
 
 <nav class="navbar navbar-global navbar-expand-lg bg-white fixed-top no-selection-allowed">
@@ -31,7 +32,7 @@
             </li>;
         }
         
-        @if (PermissionsOperator.IsUserTypeSetApprovedUser())
+        @if (await DatabaseContext.UserPermissionsOperator.VerifyUserTypeSetAsync(currentUserId, OvertestUserPermissionsOperator.UserTypeSet.ApprovedUser))
         {
           
           @CreateAreaLink("", "Welcome", "Home", "fas fa-home", Localizer["Головна"].Value)(null)
@@ -48,7 +49,7 @@
           @CreateAreaLink("Competition", "Competitions", "Join", "fas fa-snowboarding", Localizer["Змагання"].Value)(null)
         }
         
-        @if (PermissionsOperator.IsUserTypeSetCurator())
+        @if (await DatabaseContext.UserPermissionsOperator.VerifyUserTypeSetAsync(currentUserId, OvertestUserPermissionsOperator.UserTypeSet.Curator))
         {
           
           @* Administration *@

@@ -17,7 +17,7 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.Social.Controllers
     {
         
         private const string ViewsDirectoryPath = "~/Areas/Social/Views/UsersController/";
-        private const int ItemsPerPage = 50;
+        private const int ItemsPerPage = 30;
         
         private readonly OvertestDatabaseContext _databaseContext;
         
