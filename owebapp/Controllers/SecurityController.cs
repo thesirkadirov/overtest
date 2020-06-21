@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,15 +13,24 @@ namespace Sirkadirov.Overtest.WebApplication.Controllers
         private const string ViewsDirectoryPath = "~/Views/SecurityController/";
         
         [AllowAnonymous, HttpGet, Route(nameof(AccessDenied))]
-        public IActionResult AccessDenied()
+        [SuppressMessage("ReSharper", "InconsistentNaming")]
+        public IActionResult AccessDenied(string ReturnUrl = null)
         {
-            return Error(403);
+            return Error(403, ReturnUrl);
         }
         
         [AllowAnonymous, HttpGet, Route(nameof(Error) + "/{statusCode:int}")]
-        public IActionResult Error(int statusCode)
+        [SuppressMessage("ReSharper", "InconsistentNaming")]
+        public IActionResult Error(int statusCode, string ReturnUrl = null)
         {
             ViewData["StatusCode"] = statusCode;
+            
+            // Return url
+            if (!string.IsNullOrWhiteSpace(ReturnUrl) && Url.IsLocalUrl(ReturnUrl))
+                ViewData[nameof(ReturnUrl)] = ReturnUrl;
+            else
+                ViewData[nameof(ReturnUrl)] = null;
+            
             return View(ViewsDirectoryPath + "Error.cshtml");
         }
 

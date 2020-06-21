@@ -52,7 +52,7 @@
         
         @foreach (var tasksCategory in Model)
         {
-            <div class="card rounded-lg shadow">
+            <div class="card rounded-lg shadow-sm">
                 
                 <div class="card-body position-relative">
                     
@@ -100,7 +100,7 @@ else
                 @Localizer["Доступних для перегляду категорій не знайдено."]
                 @Localizer["Можливо, вам слід скористатися пошуком по Архіву завдань?"]
             </p>
-            <a class="btn btn-light" asp-action="List"><i class="fas fa-archive"></i> @Localizer["Перейти до Архіву завдань"]</a>
+            <a class="btn btn-light rounded-lg" asp-action="List"><i class="fas fa-archive"></i> @Localizer["Перейти до Архіву завдань"]</a>
         </div>
     </div>
 }

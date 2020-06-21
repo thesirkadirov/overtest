@@ -26,9 +26,7 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.TasksArchive.Controllers
         }
         
         [HttpGet]
-        [Route("")]
-        [Route(nameof(List))]
-        [Route("/TasksArchive")]
+        [Route(nameof(List) + "/{page:int?}")]
         public async Task<IActionResult> List(int page = 1, Guid? category = null, string searchQuery = "")
         {
 

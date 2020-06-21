@@ -3,7 +3,7 @@
     var currentProgressPercentage = Convert.ToInt32(Math.Round((double) (ViewBag.WizardCurrentStep) / (double) (ViewBag.WizardTotalSteps) * 100));
 }
 
-<main class="container pt-5 pb-5">
+<main class="container pt-5 pb-5 no-selection-allowed">
     
     <div class="row mt-5 mb-5">
         
@@ -23,7 +23,7 @@
             </div>
             
             <div class="progress" style="height: 1.5rem;">
-              <div class="progress-bar bg-dark" style="width: @(currentProgressPercentage)%;">@ViewBag.WizardCurrentStep / @ViewBag.WizardTotalSteps</div>
+              <div class="progress-bar bg-dark rounded-lg" style="width: @(currentProgressPercentage)%;">@ViewBag.WizardCurrentStep / @ViewBag.WizardTotalSteps</div>
             </div>
             
         </div>

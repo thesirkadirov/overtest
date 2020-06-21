@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Sirkadirov.Overtest.Libraries.Shared.Database;
+using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TestingApplications;
 using Sirkadirov.Overtest.WebApplication.Areas.Social.Models.UsersController;
 using Sirkadirov.Overtest.WebApplication.Models.Shared.Pagination;
 
@@ -80,19 +81,24 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.Social.Controllers
             model.ItemsList = await
                 (
                     from user in _databaseContext.Users
-                    
+                    // Search queries
                     where (groupId == null || user.UserGroupId == groupId) 
                     where (searchQuery == null || searchQuery.Length == 0 || EF.Functions.Like(user.FullName, $"%{searchQuery}%")) 
                     where (institutionName == null || institutionName.Length == 0 || EF.Functions.Like(user.InstitutionName, $"%{institutionName}%"))
-                    
+                    // Left join with testing applications
                     join application in _databaseContext.TestingApplications on user.Id equals application.AuthorId into applications 
-                    from application in applications.DefaultIfEmpty() 
+                    from application in applications
+                        .Where(a => a.CompetitionId == null)
+                        .Where(a => a.Status == TestingApplication.ApplicationStatus.Verified)
+                        .Where(a => a.TestingResults.SolutionAdjudgement != TestingApplication.ApplicationTestingResults.SolutionAdjudgementType.ZeroSolution)
+                        .Where(a => a.TestingType == TestingApplication.ApplicationTestingType.ReleaseMode)
+                        .DefaultIfEmpty()
+                    // Select joined data
                     select new 
                     {
-                        user.Id, user.Type, user.UserGroupId, 
-                        user.FullName, user.InstitutionName, 
-                        application.CompetitionId, application.TestingType, 
-                        application.TestingResults.SolutionAdjudgement, application.TestingResults.GivenDifficulty
+                        user.Id, user.Type, user.UserGroupId,
+                        user.FullName, user.InstitutionName,
+                        application.TestingResults.GivenDifficulty
                     }
                 ).GroupBy(g => new
                 {
@@ -106,6 +112,7 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.Social.Controllers
                 })
                 .Skip(model.Pagination.PreviousItemsCount).Take(ItemsPerPage)
                 .OrderByDescending(order => order.Rating)
+                .ThenBy(order => order.FullName)
                 .AsNoTracking()
                 .ToListAsync();
             

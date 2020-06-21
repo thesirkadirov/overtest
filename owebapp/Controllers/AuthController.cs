@@ -4,10 +4,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Localization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using Sirkadirov.Overtest.Libraries.Shared.Database;
 using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Identity;
+using Sirkadirov.Overtest.WebApplication.Extensions.Filters;
 using Sirkadirov.Overtest.WebApplication.Models.AuthController;
 
 namespace Sirkadirov.Overtest.WebApplication.Controllers
@@ -19,16 +20,17 @@ namespace Sirkadirov.Overtest.WebApplication.Controllers
 
         private readonly OvertestDatabaseContext _databaseContext;
         private readonly SignInManager<User> _signInManager;
-        private readonly IViewLocalizer _localizer;
+        private readonly IStringLocalizer<AuthController> _localizer;
         
-        public AuthController(OvertestDatabaseContext databaseContext, SignInManager<User> signInManager, IViewLocalizer localizer)
+        public AuthController(OvertestDatabaseContext databaseContext, SignInManager<User> signInManager, IStringLocalizer<AuthController> localizer)
         {
             _databaseContext = databaseContext;
             _signInManager = signInManager;
             _localizer = localizer;
         }
         
-        [AllowAnonymous, HttpGet, Route(nameof(Authorization) + "/{returnUrl?}")]
+        [AllowAnonymous, DisallowAuthorizedFilter]
+        [HttpGet, Route(nameof(Authorization) + "/{returnUrl?}")]
         public IActionResult Authorization(string returnUrl = null)
         {
             return View("~/Views/AuthController/Authorization.cshtml",
@@ -40,7 +42,8 @@ namespace Sirkadirov.Overtest.WebApplication.Controllers
             );
         }
         
-        [AllowAnonymous, HttpPost, ValidateAntiForgeryToken, Route(nameof(Authorization))]
+        [AllowAnonymous, DisallowAuthorizedFilter]
+        [HttpPost, ValidateAntiForgeryToken, Route(nameof(Authorization))]
         public async Task<IActionResult> Authorization(AuthorizationModel authorizationModel)
         {
             
@@ -108,13 +111,22 @@ namespace Sirkadirov.Overtest.WebApplication.Controllers
             
         }
         
-        [AllowAnonymous, HttpGet, Route(nameof(Registration))]
-        public IActionResult Registration()
+        [AllowAnonymous, DisallowAuthorizedFilter]
+        [HttpGet, Route("/Invite/{securityToken}")]
+        public IActionResult JoinByInviteSecurityToken(string securityToken)
+        {
+            return RedirectToAction(nameof(Registration), new { securityToken });
+        }
+        
+        [AllowAnonymous, DisallowAuthorizedFilter]
+        [HttpGet, Route(nameof(Registration))]
+        public IActionResult Registration(string securityToken = null)
         {
             throw new NotImplementedException();
         }
         
-        [AllowAnonymous, HttpPost, ValidateAntiForgeryToken, Route(nameof(Registration))]
+        [AllowAnonymous, DisallowAuthorizedFilter]
+        [HttpPost, ValidateAntiForgeryToken, Route(nameof(Registration))]
         public async Task<IActionResult> Registration(RegistrationModel registrationModel)
         {
             throw new NotImplementedException();

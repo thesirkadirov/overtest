@@ -25,12 +25,12 @@
                 
                 <div class="form-group mt-2 mb-2">
                     <label asp-for="Email">@Localizer["Адреса e-mail:"]</label>
-                    <input asp-for="Email" type="email" class="form-control" placeholder="@Localizer["franko@lnu.edu.ua"]"/>
+                    <input asp-for="Email" type="email" class="form-control rounded-lg" placeholder="@Localizer["franko@lnu.edu.ua"]"/>
                 </div>
                 
                 <div class="form-group mt-2 mb-2">
                     <label asp-for="Password">@Localizer["Пароль:"]</label>
-                    <input asp-for="Password" type="password" class="form-control" placeholder="@Localizer["***********"]"/>
+                    <input asp-for="Password" type="password" class="form-control rounded-lg" placeholder="@Localizer["***********"]"/>
                 </div>
                 
                 <div class="custom-control custom-checkbox mt-2 mb-2">
@@ -41,7 +41,7 @@
                 <input asp-for="ReturnUrl" type="hidden"/>
                 
                 <span class="d-block mt-2">
-                    <button class="btn btn-dark" type="submit"><i class="fas fa-fingerprint"></i> @Localizer["Авторизуватися"]</button>
+                    <button class="btn btn-dark rounded-lg" type="submit"><i class="fas fa-fingerprint"></i> @Localizer["Авторизуватися"]</button>
                     <a class="btn btn-link" asp-controller="Welcome" asp-action="Welcome"><i class="fas fa-angle-left"></i> @Localizer["Початкова сторінка"]</a>
                 </span>
                 

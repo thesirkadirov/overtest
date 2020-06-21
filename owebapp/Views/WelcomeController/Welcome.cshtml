@@ -8,7 +8,7 @@
 
 @if (!WebHostEnvironment.IsProduction())
 {
-    <div class="alert alert-danger no-selection-allowed">
+    <div class="alert alert-danger alert-dismissible fade show no-selection-allowed">
         <div class="container">
             
             <strong><i class="fas fa-exclamation-triangle"></i> @Localizer["Увага!"]</strong>
@@ -22,7 +22,9 @@
             
             <strong>@Localizer["Якщо ви - не адміністратор системи, негайно припиніть використання цього веб-додатку!"]</strong>
             
-            <a class="btn btn-sm btn-light" target="_blank" href="https://overtest.sirkadirov.com/">@Localizer["Технічна підтримка"]</a>
+            <a class="btn btn-sm btn-light rounded-lg" target="_blank" href="https://overtest.sirkadirov.com/">@Localizer["Технічна підтримка"]</a>
+            
+            <button class="close" data-dismiss="alert">&times;</button>
             
         </div>
     </div>
@@ -37,7 +39,7 @@
             
             @Localizer["Необхідно завершити процес інсталяції системи, створивши суперкористувача та виконавши початкові налаштування."]
             
-            <a class="btn btn-sm btn-light" asp-area="Installation" asp-controller="InstallationWizard" asp-action="Welcome">@Localizer["Встановити"]</a>
+            <a class="btn btn-sm btn-light rounded-lg" asp-area="Installation" asp-controller="InstallationWizard" asp-action="Welcome">@Localizer["Встановити"]</a>
             
         </div>
     </div>
@@ -58,15 +60,15 @@
             @if (Context.User.Identity.IsAuthenticated)
             {
                 <span>
-                    <a asp-controller="Welcome" asp-action="Home" class="btn btn-dark"><i class="fas fa-laptop-house"></i> @Localizer["Розпочати роботу"]</a>
-                    <a asp-controller="Auth" asp-action="LogOut" class="btn btn-link"><i class="fas fa-door-open"></i> @Localizer["Вийти з системи"]</a>
+                    <a asp-controller="Welcome" asp-action="Home" class="btn btn-dark rounded-lg"><i class="fas fa-laptop-house"></i> @Localizer["Розпочати роботу"]</a>
+                    <a asp-controller="Auth" asp-action="LogOut" class="btn btn-light rounded-lg"><i class="fas fa-sign-out-alt"></i> @Localizer["Завершити сеанс"]</a>
                 </span>
             }
             else
             {
                 <span>
-                    <a asp-controller="Auth" asp-action="Registration" class="btn btn-dark"><i class="fas fa-rocket"></i> @Localizer["Реєстрація"]</a>
-                    <a asp-controller="Auth" asp-action="Authorization" class="btn btn-outline-dark"><i class="fas fa-fingerprint"></i> @Localizer["Авторизація"]</a>
+                    <a asp-controller="Auth" asp-action="Registration" class="btn btn-dark rounded-lg"><i class="fas fa-rocket"></i> @Localizer["Реєстрація"]</a>
+                    <a asp-controller="Auth" asp-action="Authorization" class="btn btn-light rounded-lg"><i class="fas fa-fingerprint"></i> @Localizer["Авторизація"]</a>
                     <small class="d-block mt-1"><a href="" class="text-dark" onclick="alert('@Localizer["Зверніться до свого куратора!"]'); return false;">@Localizer["Втратили доступ до облікового запису?"]</a></small>
                 </span>
             }

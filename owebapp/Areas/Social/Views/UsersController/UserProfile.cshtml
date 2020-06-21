@@ -135,7 +135,7 @@
             @if (Model.UserGroupId != null)
             {
                 
-                @DrawListGroupItem(Localizer["Група"].Value, Model.UserGroup.DisplayName, Url.Action("List", "Users", new { area = "Social", groupId = Model.UserGroupId }))(null)
+                @DrawListGroupItem(Localizer["Група"].Value, Model.UserGroup.DisplayName, Url.Action("View", "UserGroups", new { area = "Social", userGroupId = Model.UserGroupId }))(null)
             }
             else
             {

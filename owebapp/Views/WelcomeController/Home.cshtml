@@ -21,7 +21,7 @@
                         @Localizer["Overtest допоможе тобі з вивченням програмування, але твоє майбутнє завжди залишається тільки у твоїх руках - не змарнуй його!"]
                     </p>
                     
-                    <a asp-area="TasksArchive" asp-controller="Archive" asp-action="List" class="btn btn-lg btn-dark"><i class="fas fa-compass"></i> @Localizer["Архів завдань"]</a>
+                    <a asp-area="TasksArchive" asp-controller="Archive" asp-action="List" class="btn btn-lg btn-dark rounded-lg"><i class="fas fa-compass"></i> @Localizer["Архів завдань"]</a>
                 </div>
                 
             </div>
@@ -34,7 +34,7 @@
     
     @for (var i = 0; i < 3; i++)
     {
-        <div class="card border-0 shadow no-selection-allowed">
+        <div class="card border-0 shadow rounded-lg no-selection-allowed">
             <div class="card-body">
                 <h5 class="card-title">@Localizer["Новий сервіс вже у розробці"]</h5>
                 <p class="card-text">

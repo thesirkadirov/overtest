@@ -2,15 +2,13 @@
 @using Microsoft.EntityFrameworkCore
 @model Sirkadirov.Overtest.WebApplication.Models.Shared.Pagination.PaginatedListModel<Sirkadirov.Overtest.WebApplication.Areas.Social.Models.UsersController.UsersListItemModel>
 @{
+                                                                                                                                                                                
     ViewBag.PageTitle = Localizer["Користувачі і рейтинг"].Value;
-    
-    /*
-     * Additional features
-     */
     
     /*
      * User groups list
      */
+    
     var userGroupsList = await DatabaseContext.Users
         .Where(u => u.Type == UserType.Instructor || u.Type == UserType.Administrator || u.Type == UserType.SuperUser)
         .Join(
@@ -27,8 +25,10 @@
         .OrderBy(order => order.CuratorFullName)
         .ThenBy(additionalOrder => additionalOrder.UserGroupDisplayName)
         .ToListAsync();
+    
 }
 
+@* ====== Service header ====== *@
 @section FullwidthSection
 {
     
@@ -52,7 +52,9 @@
     }))
     
 }
+@* ====== /Service header ====== *@
 
+@* ====== Search form ====== *@
 <div class="card rounded-lg border-0 shadow mt-0 mb-0 no-selection-allowed">
     <div class="card-body">
         <form class="m-0" method="get" asp-action="List" asp-route-page="1">
@@ -96,7 +98,7 @@
                 </div>
             </div>
             
-            <button class="btn btn-block btn-dark rounded-lg" type="submit">@Localizer["Пошук"]</button>
+            <button class="btn btn-block btn-dark rounded-lg" type="submit"><i class="fas fa-search"></i> @Localizer["Пошук"]</button>
             
         </form>
         
@@ -109,36 +111,9 @@
         
     </div>
 </div>
+@* ====== /Search form ====== *@
 
-@if ((ViewData["SpecifiedUsersGroupId"] as Guid?).HasValue)
-{
-    var currentUserGroupId = ViewData["SpecifiedUsersGroupId"] as Guid?;
-    var currentUserGroup = userGroupsList.First(g => g.UserGroupId == currentUserGroupId);
-
-    if (currentUserGroup.CuratorId.ToString() == UserManager.GetUserId(Context.User))
-    {
-        <div class="card rounded-lg border-0 shadow mt-5 mb-0 no-selection-allowed">
-            <div class="card-body">
-                <h4>@currentUserGroup.UserGroupDisplayName</h4>
-                <div class="overflow-auto text-nowrap">
-                    <a class="btn btn-light d-md-inline-block rounded-lg" href="" title="@Localizer["Створіть нового користувача і додайте до цієї групи"]">
-                        <i class="fas fa-user-edit"></i> @Localizer["Створити користувача"]
-                    </a>
-                    <a class="btn btn-light rounded-lg" href="" title="@Localizer["Створіть публічне запрошувальне посилання, щоб ваші студенти швидко почали роботу з системою!"]">
-                        <i class="fas fa-share-alt"></i> @Localizer["Запросити"]
-                    </a>
-                    <a class="btn btn-light rounded-lg" href="">
-                        <i class="fas fa-users-cog"></i> @Localizer["Редагувати групу"]
-                    </a>
-                    <a class="btn btn-light rounded-lg" href="" title="@Localizer["Бажаєте видалити групу? Разом з нею видаляються усі її користувачі."]">
-                        <span class="text-danger"><i class="fas fa-trash"></i> @Localizer["Видалити групу"]</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-    }
-}
-
+@* ====== Items view ====== *@
 <div class="mt-5 mb-5">
     @if (Model.ItemsList.Any())
     {
@@ -149,7 +124,7 @@
                 
                 <li class="list-group-item">
                     <div class="media">
-                        <img src="https://via.placeholder.com/60" class="align-self-center rounded shadow-sm mr-3" style="width: 60px;" title="Аватар користувача">
+                        <img src="https://via.placeholder.com/60" class="align-self-center rounded-lg shadow-sm mr-3" style="width: 60px; height: 60px;" title="@item.FullName" alt="@item.FullName"/>
                         <div class="media-body">
                             <h5 class="m-0">
                                 <a class="text-dark text-decoration-none" asp-area="Social" asp-controller="Users" asp-action="UserProfile" asp-route-userId="@item.Id">@item.FullName</a>
@@ -200,3 +175,4 @@
         </div>
     }
 </div>
+@* ====== /Items view ====== *@
