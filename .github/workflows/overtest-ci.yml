@@ -1,4 +1,4 @@
-name: Overtest continuous integration
+name: Overtest CI
 
 on:
   release:
@@ -15,7 +15,7 @@ on:
       - feature/**
 
 jobs:
-  build_ubuntu:
+  build_common:
     name: Build for ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
