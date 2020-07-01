@@ -46,7 +46,10 @@
         @if (Model.Type == UserType.Student)
         {
           @* Competitions *@
-          @CreateAreaLink("Competition", "Competitions", "Join", "fas fa-snowboarding", Localizer["Змагання"].Value)(null)
+          @*CreateAreaLink("Competition", "Competitions", "Join", "fas fa-snowboarding", Localizer["Змагання"].Value)(null)*@
+          <li class="nav-item">
+            <a class="nav-link disabled" href="#"><i class="fas fa-snowboarding"></i> @Localizer["Змагання"] <span class="badge badge-warning">SOON</span></a>
+          </li>
         }
         
         @if (await DatabaseContext.UserPermissionsOperator.VerifyUserTypeSetAsync(currentUserId, OvertestUserPermissionsOperator.UserTypeSet.Curator))

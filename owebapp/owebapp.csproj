@@ -43,7 +43,6 @@
     </ItemGroup>
     
     <ItemGroup>
-        <Folder Include="Areas\Administration\Views\Social\UserGroupsAdministrationController" />
         <Folder Include="Areas\Competition\Controllers" />
         <Folder Include="Areas\Competition\Views" />
         <Folder Include="Areas\TasksArchive\Models" />
@@ -119,6 +118,18 @@
           <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
         </Content>
         <Content Update="Areas\Social\Views\UserGroupsController\List.cshtml">
+          <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+          <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        </Content>
+        <Content Update="Views\AuthController\Registration.cshtml">
+          <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+          <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        </Content>
+        <Content Update="Areas\Administration\Views\Social\UserGroupsAdministrationController\Edit.cshtml">
+          <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+          <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        </Content>
+        <Content Update="Areas\Administration\Views\Social\UserGroupsAdministrationController\Remove.cshtml">
           <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
           <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
         </Content>

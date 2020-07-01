@@ -1,0 +1,71 @@
+﻿@using Sirkadirov.Overtest.WebApplication.ViewComponents.Shared
+@model UserGroup
+
+@{
+    ViewBag.PageTitle = Model != null
+        ? string.Format(Localizer["Редагування групи користувачів \"{0}\""].Value, Model.DisplayName)
+        : Localizer["Створення нової групи користувачів"].Value;
+}
+
+@section FullwidthSection
+{
+    
+    @{
+
+        ServiceHeaderViewComponent.HeaderModel.IconLinkData iconLinkData;
+        
+        if (Model != null && Model.Id != default)
+        {
+            iconLinkData = new ServiceHeaderViewComponent.HeaderModel.IconLinkData
+            {
+                Enabled = true,
+                LinkDestination = Url.Action("View", "UserGroups", new { area = "Social", userGroupId = Model.Id }),
+                LinkIcon = "fas fa-chevron-left",
+                LinkText = Localizer["Повернутися на сторінку групи"].Value
+            };
+        }
+        else
+        {
+            iconLinkData = new ServiceHeaderViewComponent.HeaderModel.IconLinkData
+            {
+                Enabled = true,
+                LinkDestination = Url.Action("List", "UserGroups", new {area = "Social"}),
+                LinkIcon = "fas fa-chevron-left",
+                LinkText = Localizer["Повернутися до списку груп"].Value
+            };
+        }
+        
+    }
+    
+    @(await Component.InvokeAsync<ServiceHeaderViewComponent>(new ServiceHeaderViewComponent.HeaderModel
+    {
+        PageTitle = Model == null || string.IsNullOrWhiteSpace(Model.DisplayName) ? Localizer["Створення групи користувачів"].Value : Model.DisplayName,
+        SubtitleLink = iconLinkData
+    }))
+
+}
+
+<form class="mt-0 mb-0 no-selection-allowed" asp-action="Edit" asp-route-userGroupId="@Model?.Id">
+    
+    @Html.AntiForgeryToken()
+    
+    <div class="text-danger mt-3 mb-3">@Html.ValidationSummary()</div>
+    
+    @if (Model != null)
+    {
+        <input asp-for="Id" type="hidden" value="@Model.Id">
+    }
+
+    <div class="form-group mt-3 mb-3">
+        <label asp-for="DisplayName">@Localizer["Назва групи користувачів:"]</label>
+        <input asp-for="DisplayName" type="text" class="form-control" placeholder="@Localizer["ФЕІ-12"]">
+        <small class="form-text text-muted">@Localizer["Назва групи є публічною, і має бути унікальною (у межах вашого списку груп)."]</small>
+        @Html.ValidationMessageFor(m => m.DisplayName)
+    </div>
+    
+    <div class="mt-3 mb-3">
+        <button class="btn btn-outline-secondary rounded-lg float-left" type="reset"><i class="fas fa-window-close"></i> @Localizer["Відмінити зміни"]</button>
+        <button class="btn btn-dark rounded-lg float-right" type="submit"><i class="fas fa-save"></i> @Localizer["Зберегти зміни"]</button>
+    </div>
+    
+</form>

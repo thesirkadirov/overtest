@@ -17,6 +17,15 @@
                 
                 <partial name="ViewComponents/Shared/DropleftMenu/CommonSupportDropleftMenuItems" />
                 
+                @if (isUserHasCuratorPrivileges)
+                {
+                    <div class="dropdown-divider"></div>
+                    
+                    <a class="dropdown-item" asp-area="Administration" asp-controller="UserGroupsAdministration" asp-action="Edit">
+                        <i class="fas fa-folder-plus"></i> @Localizer["Створити нову групу"]
+                    </a>
+                }
+                
             </span>;
     }
 
@@ -43,7 +52,6 @@
 
 @if (isUserHasCuratorPrivileges)
 {
-    
     <div class="alert alert-primary rounded-lg border shadow mt-3 mb-3 no-selection-allowed alert-dismissible fade show">
         <p class="mt-1 mb-1">
             

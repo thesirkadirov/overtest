@@ -72,7 +72,7 @@
                 <button class="btn btn-light d-inline-block rounded-lg" data-toggle="modal" data-target="#AddUsersModalDialog">
                     <i class="fas fa-user-edit"></i> @Localizer["Додати користувачів"]
                 </button>
-                <a class="btn btn-light d-inline-block rounded-lg" href="">
+                <a class="btn btn-light d-inline-block rounded-lg" asp-area="Administration" asp-controller="UserGroupsAdministration" asp-action="Edit" asp-route-userGroupId="@userGroupId">
                     <i class="fas fa-users-cog"></i> @Localizer["Редагувати групу"]
                 </a>
                 <a class="btn btn-light d-inline-block rounded-lg" href="" title="@Localizer["Бажаєте видалити групу? Разом з нею видаляються усі її користувачі."]">
@@ -103,13 +103,13 @@
                         <div class="col-md-3"></div>
 
                         <div class="col-md mt-4 mb-4">
-                            <h6>@Localizer["Зареєструвати вручну"]</h6>
+                            <h6>@Localizer["Зареєструвати вручну"] <span class="badge badge-warning">SOON</span></h6>
                             <p>
                                 @Localizer["Заповніть невелику форму, щоб зареєструвати нового користувача старим-добрим методом."]
                             </p>
-                            <a class="btn btn-light btn-block rounded-lg">
+                            <button class="btn btn-light btn-block rounded-lg disabled" disabled>
                                 <i class="fas fa-user-edit"></i> @Localizer["Створити вручну"]
-                            </a>
+                            </button>
                         </div>
 
                         <div class="col-md mt-4 mb-4">
@@ -141,7 +141,7 @@
     
     @* ====== Invite users modal ====== *@
     <div class="modal fade no-selection-allowed" data-backdrop="static" data-keyboard="false" tabindex="-1" id="InviteUsersModalDialog">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title text-center"><i class="fas fa-share-alt"></i></h5>
@@ -162,10 +162,22 @@
                     <p>
                         @Localizer["Якщо ви більше не хочете, щоб це посилання було активним, згенеруйте нове, скориставшись кнопкою нижче."]
                     </p>
+                    <div class="alert alert-primary rounded-lg border shadow-sm mt-3 mb-0 no-selection-allowed alert-dismissible fade show">
+                        <p class="mt-1 mb-1">
+                            
+                            <strong><i class="fas fa-info-circle"></i> @Localizer["Зверніть увагу!"]</strong>
+                            
+                            @Localizer["За замовучуванням, користувачі, які приєднуються за будь-яким запрошувальним посиланням мають рівень доступу \"Student\"."]
+                            @Localizer["Змінити його на вищий чи нижчий ви можете на сторінці редагування користувача."]
+                            
+                            <button type="button" class="close" data-dismiss="alert">&times;</button>
+                            
+                        </p>
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary rounded-lg" data-dismiss="modal">@Localizer["Закрити"]</button>
-                    <button type="button" class="btn btn-primary rounded-lg disabled" id="regenerateUserGroupJoinLinkButton" disabled>@Localizer["Нове посилання"]</button>
+                    <button type="button" class="btn btn-secondary rounded-lg" data-dismiss="modal"><i class="fas fa-window-close"></i> @Localizer["Закрити"]</button>
+                    <button type="button" class="btn btn-primary rounded-lg disabled" id="regenerateUserGroupJoinLinkButton" disabled><i class="fas fa-link"></i> @Localizer["Нове посилання"]</button>
                 </div>
             </div>
         </div>
@@ -261,7 +273,7 @@
 @* ====== /User group administration panel ====== *@
 
 @* ====== Items view ====== *@
-<div class="mt-5 mb-5">
+<div class="mt-4 mb-4">
     @if (Model.Any())
     {
         

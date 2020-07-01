@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
@@ -32,52 +33,76 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.Administration.Controllers
         [HttpGet, Route("Edit/{userGroupId:guid?}")]
         public async Task<IActionResult> Edit(Guid? userGroupId = null)
         {
-
-            var currentUserId = new Guid(_userManager.GetUserId(HttpContext.User));
-            UserGroup model;
-
-            if (userGroupId == null)
-            {
-                model = new UserGroup
-                {
-                    Id = default,
-                    DisplayName = string.Empty
-                };
-            }
-            else
-            {
-                
-                if (!await _databaseContext.UserGroups.AnyAsync(g => g.Id == userGroupId && g.GroupCuratorId == currentUserId))
-                    return Forbid();
-
-                model = await _databaseContext.UserGroups
-                    .AsNoTracking()
-                    .Where(g => g.Id == userGroupId)
-                    .Select(s => new UserGroup
-                    {
-                        Id = s.Id,
-                        DisplayName = s.DisplayName
-                    })
-                    .FirstAsync();
-
-            }
             
-            throw new NotImplementedException();
-            //return View();
-
+            const string actionViewPath = ViewsDirectoryPath + nameof(Edit) + ".cshtml";
+            
+            var currentUserId = new Guid(_userManager.GetUserId(HttpContext.User));
+            
+            if (userGroupId == null)
+                return View(actionViewPath);
+            
+            if (!await _databaseContext.UserGroups.AnyAsync(g => g.Id == userGroupId && g.GroupCuratorId == currentUserId))
+                return Forbid();
+            
+            var model = await _databaseContext.UserGroups
+                .AsNoTracking()
+                .Where(g => g.Id == userGroupId)
+                .Select(s => new UserGroup
+                {
+                    Id = s.Id,
+                    DisplayName = s.DisplayName
+                })
+                .FirstAsync();
+            
+            return View(actionViewPath, model);
+            
         }
 
-        [HttpGet, Route("Edit/{userGroupId:guid?}")]
-        public async Task<IActionResult> Edit(Guid? userGroupId, UserGroup model)
+        [HttpPost, Route("Edit/{userGroupId:guid?}")]
+        [SuppressMessage("ReSharper", "RedundantAssignment")]
+        public async Task<IActionResult> Edit(UserGroup model, Guid? userGroupId = null)
         {
+            
+            const string actionViewPath = ViewsDirectoryPath + nameof(Edit) + ".cshtml";
+            
+            if (!ModelState.IsValid)
+                return View(actionViewPath, model);
             
             var currentUserId = new Guid(_userManager.GetUserId(HttpContext.User));
             
             if (model.Id != default)
-                if (!await _databaseContext.UserGroups.AnyAsync(g => g.Id == userGroupId && g.GroupCuratorId == currentUserId))
-                    return Forbid();
+            {
+                
+                if (!await _databaseContext.UserGroups.AnyAsync(g => g.Id == model.Id && g.GroupCuratorId == currentUserId))
+                    return NotFound();
+
+                var groupFromDatabase = await _databaseContext.UserGroups.FirstAsync(g => g.Id == model.Id);
+
+                groupFromDatabase.DisplayName = model.DisplayName;
+
+                _databaseContext.UserGroups.Update(groupFromDatabase);
+                await _databaseContext.SaveChangesAsync();
+
+                userGroupId = groupFromDatabase.Id;
+
+            }
+            else
+            {
+
+                var newGroup = new UserGroup
+                {
+                    DisplayName = model.DisplayName,
+                    GroupCuratorId = currentUserId
+                };
+
+                await _databaseContext.UserGroups.AddAsync(newGroup);
+                await _databaseContext.SaveChangesAsync();
+
+                userGroupId = newGroup.Id;
+
+            }
             
-            throw new NotImplementedException();
+            return RedirectToAction("View", "UserGroups", new {area = "Social", userGroupId});
             
         }
         

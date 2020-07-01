@@ -133,8 +133,8 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
                 
                 entity.HasIndex(u => u.Email).IsUnique();
 
-                entity.Property(u => u.FullName).IsUnicode().HasMaxLength(255).IsRequired();
-                entity.Property(u => u.InstitutionName).IsUnicode().HasMaxLength(255).HasDefaultValue();
+                entity.Property(u => u.FullName).IsUnicode().IsRequired();
+                entity.Property(u => u.InstitutionName).IsUnicode().HasDefaultValue();
 
                 entity.Property(u => u.Type).IsRequired();
                 
@@ -165,13 +165,11 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
 
                 entity.HasKey(g => g.Id);
                 
-                entity.Property(g => g.DisplayName)
-                    .IsUnicode()
-                    .IsRequired();
+                entity.Property(g => g.DisplayName).IsUnicode();
                 
                 entity.Property(g => g.AccessToken)
                     .HasMaxLength(255)
-                    .IsRequired(false);
+                    .HasDefaultValue();
                 
                 /*
                  * Relationships

@@ -114,7 +114,7 @@
 @* ====== /Search form ====== *@
 
 @* ====== Items view ====== *@
-<div class="mt-5 mb-5">
+<div class="mt-4 mb-4">
     @if (Model.ItemsList.Any())
     {
         
@@ -144,7 +144,7 @@
                                 {
                                     var userGroup = userGroupsList.First(g => g.UserGroupId == item.UserGroupId);
                                     
-                                    <a class="badge badge-light" title="@string.Format(Localizer["Куратор: {0}"].Value, userGroup.CuratorFullName)" asp-action="List" asp-route-groupId="@item.UserGroupId">
+                                    <a class="badge badge-light" title="@string.Format(Localizer["Куратор: {0}"].Value, userGroup.CuratorFullName)" asp-area="Social" asp-controller="UserGroups" asp-action="View" asp-route-userGroupId="@item.UserGroupId">
                                         <i class="fas fa-users"></i> @userGroup.UserGroupDisplayName
                                     </a>
                                 }

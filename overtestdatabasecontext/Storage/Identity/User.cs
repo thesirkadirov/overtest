@@ -1,7 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
-using Sirkadirov.Overtest.Libraries.Shared.Database.Operators;
 
 namespace Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Identity
 {
@@ -9,8 +8,10 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Identity
     public class User : IdentityUser<Guid>
     {
         
+        [Required, MinLength(3), MaxLength(255)]
         public string FullName { get; set; }
         
+        [MaxLength(255)]
         public string InstitutionName { get; set; }
         
         public UserType Type { get; set; }
@@ -37,13 +38,11 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Identity
     
     public enum UserType
     {
-        
         Anonymous,
         Student,
         Instructor,
         Administrator,
         SuperUser
-        
     }
     
 }

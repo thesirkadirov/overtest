@@ -14,7 +14,7 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TasksArchive
         
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime LastModification { get; set; }
-        
+
         public bool Enabled { get; set; }
         
         public string Title { get; set; }

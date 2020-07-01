@@ -19,12 +19,16 @@ namespace Sirkadirov.Overtest.WebApplication.Controllers
     {
 
         private readonly OvertestDatabaseContext _databaseContext;
+        private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly IStringLocalizer<AuthController> _localizer;
         
-        public AuthController(OvertestDatabaseContext databaseContext, SignInManager<User> signInManager, IStringLocalizer<AuthController> localizer)
+        private const string ViewsDirectoryPath = "~/Views/AuthController/";
+        
+        public AuthController(OvertestDatabaseContext databaseContext, UserManager<User> userManager, SignInManager<User> signInManager, IStringLocalizer<AuthController> localizer)
         {
             _databaseContext = databaseContext;
+            _userManager = userManager;
             _signInManager = signInManager;
             _localizer = localizer;
         }
@@ -33,7 +37,7 @@ namespace Sirkadirov.Overtest.WebApplication.Controllers
         [HttpGet, Route(nameof(Authorization) + "/{returnUrl?}")]
         public IActionResult Authorization(string returnUrl = null)
         {
-            return View("~/Views/AuthController/Authorization.cshtml",
+            return View(ViewsDirectoryPath + "Authorization.cshtml",
                 new AuthorizationModel
                 {
                     RememberMe = true,
@@ -107,7 +111,7 @@ namespace Sirkadirov.Overtest.WebApplication.Controllers
                 
             }
             
-            return View("~/Views/AuthController/Authorization.cshtml", authorizationModel);
+            return View(ViewsDirectoryPath + "Authorization.cshtml", authorizationModel);
             
         }
         
@@ -122,14 +126,92 @@ namespace Sirkadirov.Overtest.WebApplication.Controllers
         [HttpGet, Route(nameof(Registration))]
         public IActionResult Registration(string securityToken = null)
         {
-            throw new NotImplementedException();
+            
+            const string actionViewPath = ViewsDirectoryPath + nameof(Registration) + ".cshtml";
+            
+            return View(actionViewPath, new RegistrationModel
+            {
+                SecurityToken = securityToken ?? string.Empty
+            });
+            
         }
         
         [AllowAnonymous, DisallowAuthorizedFilter]
         [HttpPost, ValidateAntiForgeryToken, Route(nameof(Registration))]
-        public async Task<IActionResult> Registration(RegistrationModel registrationModel)
+        public async Task<IActionResult> Registration(RegistrationModel registrationModel, string securityToken = null)
         {
-            throw new NotImplementedException();
+            
+            const string actionViewPath = ViewsDirectoryPath + nameof(Registration) + ".cshtml";
+            
+            if (ModelState.IsValid)
+            {
+                
+                if (string.IsNullOrWhiteSpace(securityToken))
+                    securityToken = registrationModel.SecurityToken;
+
+                if (!await _databaseContext.UserGroups.AnyAsync(g => g.AccessToken == securityToken))
+                {
+                    ModelState.AddModelError(
+                        string.Empty,
+                        _localizer["Введено недійсний код доступу! Рекомендуємо вам зв'язатися з куратором, який надав цей код."]
+                    );
+                    return View(actionViewPath, registrationModel);
+                }
+                
+                if (await _databaseContext.Users.AnyAsync(u => u.Email == registrationModel.Email))
+                {
+                    ModelState.AddModelError(
+                        string.Empty,
+                        _localizer["Користувач зі вказаною адресою Email вже зареєстрований! Можливо, вам слід відновити пароль до свого облікового запису?"]
+                    );
+                    return View(actionViewPath, registrationModel);
+                }
+
+                var userGroupInfo = await _databaseContext.UserGroups
+                    .Where(g => g.AccessToken == securityToken)
+                    .Include(i => i.GroupCurator)
+                    .Select(s => new
+                    {
+                        UserGroupId = s.Id,
+                        CuratorInstitutionName = s.GroupCurator.InstitutionName
+                    })
+                    .FirstAsync();
+                
+                var newUser = new User
+                {
+                    Email = registrationModel.Email,
+                    EmailConfirmed = true,
+                    UserName = registrationModel.Email,
+                    
+                    FullName = registrationModel.FullName,
+                    InstitutionName = userGroupInfo.CuratorInstitutionName,
+
+                    UserGroupId = userGroupInfo.UserGroupId,
+                    Type = UserType.Student,
+                    
+                    Registered = DateTime.UtcNow,
+                    LastSeen = DateTime.UtcNow
+                };
+
+                var registrationResult = await _userManager.CreateAsync(newUser, registrationModel.Password);
+
+                if (registrationResult.Succeeded)
+                {
+                    await _signInManager.SignInAsync(newUser, true);
+                    return RedirectToAction("Welcome", "Welcome");
+                }
+                else
+                {
+                    foreach (var identityError in registrationResult.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, $"Error #{identityError.Code}: {identityError.Description}");
+                    }
+                }
+                
+            }
+            
+            return View(actionViewPath, registrationModel);
+            
         }
         
         [HttpGet, Route(nameof(LogOut))]
