@@ -238,7 +238,7 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
                 entity.HasOne(t => t.Category)
                     .WithMany(c => c.ProgrammingTasks)
                     .HasForeignKey(t => t.CategoryId)
-                    .OnDelete(DeleteBehavior.Cascade);
+                    .OnDelete(DeleteBehavior.SetNull);
                 
             });
             

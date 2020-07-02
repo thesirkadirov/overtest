@@ -60,7 +60,6 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.Administration.Controllers
         [HttpPost, ValidateAntiForgeryToken, Route(nameof(Edit) + "/{categoryId:Guid?}")]
         public async Task<IActionResult> Edit(ProgrammingTaskCategory model, Guid? categoryId = null)
         {
-
             // ReSharper disable once InvertIf
             if (ModelState.IsValid)
             {
@@ -107,7 +106,18 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.Administration.Controllers
             }
 
             return View(ViewsDirectoryPath + "Edit.cshtml", model);
-
+        }
+        
+        [HttpPost, ValidateAntiForgeryToken, Route(nameof(Remove))]
+        public async Task<IActionResult> Remove(Guid tasksCategoryId)
+        {
+            if (!await _databaseContext.ProgrammingTaskCategories.AnyAsync(c => c.Id == tasksCategoryId))
+                return NotFound();
+            
+            _databaseContext.ProgrammingTaskCategories.Remove(new ProgrammingTaskCategory { Id = tasksCategoryId });
+            await _databaseContext.SaveChangesAsync();
+            
+            return RedirectToAction("Categories", "Archive", new { area = "TasksArchive" });
         }
         
         [NonAction]

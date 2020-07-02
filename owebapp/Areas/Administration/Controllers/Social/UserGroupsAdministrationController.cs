@@ -5,9 +5,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using Sirkadirov.Overtest.Libraries.Shared.Database;
 using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Identity;
 using Sirkadirov.Overtest.Libraries.Shared.Methods;
+using Sirkadirov.Overtest.WebApplication.Areas.Administration.Models.UserGroupsAdministrationController;
 using Sirkadirov.Overtest.WebApplication.Extensions.Filters;
 
 namespace Sirkadirov.Overtest.WebApplication.Areas.Administration.Controllers
@@ -23,11 +25,13 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.Administration.Controllers
         
         private readonly OvertestDatabaseContext _databaseContext;
         private readonly UserManager<User> _userManager;
+        private readonly IStringLocalizer<UserGroupsAdministrationController> _localizer;
         
-        public UserGroupsAdministrationController(OvertestDatabaseContext databaseContext, UserManager<User> userManager)
+        public UserGroupsAdministrationController(OvertestDatabaseContext databaseContext, UserManager<User> userManager, IStringLocalizer<UserGroupsAdministrationController> localizer)
         {
             _databaseContext = databaseContext;
             _userManager = userManager;
+            _localizer = localizer;
         }
         
         [HttpGet, Route("Edit/{userGroupId:guid?}")]
@@ -58,7 +62,7 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.Administration.Controllers
             
         }
 
-        [HttpPost, Route("Edit/{userGroupId:guid?}")]
+        [HttpPost, ValidateAntiForgeryToken, Route("Edit/{userGroupId:guid?}")]
         [SuppressMessage("ReSharper", "RedundantAssignment")]
         public async Task<IActionResult> Edit(UserGroup model, Guid? userGroupId = null)
         {
@@ -104,6 +108,51 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.Administration.Controllers
             
             return RedirectToAction("View", "UserGroups", new {area = "Social", userGroupId});
             
+        }
+        
+        [HttpGet, Route("Remove/{userGroupId:guid}")]
+        public async Task<IActionResult> Remove(Guid userGroupId)
+        {
+            
+            const string actionViewPath = ViewsDirectoryPath + nameof(Remove) + ".cshtml";
+            var currentUserId = new Guid(_userManager.GetUserId(HttpContext.User));
+
+            if (!await _databaseContext.UserGroups.AnyAsync(g => g.Id == userGroupId && g.GroupCuratorId == currentUserId))
+                return NotFound();
+
+            return View(actionViewPath, new UserGroupRemovalModel
+            {
+                UserGroupId = userGroupId
+            });
+
+        }
+        
+        [HttpPost, ValidateAntiForgeryToken, Route("Remove/{userGroupId:guid}")]
+        public async Task<IActionResult> Remove(Guid userGroupId, UserGroupRemovalModel model)
+        {
+            
+            const string actionViewPath = ViewsDirectoryPath + nameof(Remove) + ".cshtml";
+            var currentUserId = new Guid(_userManager.GetUserId(HttpContext.User));
+            
+            model.UserGroupId = userGroupId;
+            
+            if (!ModelState.IsValid)
+                return View(actionViewPath, model);
+            
+            if (!await _databaseContext.UserGroups.AnyAsync(g => g.Id == userGroupId && g.GroupCuratorId == currentUserId))
+                return NotFound();
+            
+            if (!await _userManager.CheckPasswordAsync(await _userManager.GetUserAsync(HttpContext.User), model.PasswordConfirmation))
+            {
+                ModelState.AddModelError(string.Empty, _localizer["Ви ввели неправильний пароль до свого облікового запису! Перевірте його, та спробуйте ще раз."]);
+                return View(actionViewPath, model);
+            }
+            
+            _databaseContext.UserGroups.Remove(new UserGroup { Id = userGroupId });
+            await _databaseContext.SaveChangesAsync();
+
+            return RedirectToAction("List", "UserGroups", new {Area = "Social"});
+
         }
         
         #region User groups API

@@ -1,5 +1,4 @@
 ﻿@using Sirkadirov.Overtest.WebApplication.ViewComponents.Shared
-@using Microsoft.EntityFrameworkCore
 @model Sirkadirov.Overtest.WebApplication.Areas.Social.Models.UserGroupsController.UserGroupsListModel
 
 @{
@@ -72,9 +71,9 @@
         
         @foreach (var userGroup in Model.UserGroupsList)
         {
-            <div class="card rounded-lg shadow-sm position-relative">
+            <div class="card rounded-lg shadow-sm">
                 
-                <div class="card-body">
+                <div class="card-body position-relative">
                     <a class="d-block h5 m-0 font-weight-bold text-dark text-decoration-none stretched-link"
                        asp-area="Social"
                        asp-controller="UserGroups"
@@ -83,20 +82,24 @@
                     >@userGroup.DisplayName</a>
                 </div>
                 
-                @*if (isUserHasCuratorPrivileges)
+                @if (isUserHasCuratorPrivileges)
                 {
-                    <div class="card-footer">
+                    <div class="card-footer d-flex justify-content-between">
                         
-                        <a class="btn btn-warning btn-sm" title="@Localizer["Редагувати інформацію про категорію"]" asp-area="Administration" asp-controller="CategoriesAdministration" asp-action="Edit" asp-route-categoryId="@tasksCategory.Id">
-                            <i class="fas fa-pen"></i> @Localizer["Змінити"]
-                        </a>
+                        <div>
+                            <a class="btn btn-warning btn-sm rounded-lg float-left" asp-area="Administration" asp-controller="UserGroupsAdministration" asp-action="Edit" asp-route-userGroupId="@userGroup.Id">
+                                <i class="fas fa-pen"></i> @Localizer["Редагувати"]
+                            </a>
+                        </div>
                         
-                        <a class="btn btn-danger text-white btn-sm" title="@Localizer["Видалити категорію"]">
-                            <i class="fas fa-trash"></i> @Localizer["Видалити"]
-                        </a>
-                        
+                        <div>
+                            <a class="btn btn-danger btn-sm rounded-lg float-right" asp-area="Administration" asp-controller="UserGroupsAdministration" asp-action="Remove" asp-route-userGroupId="@userGroup.Id">
+                                <i class="fas fa-trash"></i> @Localizer["Видалити"]
+                            </a>
+                        </div>
+
                     </div>
-                }*@
+                }
                 
             </div>
         }

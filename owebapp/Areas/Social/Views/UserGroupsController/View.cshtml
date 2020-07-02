@@ -75,7 +75,7 @@
                 <a class="btn btn-light d-inline-block rounded-lg" asp-area="Administration" asp-controller="UserGroupsAdministration" asp-action="Edit" asp-route-userGroupId="@userGroupId">
                     <i class="fas fa-users-cog"></i> @Localizer["Редагувати групу"]
                 </a>
-                <a class="btn btn-light d-inline-block rounded-lg" href="" title="@Localizer["Бажаєте видалити групу? Разом з нею видаляються усі її користувачі."]">
+                <a class="btn btn-light d-inline-block rounded-lg" asp-area="Administration" asp-controller="UserGroupsAdministration" asp-action="Remove" asp-route-userGroupId="@userGroupId">
                     <span class="text-danger"><i class="fas fa-trash"></i> @Localizer["Видалити групу"]</span>
                 </a>
             </div>

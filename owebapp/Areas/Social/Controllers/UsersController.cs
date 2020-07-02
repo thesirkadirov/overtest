@@ -57,7 +57,7 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.Social.Controllers
         
         #endregion
 
-        [HttpGet, Route(nameof(List) + "/{page:int?}")]
+        [HttpGet, Route(nameof(List))]
         [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
         public async Task<IActionResult> List(int page = 1, Guid? groupId = null, string institutionName = "", string searchQuery = "")
         {
@@ -77,24 +77,28 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.Social.Controllers
                     ItemsPerPage = ItemsPerPage
                 }
             };
-            
-            model.ItemsList = await
+
+            var query =
                 (
                     from user in _databaseContext.Users
                     // Search queries
-                    where (groupId == null || user.UserGroupId == groupId) 
-                    where (searchQuery == null || searchQuery.Length == 0 || EF.Functions.Like(user.FullName, $"%{searchQuery}%")) 
-                    where (institutionName == null || institutionName.Length == 0 || EF.Functions.Like(user.InstitutionName, $"%{institutionName}%"))
+                    where (groupId == null || user.UserGroupId == groupId)
+                    where (searchQuery == null || searchQuery.Length == 0 ||
+                           EF.Functions.Like(user.FullName, $"%{searchQuery}%"))
+                    where (institutionName == null || institutionName.Length == 0 ||
+                           EF.Functions.Like(user.InstitutionName, $"%{institutionName}%"))
                     // Left join with testing applications
-                    join application in _databaseContext.TestingApplications on user.Id equals application.AuthorId into applications 
+                    join application in _databaseContext.TestingApplications on user.Id equals application.AuthorId into
+                        applications
                     from application in applications
                         .Where(a => a.CompetitionId == null)
                         .Where(a => a.Status == TestingApplication.ApplicationStatus.Verified)
-                        .Where(a => a.TestingResults.SolutionAdjudgement != TestingApplication.ApplicationTestingResults.SolutionAdjudgementType.ZeroSolution)
+                        .Where(a => a.TestingResults.SolutionAdjudgement != TestingApplication.ApplicationTestingResults
+                            .SolutionAdjudgementType.ZeroSolution)
                         .Where(a => a.TestingType == TestingApplication.ApplicationTestingType.ReleaseMode)
                         .DefaultIfEmpty()
                     // Select joined data
-                    select new 
+                    select new
                     {
                         user.Id, user.Type, user.UserGroupId,
                         user.FullName, user.InstitutionName,
@@ -104,20 +108,22 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.Social.Controllers
                 {
                     g.Id, g.Type, g.UserGroupId, g.FullName, g.InstitutionName
                 })
-                .Select(s => new UsersListItemModel 
+                .Select(s => new UsersListItemModel
                 {
-                    Id = s.Key.Id, Type = s.Key.Type, UserGroupId = s.Key.UserGroupId, 
-                    FullName = s.Key.FullName, InstitutionName = s.Key.InstitutionName, 
+                    Id = s.Key.Id, Type = s.Key.Type, UserGroupId = s.Key.UserGroupId,
+                    FullName = s.Key.FullName, InstitutionName = s.Key.InstitutionName,
                     Rating = s.Sum(sum => sum.GivenDifficulty)
                 })
-                .Skip(model.Pagination.PreviousItemsCount).Take(ItemsPerPage)
                 .OrderByDescending(order => order.Rating)
                 .ThenBy(order => order.FullName)
-                .AsNoTracking()
-                .ToListAsync();
+                .AsNoTracking();
+
+            model.ItemsList = await query
+                .Skip(model.Pagination.PreviousItemsCount)
+                .Take(ItemsPerPage).ToListAsync();
             
-            model.Pagination.TotalItems = model.ItemsList.Count;
-            
+            model.Pagination.TotalItems = await query.CountAsync();
+
             if (model.Pagination.TotalItems <= 0 && page > 1)
                 return NotFound();
             

@@ -1,1 +1,79 @@
-﻿
+﻿@using Sirkadirov.Overtest.WebApplication.ViewComponents.Shared
+@using Microsoft.EntityFrameworkCore
+@model Sirkadirov.Overtest.WebApplication.Areas.Administration.Models.UserGroupsAdministrationController.UserGroupRemovalModel
+
+@{
+    
+    var userGroupTitle = await DatabaseContext.UserGroups
+        .Where(g => g.Id == Model.UserGroupId)
+        .Select(s => s.DisplayName)
+        .FirstAsync();
+    
+    ViewBag.PageTitle = string.Format(Localizer["Підтвердіть видалення групи користувачів \"{0}\""].Value, userGroupTitle);
+    
+}
+
+@section FullwidthSection
+{
+    
+    @(await Component.InvokeAsync<ServiceHeaderViewComponent>(new ServiceHeaderViewComponent.HeaderModel
+    {
+        PageTitle = string.Format(Localizer["Підтвердіть видалення групи користувачів \"{0}\""].Value, userGroupTitle),
+        SubtitleLink = new ServiceHeaderViewComponent.HeaderModel.IconLinkData
+        {
+            Enabled = true,
+            LinkDestination = Url.Action("View", "UserGroups", new { area = "Social", userGroupId = Model.UserGroupId }),
+            LinkIcon = "fas fa-chevron-left",
+            LinkText = Localizer["Повернутися на сторінку групи"].Value
+        }
+    }))
+
+}
+
+<div class="row no-selection-allowed">
+    <div class="col-md-6 mt-auto mb-auto">
+        
+        <h5>@Localizer["На що впливає видалення групи:"]</h5>
+        
+        <ul class="text-justify">
+            <li class="mt-1 mb-1">
+                @Localizer["Усі користувачі, які пов'язані з цією групою, будуть видалені без можливості відновлення."]
+                @Localizer["Разом з тим, з системи буде видалено усю інформацію, що пов'язана з цими користувачами."]
+            </li>
+            <li class="mt-1 mb-1">@Localizer["Результати змагань та інших активностей, у яких брали участь користувачі цієї групи, будуть перераховані."]</li>
+            <li class="mt-1 mb-1">@Localizer["Якщо ця група містить користувачів, які мають тип доступу \"Куратор\", видалення буде рекурсивним (буде видалено усю пов'язану з ними інформацію, а також їх користувачів)."]</li>
+            <li class="mt-1 mb-1">@Localizer["Детальніше про процес видалення ви можете дізнатися з офіційного веб-сайту Overtest."]</li>
+        </ul>
+        
+    </div>
+    <div class="col-md-6 mt-auto mb-auto">
+        
+        <div class="card rounded-lg shadow-sm mt-3 mb-3">
+            <div class="card-body">
+                <form asp-action="Remove" asp-route-userGroupId="@Model.UserGroupId" class="mt-0 mb-0">
+                    
+                    @Html.AntiForgeryToken()
+                    
+                    <h5 class="m-0">@Localizer["Підтвердіть видалення групи користувачів:"]</h5>
+                    
+                    <p class="mt-3 mb-3">
+                        @Localizer["Задля зменшення вірогідності помилкового видалення важливої інформації, для продовження виконання операції з видалення групи користувачів, вам необхідно повторно ввести свій пароль."]
+                    </p>
+                    
+                    <input type="hidden" asp-for="UserGroupId" value="@Model.UserGroupId" />
+                    
+                    <div class="text-danger mt-3 mb-3">@Html.ValidationSummary()</div>
+                    
+                    <div class="form-group mt-3 mb-3">
+                        <label asp-for="PasswordConfirmation" class="font-weight-bold">@Localizer["Введіть ваш пароль повторно:"]</label>
+                        <input asp-for="PasswordConfirmation" type="password" class="form-control rounded-lg" placeholder="**********" />
+                    </div>
+                    
+                    <button type="submit" class="btn btn-danger btn-block rounded-lg"><i class="fas fa-trash"></i> @Localizer["Підтвердити видалення"]</button>
+
+                </form>
+            </div>
+        </div>
+        
+    </div>
+</div>
