@@ -270,6 +270,18 @@
     </script>
     
 }
+else
+{
+    <div class="card rounded-lg border-0 shadow mt-0 mb-5 no-selection-allowed">
+        <div class="card-body">
+            <div class="overflow-auto text-nowrap">
+                <a class="btn btn-light d-inline-block rounded-lg" asp-area="Social" asp-controller="Users" asp-action="UserProfile" asp-route-userId="@userGroupInformation.GroupCuratorId">
+                    <i class="fas fa-user-circle"></i> @userGroupInformation.GroupCuratorFullName
+                </a>
+            </div>
+        </div>
+    </div>
+}
 @* ====== /User group administration panel ====== *@
 
 @* ====== Items view ====== *@

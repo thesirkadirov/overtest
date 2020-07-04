@@ -130,7 +130,6 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
 
             modelBuilder.Entity<User>(entity =>
             {
-                
                 entity.HasIndex(u => u.Email).IsUnique();
 
                 entity.Property(u => u.FullName).IsUnicode().IsRequired();
@@ -142,27 +141,19 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
                 
                 entity.Property(u => u.Registered).HasDefaultValue(DateTime.MinValue).IsRequired();
                 entity.Property(u => u.LastSeen).HasDefaultValue(DateTime.MinValue).IsRequired();
-                
-                /*
-                 * Relationships
-                 */
-                
+
                 entity.HasOne(u => u.UserGroup)
                     .WithMany(g => g.Users)
-                    .HasForeignKey(u => u.UserGroupId)
+                    .HasForeignKey(g => g.UserGroupId)
                     .OnDelete(DeleteBehavior.Cascade);
-                
-                // UserPhoto defined in [UserPhoto]
-                
             });
             
             /*
              * [UserGroup] entity
              */
-
+            
             modelBuilder.Entity<UserGroup>(entity =>
             {
-
                 entity.HasKey(g => g.Id);
                 
                 entity.Property(g => g.DisplayName).IsUnicode();
@@ -171,15 +162,10 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
                     .HasMaxLength(255)
                     .HasDefaultValue();
                 
-                /*
-                 * Relationships
-                 */
-
                 entity.HasOne(g => g.GroupCurator)
-                    .WithMany()
+                    .WithMany(u => u.CuratedUserGroups)
                     .HasForeignKey(g => g.GroupCuratorId)
                     .OnDelete(DeleteBehavior.Cascade);
-
             });
             
             /*
@@ -188,20 +174,14 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
 
             modelBuilder.Entity<UserPhoto>(entity =>
             {
-                
                 entity.HasKey(p => p.Id);
 
                 entity.Property(p => p.Source).IsRequired();
-                
-                /*
-                 * Relationships
-                 */
                 
                 entity.HasOne(p => p.User)
                     .WithOne(u => u.UserPhoto)
                     .HasForeignKey<User>(u => u.UserPhotoId)
                     .OnDelete(DeleteBehavior.Cascade);
-                
             });
             
             /* ===== [TasksArchive] section ===== */
@@ -212,7 +192,6 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
             
             modelBuilder.Entity<ProgrammingTask>(entity =>
             {
-                
                 entity.HasKey(t => t.Id);
 
                 entity.Property(t => t.Created).IsRequired();
@@ -239,7 +218,6 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
                     .WithMany(c => c.ProgrammingTasks)
                     .HasForeignKey(t => t.CategoryId)
                     .OnDelete(DeleteBehavior.SetNull);
-                
             });
             
             /*
@@ -248,18 +226,10 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
             
             modelBuilder.Entity<ProgrammingTaskCategory>(entity =>
             {
-                
                 entity.HasKey(c => c.Id);
                 
                 entity.Property(c => c.DisplayName).IsUnicode().IsRequired();
                 entity.Property(c => c.Description).IsUnicode().HasDefaultValue().IsRequired(false);
-                
-                /*
-                 * Relationships
-                 */
-                
-                // ProgrammingTasks list defined in [ProgrammingTask]
-                
             });
             
             /*
@@ -268,14 +238,12 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
             
             modelBuilder.Entity<ProgrammingLanguage>(entity =>
             {
-                
                 entity.HasKey(l => l.Id);
 
                 entity.Property(l => l.DisplayName).IsUnicode().IsRequired();
                 entity.Property(l => l.Description).IsUnicode().HasDefaultValue().IsRequired(false);
                 
                 entity.Property(l => l.SyntaxHighlightingOptions).HasDefaultValue().IsRequired(false);
-
             });
             
             /* ===== [TestingApplications] section ===== */
@@ -286,7 +254,6 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
 
             modelBuilder.Entity<TestingApplication>(entity =>
             {
-                
                 entity.HasKey(a => a.Id);
 
                 entity.Property(a => a.Created).IsRequired();
@@ -298,10 +265,6 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
                     .IsConcurrencyToken()
                     .IsRequired();
                 
-                /*
-                 * [TestingApplicationSourceCode] owned class
-                 */
-                
                 entity.OwnsOne(a => a.SourceCode, builder =>
                 {
                     builder.Property(c => c.SourceCode).IsUnicode().IsRequired();
@@ -312,10 +275,6 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
                         .OnDelete(DeleteBehavior.Cascade);
                     
                 });
-                
-                /*
-                 * [ApplicationTestingResults] owned class
-                 */
                 
                 entity.OwnsOne(a => a.TestingResults, builder =>
                 {
@@ -332,10 +291,6 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
                     
                 });
                 
-                /*
-                 * Other relationships
-                 */
-                
                 entity.HasOne(a => a.Author)
                     .WithMany()
                     .HasForeignKey(a => a.AuthorId)
@@ -350,7 +305,6 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
                     .WithMany()
                     .HasForeignKey(a => a.ProgrammingTaskId)
                     .OnDelete(DeleteBehavior.Cascade);
-
             });
 
             /* ===== [Competitions] section ===== */
@@ -383,17 +337,10 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
                 entity.Property(c => c.EnableWaitingPage).HasDefaultValue(false).IsRequired();
                 entity.Property(c => c.WaitingPageActivationTime).HasDefaultValue(DateTime.MinValue).IsRequired();
                 
-                /*
-                 * Relationships
-                 */
-                
                 entity.HasOne(c => c.Curator)
                     .WithMany()
                     .HasForeignKey(c => c.CuratorId)
                     .OnDelete(DeleteBehavior.Cascade);
-                
-                // CompetitionProgrammingTasks list defined in [CompetitionProgrammingTask]
-
             });
             
             /*
@@ -408,10 +355,6 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
                 entity.Property(t => t.JudgementType)
                     .HasDefaultValue(CompetitionProgrammingTask.ProgrammingTaskJudgementType.CompleteSolution)
                     .IsRequired();
-                
-                /*
-                 * Relationships
-                 */
                 
                 entity.HasOne(t => t.ProgrammingTask)
                     .WithMany()
@@ -431,13 +374,8 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
 
             modelBuilder.Entity<CompetitionUser>(entity =>
             {
-
                 entity.HasKey(u => new {u.CompetitionId, u.UserId});
                 
-                /*
-                 * Relationships
-                 */
-
                 entity.HasOne(u => u.Competition)
                     .WithMany(c => c.CompetitionUsers)
                     .HasForeignKey(u => u.CompetitionId)
@@ -447,7 +385,6 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
                     .WithMany()
                     .HasForeignKey(u => u.UserId)
                     .OnDelete(DeleteBehavior.Cascade);
-
             });
             
             /* ===== [System] section ===== */
@@ -458,11 +395,8 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
             
             modelBuilder.Entity<ConfigurationStorage.ConfigurationKeyValuePair>(entity =>
             {
-                
                 entity.HasKey(s => s.Key);
-
                 entity.Property(s => s.Value);
-
             });
             
         }

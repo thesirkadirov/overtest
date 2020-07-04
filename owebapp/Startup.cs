@@ -85,7 +85,7 @@ namespace Sirkadirov.Overtest.WebApplication
                         options.SignIn.RequireConfirmedEmail = false;
                         options.SignIn.RequireConfirmedPhoneNumber = false;
 
-                    }).AddEntityFrameworkStores<OvertestDatabaseContext>();
+                    }).AddEntityFrameworkStores<OvertestDatabaseContext>().AddDefaultTokenProviders();
                 
                 }
                 catch (Exception innerException)

@@ -1,8 +1,10 @@
 ﻿@using Sirkadirov.Overtest.WebApplication.ViewComponents.Shared
-@using Sirkadirov.Overtest.Libraries.Shared.Database.Operators
+@using Microsoft.EntityFrameworkCore
 @model Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Identity.User
 @{
     ViewBag.PageTitle = string.Format(Localizer["Профіль користувача {0}"].Value, Model.FullName);
+    var currentUserId = new Guid(UserManager.GetUserId(Context.User));
+    var currentUserEditPrivileges = await DatabaseContext.UserPermissionsOperator.GetUserDataEditPermissionAsync(Model.Id, currentUserId);
 }
 
 @section FullwidthSection
@@ -87,11 +89,34 @@
 
                                 <div class="dropdown-divider"></div>
 
-                                @if (await DatabaseContext.UserPermissionsOperator.GetUserDataEditPermissionAsync(Model.Id, new Guid(UserManager.GetUserId(Context.User))))
+                                @if (currentUserEditPrivileges)
                                 {
-                                    <a class="dropdown-item">
+                                    
+                                    <h6 class="dropdown-header">@Localizer["Управління обліковим записом"]</h6>
+                                    
+                                    <a class="dropdown-item" asp-area="Administration" asp-controller="UsersAdministration" asp-action="EditUserProfile" asp-route-userId="@Model.Id">
                                         <i class="fas fa-user-edit"></i> @Localizer["Редагувати профіль"]
                                     </a>
+                                    <a class="dropdown-item" asp-area="Administration" asp-controller="UsersAdministration" asp-action="ChangeUserPassword" asp-route-userId="@Model.Id">
+                                        <i class="fas fa-fingerprint"></i> @Localizer["Змінити пароль"]
+                                    </a>
+
+                                    if (Model.Id != currentUserId)
+                                    {
+                                        <div class="dropdown-divider"></div>
+                                        
+                                        <h6 class="dropdown-header">@Localizer["Адміністрування"]</h6>
+                                        
+                                        <a class="dropdown-item" data-toggle="modal" data-target="#userTypeChangeModal" href="#">
+                                            <i class="fas fa-shield-alt"></i> @Localizer["Змінити права доступу"]
+                                        </a>
+                                        
+                                        <a class="dropdown-item text-danger" data-toggle="modal" data-target="#userRemovalModal" href="#">
+                                            <i class="fas fa-trash-alt"></i> @Localizer["Видалити користувача"]
+                                        </a>
+                                        
+                                    }
+                                    
                                 }
 
                             </span>;
@@ -109,7 +134,105 @@
     
 }
 
+@if (currentUserEditPrivileges && Model.Id != currentUserId)
+{
+    @* Change user type modal *@
+    <div class="modal fade no-selection-allowed" id="userTypeChangeModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-center"><i class="fas fa-shield-alt"></i></h5>
+                    <h5 class="modal-title text-center ml-auto">@Localizer["Зміна прав доступу користувача"]</h5>
+                    <button class="close" data-dismiss="modal"><span>&times;</span></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-secondary text-justify mt-0 mb-3">
+                        <strong><i class="fas fa-exclamation-triangle"></i> @Localizer["Зверніть увагу!"]</strong>
+                        @Localizer["Після підвищення рівня доступу користувача, ви більше не зможете понизити його (наприклад, з \"Instructor\" до \"Student\")."]
+                        @Localizer["Це обумовлено можливостями, що надаються користувачам вищих рівнів доступу, а також теоретично можливою втратою важливої інформації."]
+                        @Localizer["Понижувати права доступу може лише суперадміністратор системи."]
+                    </div>
+                    <div class="row mt-3 mb-0">
+                        
+                        @{
+                            var currentUserType = await DatabaseContext.Users
+                                .Where(u => u.Id == currentUserId)
+                                .Select(s => s.Type)
+                                .FirstAsync();
 
+                            var studentTypeEnabled = currentUserType == UserType.SuperUser && Model.Type != UserType.Student;
+                            var instructorTypeEnabled = (currentUserType == UserType.SuperUser || currentUserType == UserType.Administrator) && Model.Type != UserType.Instructor;
+                            var administratorUserTypeEnabled = currentUserType == UserType.SuperUser && Model.Type != UserType.Administrator;
+                            
+                        }
+                        
+                        <div class="col-md">
+                            <form class="form-inline m-0" method="post" asp-area="Administration" asp-controller="UsersAdministration" asp-action="ChangeUserType" asp-route-userId="@Model.Id">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="newUserType" value="@UserType.Student"/>
+                                <button type="submit" class="btn btn-primary btn-block rounded-lg" @(!studentTypeEnabled ? "disabled" : "")>
+                                    <i class="fas fa-user-graduate"></i> @nameof(UserType.Student)
+                                </button>
+                            </form>
+                        </div>
+
+                        <div class="col-md">
+                            <form class="form-inline m-0" method="post" asp-area="Administration" asp-controller="UsersAdministration" asp-action="ChangeUserType" asp-route-userId="@Model.Id">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="newUserType" value="@UserType.Instructor"/>
+                                <button type="submit" class="btn btn-primary btn-block rounded-lg" @(!instructorTypeEnabled ? "disabled" : "")>
+                                    <i class="fas fa-chalkboard-teacher"></i> @nameof(UserType.Instructor)
+                                </button>
+                            </form>
+                        </div>
+
+                        <div class="col-md">
+                            <form class="form-inline m-0" method="post" asp-area="Administration" asp-controller="UsersAdministration" asp-action="ChangeUserType" asp-route-userId="@Model.Id">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="newUserType" value="@UserType.Administrator"/>
+                                <button type="submit" class="btn btn-primary btn-block rounded-lg" @(!administratorUserTypeEnabled ? "disabled" : "")>
+                                    <i class="fas fa-user-shield"></i> @nameof(UserType.Administrator)
+                                </button>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @* /Change user type modal *@
+    
+    @* Remove user modal dialog *@
+    <div class="modal fade no-selection-allowed" id="userRemovalModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content border border-danger">
+                <div class="modal-header">
+                    <h5 class="modal-title text-center"><i class="fas fa-trash-alt"></i></h5>
+                    <h5 class="modal-title text-center ml-auto">@Localizer["Видалення користувача"]</h5>
+                    <button class="close" data-dismiss="modal"><span>&times;</span></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mt-2 mb-2">
+                        @Localizer["Ви дійсно хочете видалити зазначеного користувача і усі пов'язані з ним дані з системи?"]
+                        @Localizer["Цю дію відмінити неможливо!"]
+                    </p>
+                </div>
+                <div class="modal-footer d-flex justify-content-between">
+
+                    <button type="button" class="btn btn-outline-secondary rounded-lg" data-dismiss="modal"><i class="fas fa-fire-extinguisher"></i> @Localizer["Відмінити"]</button>
+
+                    <form method="post" asp-area="Administration" asp-controller="UsersAdministration" asp-action="RemoveUser" asp-route-userId="@Model.Id" class="form-inline">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-outline-danger rounded-lg"><i class="fas fa-trash-alt"></i> @Localizer["Видалити користувача"]</button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    @* /Remove user modal dialog *@
+}
 
 <div class="row m-0">
     <div class="col-md-4">

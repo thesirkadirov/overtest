@@ -13,6 +13,7 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Identity
         [Required, MinLength(2), MaxLength(100)]
         public string DisplayName { get; set; }
         
+        [MaxLength(255)]
         public string AccessToken { get; set; }
         
         public User GroupCurator { get; set; }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 
@@ -33,6 +34,8 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Identity
 
         public UserPhoto UserPhoto { get; set; }
         public Guid? UserPhotoId { get; set; }
+        
+        public List<UserGroup> CuratedUserGroups { get; set; }
         
     }
     

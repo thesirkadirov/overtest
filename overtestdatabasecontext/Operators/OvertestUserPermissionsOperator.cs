@@ -97,21 +97,24 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database.Operators
             
         }
 
-        public async Task<bool> GetUserDataEditPermissionAsync(Guid editedUserId, Guid editorUserId)
+        public async Task<bool> GetUserDataEditPermissionAsync(Guid editedUserId, Guid editorUserId, bool allowSameUser = true)
         {
             
-            if (editedUserId == editorUserId)
+            if (allowSameUser && editedUserId == editorUserId)
                 return true;
             
             try
             {
                 
+                // Check specified users exist
                 if (await _databaseContext.Users.Where(u => u.Id == editedUserId || u.Id == editorUserId).CountAsync() != 2)
                     return false;
                 
+                // If editor type is SuperUser, allow to edit without any questions
                 if (await _databaseContext.Users.Where(u => u.Id == editorUserId && u.Type == UserType.SuperUser).AnyAsync())
                     return true;
                 
+                // Get edited user's curator
                 var editedUserCuratorId = await _databaseContext.Users
                     .Where(u => u.Id == editedUserId)
                     .Include(u => u.UserGroup)
@@ -121,6 +124,7 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database.Operators
                 if (editedUserCuratorId == editorUserId)
                     return true;
                 
+                // Get edited user's curator's curator :)
                 var editedUserHeadCuratorId = await _databaseContext.Users
                     .Where(u => u.Id == editedUserId)
                     .Include(u => u.UserGroup)

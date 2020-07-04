@@ -74,6 +74,7 @@
                     <button type="button" class="btn btn-secondary rounded-lg" data-dismiss="modal"><i class="fas fa-fire-extinguisher"></i> @Localizer["Відмінити"]</button>
                     
                     <form method="post" asp-area="Administration" asp-controller="CategoriesAdministration" asp-action="Remove" class="form-inline">
+                        @Html.AntiForgeryToken()
                         <input type="hidden" name="tasksCategoryId" value="" />
                         <button type="submit" class="btn btn-outline-danger rounded-lg"><i class="fas fa-trash-alt"></i> @Localizer["Видалити категорію"]</button>
                     </form>

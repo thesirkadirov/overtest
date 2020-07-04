@@ -1,33 +1,7 @@
-﻿@using Microsoft.Extensions.Hosting
-@using Sirkadirov.Overtest.Libraries.Shared.Database.Storage
-@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment WebHostEnvironment
+﻿@using Sirkadirov.Overtest.Libraries.Shared.Database.Storage
 @{
     Layout = "Layouts/_DefaultEmptyLayout";
     ViewBag.PageTitle = Localizer["Overtest"].Value;
-}
-
-@if (!WebHostEnvironment.IsProduction())
-{
-    <div class="alert alert-warning alert-dismissible fade show no-selection-allowed">
-        <div class="container">
-            
-            <strong><i class="fas fa-exclamation-triangle"></i> @Localizer["Увага!"]</strong>
-            
-            @string.Format(
-                Localizer["Overtest працює у середовищі {0}, що потенціально може спричинити витік чутливої інформації, такої як токени, повнотекстові помилки, системна інформація, тощо."].Value,
-                WebHostEnvironment.EnvironmentName
-            )
-            
-            @Localizer["Продовжуйте роботу з Overtest лише у тому випадку, якщо ви займаєтеся її розробкою чи тестуванням."]
-            
-            <strong>@Localizer["Якщо ви - не адміністратор системи, негайно припиніть використання цього веб-додатку!"]</strong>
-            
-            <a class="btn btn-sm btn-light rounded-lg" target="_blank" href="https://overtest.sirkadirov.com/">@Localizer["Технічна підтримка"]</a>
-            
-            <button class="close" data-dismiss="alert">&times;</button>
-            
-        </div>
-    </div>
 }
 
 @if (!DatabaseContext.SystemConfiguration[ConfigurationStorage.CommonKeys.OvertestInstallationFinished].BoolValue)
