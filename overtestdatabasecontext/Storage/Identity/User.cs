@@ -9,10 +9,10 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Identity
     public class User : IdentityUser<Guid>
     {
         
-        [Required, MinLength(3), MaxLength(255)]
+        [MinLength(3), MaxLength(255)]
         public string FullName { get; set; }
         
-        [MaxLength(255)]
+        [MinLength(0), MaxLength(255)]
         public string InstitutionName { get; set; }
         
         public UserType Type { get; set; }

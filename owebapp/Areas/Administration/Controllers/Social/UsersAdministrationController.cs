@@ -34,13 +34,54 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.Administration.Controllers
         [HttpGet, Route("Edit/Profile/{userId:guid}")]
         public async Task<IActionResult> EditUserProfile(Guid userId)
         {
-            throw new NotImplementedException();
+            if (!await UserExists(userId))
+                return NotFound();
+            
+            const string actionViewPath = ViewsDirectoryPath + nameof(EditUserProfile) + ".cshtml";
+            
+            var currentUserId = new Guid(_userManager.GetUserId(HttpContext.User));
+
+            if (!await _databaseContext.UserPermissionsOperator.GetUserDataEditPermissionAsync(userId, currentUserId))
+                return Forbid();
+
+            var userInfo = await _databaseContext.Users
+                .Where(u => u.Id == userId)
+                .Select(s => new EditUserProfileModel
+                {
+                    UserId = s.Id,
+                    FullName = s.FullName,
+                    InstitutionName = s.InstitutionName
+                })
+                .FirstAsync();
+
+            return View(actionViewPath, userInfo);
         }
         
         [HttpPost, ValidateAntiForgeryToken, Route("Edit/Profile/{userId:guid}")]
-        public async Task<IActionResult> EditUserProfile(Guid userId, User model)
+        public async Task<IActionResult> EditUserProfile(Guid userId, EditUserProfileModel model)
         {
-            throw new NotImplementedException();
+            if (!await UserExists(userId))
+                return NotFound();
+            
+            const string actionViewPath = ViewsDirectoryPath + nameof(EditUserProfile) + ".cshtml";
+            
+            var currentUserId = new Guid(_userManager.GetUserId(HttpContext.User));
+            model.UserId = userId;
+
+            if (!await _databaseContext.UserPermissionsOperator.GetUserDataEditPermissionAsync(userId, currentUserId))
+                return Forbid();
+
+            if (!ModelState.IsValid)
+                return View(actionViewPath, model);
+
+            var userObject = await _databaseContext.Users.FirstAsync(u => u.Id == userId);
+            userObject.FullName = model.FullName;
+            userObject.InstitutionName = model.InstitutionName;
+
+            _databaseContext.Users.Update(userObject);
+            await _databaseContext.SaveChangesAsync();
+
+            return RedirectToAction("UserProfile", "Users", new { area = "Social", userId });
         }
         
         [HttpGet, Route("Edit/ChangePassword/{userId:guid}")]
@@ -50,6 +91,7 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.Administration.Controllers
                 return NotFound();
             
             const string actionViewPath = ViewsDirectoryPath + nameof(ChangeUserPassword) + ".cshtml";
+            
             var currentUserId = new Guid(_userManager.GetUserId(HttpContext.User));
 
             if (!await _databaseContext.UserPermissionsOperator.GetUserDataEditPermissionAsync(userId, currentUserId))
@@ -65,6 +107,7 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.Administration.Controllers
                 return NotFound();
             
             const string actionViewPath = ViewsDirectoryPath + nameof(ChangeUserPassword) + ".cshtml";
+            
             var currentUserId = new Guid(_userManager.GetUserId(HttpContext.User));
 
             if (!await _databaseContext.UserPermissionsOperator.GetUserDataEditPermissionAsync(userId, currentUserId))

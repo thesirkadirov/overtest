@@ -221,7 +221,7 @@
         inviteUsersModalDialogSelector.on('shown.bs.modal', function () {
             
             // Get security token
-            $.get("@Url.Action("GetUserGroupJoinLink", "UserGroupsAdministration", new { area = "Administration", userGroupId = userGroupId })", function(data) {
+            $.get("@Url.Action("GetUserGroupJoinLink", "UserGroupsAdministration", new { area = "Administration", userGroupId })", function(data) {
                 joinLinkSuccessAction(data);
             })
             .fail(function() {
@@ -250,7 +250,7 @@
             joinLinkTextContainerSelector.attr("disabled", "");
             
             // Get new security token
-            $.get("@Url.Action("RegenerateUserGroupJoinLink", "UserGroupsAdministration", new { area = "Administration", userGroupId = userGroupId })", function(data) {
+            $.get("@Url.Action("RegenerateUserGroupJoinLink", "UserGroupsAdministration", new { area = "Administration", userGroupId })", function(data) {
                 joinLinkSuccessAction(data);
             })
             .fail(function() {

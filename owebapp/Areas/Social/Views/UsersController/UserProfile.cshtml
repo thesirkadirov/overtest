@@ -249,7 +249,7 @@
                 </div>;
         }
         
-        <div class="list-group rounded-lg shadow-sm mt-3 mb-3">
+        <div class="list-group rounded-lg border shadow-sm mt-3 mb-3">
 
             @DrawListGroupItem(Localizer["Адреса електронної пошти"].Value, Model.Email, $"mailto:{Model.Email}")(null)
             
@@ -267,7 +267,7 @@
             
         </div>
         
-        <div class="list-group rounded-lg shadow-sm mt-3 mb-3">
+        <div class="list-group rounded-lg border shadow-sm mt-3 mb-3">
             
             @DrawListGroupItem(
                 Localizer["Унікальний ідентифікатор"].Value,
@@ -276,7 +276,7 @@
                     
         </div>
         
-        <div class="list-group rounded-lg shadow-sm mt-3 mb-3">
+        <div class="list-group rounded-lg border shadow-sm mt-3 mb-3">
             
             @DrawListGroupItem(
                 Localizer["Остання дія в системі"].Value,
@@ -292,6 +292,12 @@
         
     </div>
     <div class="col-md-8">
+        
+        <div class="card rounded-lg mt-3 mb-3 no-selection-allowed">
+            <div class="card-body">
+                <p class="lead m-0">@Localizer["Сторінка користувача знаходиться на стадії розробки 🚀!"]</p>
+            </div>
+        </div>
         
     </div>
 </div>
