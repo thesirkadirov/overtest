@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Sirkadirov.Overtest.WebApplication.Areas.Administration.Models.UsersAdministrationController
+namespace Sirkadirov.Overtest.WebApplication.Areas.Administration.Models.Social.UsersAdministrationController
 {
     public class ChangeUserPasswordModel
     {

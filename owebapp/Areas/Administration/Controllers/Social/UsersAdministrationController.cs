@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Sirkadirov.Overtest.Libraries.Shared.Database;
 using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Identity;
-using Sirkadirov.Overtest.WebApplication.Areas.Administration.Models.UsersAdministrationController;
+using Sirkadirov.Overtest.WebApplication.Areas.Administration.Models.Social.UsersAdministrationController;
 using Sirkadirov.Overtest.WebApplication.Extensions.Filters;
 
 namespace Sirkadirov.Overtest.WebApplication.Areas.Administration.Controllers

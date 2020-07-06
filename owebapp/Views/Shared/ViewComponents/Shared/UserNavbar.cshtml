@@ -15,7 +15,9 @@
 <nav class="navbar navbar-global navbar-expand-lg bg-white fixed-top no-selection-allowed">
   <div class="container">
 
-    <a class="navbar-brand font-weight-bold" asp-controller="Welcome" asp-action="Home"><i class="fas fa-trophy"></i> Overtest</a>
+    <a class="navbar-brand font-weight-bold" asp-controller="Welcome" asp-action="Home">
+      <img src="~/assets/svg/logos/sirkadirov-logo.svg" width="30" height="30" class="d-inline-block align-top" loading="lazy" /> <span>Overtest</span>
+    </a>
 
     <a class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#@nameof(UserNavbarViewComponent)">
       <span class="fas fa-bars text-dark"></span>
@@ -37,7 +39,7 @@
 
           @CreateAreaLink("", "Welcome", "Home", "fas fa-home", Localizer["Головна"].Value)(null)
 
-          @CreateAreaLink("TasksArchive", "Archive", "List", "fas fa-folder", Localizer["Архів завдань"].Value)(null)
+          @CreateAreaLink("TasksArchive", "ProgrammingTasksArchive", "List", "fas fa-folder", Localizer["Архів завдань"].Value)(null)
 
           @CreateAreaLink("Social", "Users", "List", "fas fa-users", Localizer["Користувачі"].Value)(null)
 

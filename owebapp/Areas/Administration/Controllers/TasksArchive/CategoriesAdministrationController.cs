@@ -10,7 +10,6 @@ using Sirkadirov.Overtest.WebApplication.Extensions.Filters;
 
 namespace Sirkadirov.Overtest.WebApplication.Areas.Administration.Controllers
 {
-    
     [Area("Administration")]
     [Route("/Administration/TasksArchive/Categories")]
     [AllowedUserTypesFilter(UserType.Administrator, UserType.SuperUser)]
@@ -80,7 +79,7 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.Administration.Controllers
                     await _databaseContext.ProgrammingTaskCategories.AddAsync(createdCategory);
                     await _databaseContext.SaveChangesAsync();
                     
-                    return RedirectToAction("Categories", "Archive", new {area = "TasksArchive"});
+                    return RedirectToAction("Categories", "ProgrammingTasksArchive", new {area = "TasksArchive"});
                     
                 }
                 
@@ -117,7 +116,7 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.Administration.Controllers
             _databaseContext.ProgrammingTaskCategories.Remove(new ProgrammingTaskCategory { Id = tasksCategoryId });
             await _databaseContext.SaveChangesAsync();
             
-            return RedirectToAction("Categories", "Archive", new { area = "TasksArchive" });
+            return RedirectToAction("Categories", "ProgrammingTasksArchive", new { area = "TasksArchive" });
         }
         
         [NonAction]
@@ -129,5 +128,4 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.Administration.Controllers
         }
         
     }
-    
 }

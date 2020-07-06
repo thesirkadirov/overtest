@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Sirkadirov.Overtest.WebApplication.Areas.Administration.Models.UserGroupsAdministrationController
+namespace Sirkadirov.Overtest.WebApplication.Areas.Administration.Models.Social.UserGroupsAdministrationController
 {
     
     public class UserGroupRemovalModel

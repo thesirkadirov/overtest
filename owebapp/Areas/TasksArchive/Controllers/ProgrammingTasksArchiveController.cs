@@ -9,18 +9,17 @@ using Sirkadirov.Overtest.WebApplication.Models.Shared.Pagination;
 
 namespace Sirkadirov.Overtest.WebApplication.Areas.TasksArchive.Controllers
 {
-    
     [Area("TasksArchive")]
     [Route("/TasksArchive/Archive")]
-    public class ArchiveController : Controller
+    public class ProgrammingTasksArchiveController : Controller
     {
         
-        private const string ViewsDirectoryPath = "~/Areas/TasksArchive/Views/ArchiveController/";
+        private const string ViewsDirectoryPath = "~/Areas/TasksArchive/Views/ProgrammingTasksArchiveController/";
         private const int ItemsPerPage = 27;
         
         private readonly OvertestDatabaseContext _databaseContext;
         
-        public ArchiveController(OvertestDatabaseContext databaseContext)
+        public ProgrammingTasksArchiveController(OvertestDatabaseContext databaseContext)
         {
             _databaseContext = databaseContext;
         }
@@ -44,18 +43,20 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.TasksArchive.Controllers
                     ItemsPerPage = ItemsPerPage
                 }
             };
-
-            var databaseQuery = _databaseContext.ProgrammingTasks
-                .AsNoTracking()
-                .Where(t =>
-                    t.Enabled &&
-                    (category != null || t.CategoryId == category) &&
-                    (t.Id.ToString() == searchQuery || EF.Functions.Like(t.Title, $"%{searchQuery}%"))
+            
+            var databaseQuery =
+                (
+                    from programmingTask in _databaseContext.ProgrammingTasks
+                    where programmingTask.VisibleInFreeMode
+                    where EF.Functions.Like(programmingTask.Title, $"%{searchQuery}%")
+                    where (category == null || programmingTask.CategoryId == category)
+                    select programmingTask
                 )
                 .OrderBy(t => t.Difficulty)
                 .ThenBy(t => t.CategoryId)
-                .ThenBy(t => t.Title);
-
+                .ThenBy(t => t.Title)
+                .AsNoTracking();
+            
             model.Pagination.TotalItems = await databaseQuery.CountAsync();
             
             if (model.Pagination.TotalItems <= 0 && page > 1)
@@ -94,5 +95,4 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.TasksArchive.Controllers
         }
         
     }
-    
 }

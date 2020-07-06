@@ -26,14 +26,15 @@
                 
             </span>;
     }
-    
+
+
     @(await Component.InvokeAsync<ServiceHeaderViewComponent>(new ServiceHeaderViewComponent.HeaderModel
     {
         PageTitle = Localizer["Категорії завдань"].Value,
         SubtitleLink = new ServiceHeaderViewComponent.HeaderModel.IconLinkData
         {
             Enabled = true,
-            LinkDestination = Url.Action("List", "Archive", new { area = "TasksArchive" }),
+            LinkDestination = Url.Action("List", "ProgrammingTasksArchive", new { area = "TasksArchive" }),
             LinkIcon = "fas fa-chevron-left",
             LinkText = Localizer["Повернутися до Архіву завдань"].Value
         },
@@ -105,7 +106,7 @@
                     
                     <a class="d-block h5 m-0 font-weight-bold text-dark text-decoration-none stretched-link"
                        asp-area="TasksArchive"
-                       asp-controller="Archive"
+                       asp-controller="ProgrammingTasksArchive"
                        asp-action="List"
                        asp-route-category="@tasksCategory.Id">@tasksCategory.DisplayName</a>
                     

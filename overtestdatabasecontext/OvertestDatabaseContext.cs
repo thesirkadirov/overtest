@@ -195,19 +195,20 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
                 entity.HasKey(t => t.Id);
 
                 entity.Property(t => t.Created).IsRequired();
-                entity.Property(t => t.LastModification).IsRequired();
+                entity.Property(t => t.LastModified).IsRequired();
 
-                entity.Property(t => t.Enabled).HasDefaultValue(true).IsRequired();
+                entity.Property(t => t.VisibleInFreeMode).HasDefaultValue(true).IsRequired();
+                entity.Property(t => t.VisibleInCompetitionMode).HasDefaultValue(true).IsRequired();
                 
                 entity.Property(t => t.Title).IsUnicode().IsRequired();
                 entity.Property(t => t.Description).IsUnicode().IsRequired();
 
-                entity.Property(t => t.Difficulty).HasDefaultValue(100).IsRequired();
+                entity.Property(t => t.Difficulty).HasDefaultValue(0).IsRequired();
 
                 entity.OwnsOne(t => t.TestingData, ownedEntity =>
                 {
-                    ownedEntity.Property(d => d.DataPackageFile).HasDefaultValue().IsRequired(false);
-                    ownedEntity.Property(d => d.DataPackageHash).HasDefaultValue(string.Empty).IsRequired(false);
+                    ownedEntity.Property(d => d.DataPackageFile).HasDefaultValue().IsRequired();
+                    ownedEntity.Property(d => d.DataPackageHash).HasDefaultValue(string.Empty).IsRequired();
                 });
                 
                 /*

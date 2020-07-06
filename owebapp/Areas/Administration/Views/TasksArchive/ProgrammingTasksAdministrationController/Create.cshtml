@@ -1,0 +1,75 @@
+﻿@model Sirkadirov.Overtest.WebApplication.Areas.Administration.Models.TasksArchive.ProgrammingTasksAdministrationController.ProgrammingTaskCreationModel
+@{
+    ViewBag.PageTitle = Localizer["Створення нового завдання"].Value;
+}
+
+@section FullwidthSection
+{
+    <div class="jumbotron current-page-header no-selection-allowed">
+        <div class="container">
+            <h1 class="text-center m-0">@Localizer["Створіть нове завдання для Overtest"]</h1>
+            <h4 class="font-weight-light text-center m-0">@Localizer["Використовуючи усі привілеї Overtest, це можна зробити швидко і легко"]</h4>
+            <p class="lead">
+                @Localizer[""]
+            </p>
+        </div>
+    </div>
+}
+
+<div class="row mt-5 mb-5 no-selection-allowed">
+    <div class="col-md-3"></div>
+    <div class="col-md-6">
+        
+        <div class="card border-dark rounded-lg shadow-sm mt-0 mb-3">
+            <div class="card-body">
+                
+                <h4 class="m-0">@Localizer["Створити завдання вручну"]</h4>
+                
+                <form class="m-0" method="post" asp-area="Administration" asp-controller="ProgrammingTasksAdministration" asp-action="Create">
+                    @Html.AntiForgeryToken()
+                    
+                    <div class="form-group mt-3 mb-3">
+                        <label asp-for="Title">@Localizer["Назва завдання"]</label>
+                        <input asp-for="Title" type="text" class="form-control rounded-lg" placeholder="@Localizer["Hello, world!"]">
+                    </div>
+                    
+                    <div class="custom-control custom-switch mt-3 mb-3">
+                        <input asp-for="VisibleInFreeMode" type="checkbox" class="custom-control-input">
+                        <label class="custom-control-label" asp-for="VisibleInFreeMode">@Localizer["Відображати у вільному режимі роботи"]</label>
+                    </div>
+                    
+                    <div class="custom-control custom-switch mt-3 mb-3">
+                        <input asp-for="VisibleInCompetitionMode" type="checkbox" class="custom-control-input">
+                        <label class="custom-control-label" asp-for="VisibleInCompetitionMode">@Localizer["Дозволити використання у змаганнях"]</label>
+                    </div>
+                    
+                    <div class="mt-3 mb-0">
+                        <button type="submit" class="btn btn-dark btn-block rounded-lg">@Localizer["Створити завдання"]</button>
+                    </div>
+                    
+                </form>
+                
+            </div>
+        </div>
+        
+        <div class="card border-dark rounded-lg shadow-sm mt-3 mb-0">
+            <div class="card-body">
+                
+                <h4 class="m-0">@Localizer["Overtest TaskForce"]</h4>
+                
+                <p class="text-justify mt-3 mb-3">
+                    @Localizer["Створюйте завдання для Overtest, використовуючи простий і зручний графічний інтерфейс офіційного застосунку Overtest TaskForce!"]
+                    @Localizer["Після встановлення, ви отримаєте доступ до бібліотеки прикладів, шаблонів та інших привілеїв, що допоможуть вам створювати завдання з програмування для Overtest набагато швидше та зручніше!"]
+                    @Localizer[""]
+                </p>
+                
+                <div>
+                    <a class="btn btn-dark btn-block rounded-lg stretched-link" href="https://overtest.sirkadirov.com/" target="_blank">@Localizer["Перейти на сайт"]</a>
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+    <div class="col-md-3"></div>
+</div>
