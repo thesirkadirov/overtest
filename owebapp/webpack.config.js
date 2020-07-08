@@ -3,6 +3,7 @@
 let webpack = require("webpack");
 let path = require("path");
 let miniCssExtractPlugin = require('mini-css-extract-plugin');
+let copyPlugin = require('copy-webpack-plugin');
 
 const assetsFolder = "./frontend_assets/";
 const bundleFolder = "./wwwroot/bundle/";
@@ -63,6 +64,25 @@ module.exports = {
             $: "jquery",
             jQuery: "jquery",
             "window.jQuery": "jquery",
+        }),
+        new copyPlugin({
+            patterns: [
+                {
+                    from: path.resolve('node_modules', 'trumbowyg', 'dist'),
+                    to: path.resolve(bundleFolder, 'external', 'trumbowyg')
+                },
+                {
+                    from: path.resolve('node_modules', '@highlightjs', 'cdn-assets'),
+                    to: path.resolve(bundleFolder, 'external', 'highlightjs')
+                },
+                {
+                    from: path.resolve('node_modules', 'codejar'),
+                    to: path.resolve(bundleFolder, 'external', 'codejar')
+                }
+            ],
+            options: {
+                concurrency: 100,
+            },
         })
     ]
 };

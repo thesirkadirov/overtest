@@ -34,7 +34,7 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.Administration.Controllers
             _localizer = localizer;
         }
         
-        [HttpGet, Route("Edit/{userGroupId:guid?}")]
+        [HttpGet, Route(nameof(Edit) + "/{userGroupId:guid?}")]
         public async Task<IActionResult> Edit(Guid? userGroupId = null)
         {
             
@@ -62,7 +62,7 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.Administration.Controllers
             
         }
 
-        [HttpPost, ValidateAntiForgeryToken, Route("Edit/{userGroupId:guid?}")]
+        [HttpPost, ValidateAntiForgeryToken, Route(nameof(Edit) + "/{userGroupId:guid?}")]
         [SuppressMessage("ReSharper", "RedundantAssignment")]
         public async Task<IActionResult> Edit(UserGroup model, Guid? userGroupId = null)
         {
@@ -110,7 +110,7 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.Administration.Controllers
             
         }
         
-        [HttpGet, Route("Remove/{userGroupId:guid}")]
+        [HttpGet, Route(nameof(Remove) + "/{userGroupId:guid}")]
         public async Task<IActionResult> Remove(Guid userGroupId)
         {
             
@@ -127,7 +127,7 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.Administration.Controllers
 
         }
         
-        [HttpPost, ValidateAntiForgeryToken, Route("Remove/{userGroupId:guid}")]
+        [HttpPost, ValidateAntiForgeryToken, Route(nameof(Remove) + "/{userGroupId:guid}")]
         public async Task<IActionResult> Remove(Guid userGroupId, UserGroupRemovalModel model)
         {
             

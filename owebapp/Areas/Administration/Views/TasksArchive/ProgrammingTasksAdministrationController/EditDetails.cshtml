@@ -1,0 +1,137 @@
+﻿@using Microsoft.EntityFrameworkCore
+@using Sirkadirov.Overtest.WebApplication.ViewComponents.Shared
+@model Sirkadirov.Overtest.WebApplication.Areas.Administration.Models.TasksArchive.ProgrammingTasksAdministrationController.ProgrammingTaskEditDetailsModel
+@{
+    var programmingTaskTitle = await DatabaseContext.ProgrammingTasks
+        .Where(t => t.Id == Model.ProgrammingTaskId)
+        .Select(s => s.Title)
+        .AsNoTracking()
+        .FirstAsync();
+
+    var programmingTaskCategoriesList = await DatabaseContext.ProgrammingTaskCategories
+        .OrderBy(o => o.DisplayName)
+        .Select(s => new SelectListItem(s.DisplayName, s.Id.ToString(), Model.CategoryId == s.Id))
+        .AsNoTracking()
+        .ToListAsync();
+    
+    ViewBag.PageTitle = string.Format(Localizer["Редагування інформації про завдання {0}"].Value, programmingTaskTitle);
+}
+
+@section FullwidthSection
+{
+    
+    @(await Component.InvokeAsync<ServiceHeaderViewComponent>(new ServiceHeaderViewComponent.HeaderModel
+    {
+        PageTitle = Localizer["Редагування інформації про завдання"].Value,
+        SubtitleLink = new ServiceHeaderViewComponent.HeaderModel.IconLinkData
+        {
+            Enabled = true,
+            LinkDestination = Url.Action("View", "ProgrammingTasksBrowsing", new { area = "TasksArchive", programmingTaskId = Model.ProgrammingTaskId }),
+            LinkIcon = "fas fa-chevron-left",
+            LinkText = string.Format(Localizer["Сторінка завдання \"{0}\""].Value, programmingTaskTitle)
+        }
+    }))
+    
+}
+
+<form method="post" asp-action="EditDetails" asp-route-programmingTaskId="@Model.ProgrammingTaskId">
+    
+    @Html.AntiForgeryToken()
+    <div class="text-danger mt-3 mb-3">@Html.ValidationSummary()</div>
+    
+    <div class="form-group mt-3 mb-3">
+        <label asp-for="Title">@Localizer["Назва завдання:"]</label>
+        <input asp-for="Title" type="text" class="form-control rounded-lg" placeholder="@Localizer["Hello, world!"]">
+        <div class="text-danger mt-2 mb-0">@Html.ValidationMessageFor(m => m.Title)</div>
+    </div>
+    
+    <div class="form-group mt-3 mb-3">
+        <label asp-for="CategoryId">@Localizer["Категорія завдань:"]</label>
+        <select asp-for="CategoryId" type="text" class="form-control rounded-lg" asp-items="@programmingTaskCategoriesList">
+            <option>@Localizer["Оберіть категорію завдань"]</option>
+            <!option value="" @(Model.CategoryId == null ? "selected" : "")>@Localizer["-- Без категорії --"]</!option>
+        </select>
+        <div class="text-danger mt-2 mb-0">@Html.ValidationMessageFor(m => m.CategoryId)</div>
+    </div>
+    
+    <div class="form-group mt-3 mb-3">
+        <label asp-for="Difficulty">@Localizer["Складність завдання (0 - 100):"]</label>
+        <input asp-for="Difficulty" type="number" min="0" max="100" class="form-control rounded-lg">
+        <div class="text-danger mt-2 mb-0">@Html.ValidationMessageFor(m => m.Difficulty)</div>
+    </div>
+    
+    <div class="form-group mt-3 mb-3">
+        <label>@Localizer["Повний опис завдання:"]</label>
+        <textarea asp-for="Description" id="ProgrammingTaskDescriptionTextArea" class="form-control rounded-lg"></textarea>
+        <div class="text-danger mt-2 mb-0">@Html.ValidationMessageFor(m => m.Description)</div>
+    </div>
+    
+    <div class="custom-control custom-switch mt-3 mb-3">
+        <input asp-for="VisibleInFreeMode" type="checkbox" class="custom-control-input">
+        <label class="custom-control-label" asp-for="VisibleInFreeMode">@Localizer["Відображати у вільному режимі роботи"]</label>
+    </div>
+    
+    <div class="custom-control custom-switch mt-3 mb-3">
+        <input asp-for="VisibleInCompetitionMode" type="checkbox" class="custom-control-input">
+        <label class="custom-control-label" asp-for="VisibleInCompetitionMode">@Localizer["Дозволити використання у змаганнях"]</label>
+    </div>
+    
+    <div class="d-flex justify-content-between mt-3 mb-3">
+        <button type="reset" class="btn btn-outline-secondary rounded-lg"><i class="fas fa-window-close"></i> @Localizer["Відмінити зміни"]</button>
+        <button type="submit" class="btn btn-dark rounded-lg"><i class="fas fa-save"></i> @Localizer["Зберегти зміни"]</button>
+    </div>
+    
+</form>
+
+@section AdditionalHeaderScripts
+{
+    <link rel="stylesheet" href="~/bundle/external/trumbowyg/ui/trumbowyg.min.css"/>
+    <link rel="stylesheet" href="~/bundle/external/trumbowyg/plugins/colors/ui/trumbowyg.colors.min.css"/>
+    <link rel="stylesheet" href="~/bundle/external/trumbowyg/plugins/emoji/ui/trumbowyg.emoji.min.css"/>
+    <link rel="stylesheet" href="~/bundle/external/trumbowyg/plugins/table/ui/trumbowyg.table.min.css"/>
+}
+@section AdditionalFooterScripts
+{
+    <script src="~/bundle/external/trumbowyg/trumbowyg.min.js"></script>
+    <script src="~/bundle/external/trumbowyg/plugins/base64/trumbowyg.base64.min.js"></script>
+    <script src="~/bundle/external/trumbowyg/plugins/colors/trumbowyg.colors.min.js"></script>
+    <script src="~/bundle/external/trumbowyg/plugins/emoji/trumbowyg.emoji.min.js"></script>
+    <script src="~/bundle/external/trumbowyg/plugins/history/trumbowyg.history.min.js"></script>
+    <script src="~/bundle/external/trumbowyg/plugins/preformatted/trumbowyg.preformatted.min.js"></script>
+    <script src="~/bundle/external/trumbowyg/plugins/table/trumbowyg.table.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#ProgrammingTaskDescriptionTextArea').trumbowyg({
+                btns: [
+                    ['viewHTML'], ['historyUndo','historyRedo'],
+                    
+                    ['formatting'], ['strong', 'em', 'del'],
+                    ['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'],
+                    ['unorderedList', 'orderedList'],
+                    
+                    ['foreColor', 'backColor'],
+                    ['superscript', 'subscript'],
+                    
+                    ['link', 'base64', 'emoji', 'horizontalRule', 'preformatted'],
+                    ['removeformat'],
+                    ['fullscreen']
+                ],
+                
+                resetCss: true,
+                tagsToRemove: ['script', 'link'],
+                
+                autogrow: true,
+                imageWidthModalEdit: true,
+                
+                urlProtocol: true,
+                defaultLinkTarget: '_blank'
+            });
+        });
+    </script>
+    <style>
+        .trumbowyg {
+            margin: 0;
+            border-radius: .3rem !important;
+        }
+    </style>
+}

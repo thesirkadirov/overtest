@@ -32,6 +32,7 @@ bld/
 overtest-cache/
 node_modules/
 owebapp/[Mm]igrations
+owebapp/wwwroot/bundle
 
 # Visual Studio 2015 cache/options directory
 .vs/

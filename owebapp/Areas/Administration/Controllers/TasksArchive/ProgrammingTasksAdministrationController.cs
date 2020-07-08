@@ -116,6 +116,15 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.Administration.Controllers
                 return View(actionViewPath, model);
             
             model.ProgrammingTaskId = programmingTaskId;
+
+            if (model.CategoryId != null && !await _databaseContext.ProgrammingTaskCategories.AnyAsync(c => c.Id == model.CategoryId))
+            {
+                ModelState.AddModelError(
+                    nameof(model.CategoryId),
+                    _localizer["Вказаної вами категорії завдань не знайдено!"]
+                );
+                return View(actionViewPath, model);
+            }
             
             var programmingTaskObject = await _databaseContext.ProgrammingTasks
                 .Where(t => t.Id == programmingTaskId)
@@ -124,6 +133,8 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.Administration.Controllers
             programmingTaskObject.Title = model.Title;
             programmingTaskObject.Description = model.Description;
             programmingTaskObject.Difficulty = model.Difficulty;
+
+            programmingTaskObject.CategoryId = model.CategoryId;
             
             programmingTaskObject.VisibleInFreeMode = model.VisibleInFreeMode;
             programmingTaskObject.VisibleInCompetitionMode = model.VisibleInCompetitionMode;

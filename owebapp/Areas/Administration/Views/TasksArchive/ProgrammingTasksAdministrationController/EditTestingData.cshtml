@@ -1,0 +1,29 @@
+﻿@using Microsoft.EntityFrameworkCore
+@using Sirkadirov.Overtest.WebApplication.ViewComponents.Shared
+@model Sirkadirov.Overtest.WebApplication.Areas.Administration.Models.TasksArchive.ProgrammingTasksAdministrationController.ProgrammingTaskEditTestingDataModel
+@{
+    var programmingTaskTitle = await DatabaseContext.ProgrammingTasks
+        .Where(t => t.Id == Model.ProgrammingTaskId)
+        .Select(s => s.Title)
+        .AsNoTracking()
+        .FirstAsync();
+    
+    ViewBag.PageTitle = string.Format(Localizer["Редагування тестової інформації для завдання \"{0}\""].Value, programmingTaskTitle);
+}
+
+@section FullwidthSection
+{
+
+    @(await Component.InvokeAsync<ServiceHeaderViewComponent>(new ServiceHeaderViewComponent.HeaderModel
+    {
+        PageTitle = programmingTaskTitle,
+        SubtitleLink = new ServiceHeaderViewComponent.HeaderModel.IconLinkData
+        {
+            Enabled = true,
+            LinkDestination = Url.Action("View", "ProgrammingTasksBrowsing", new { area = "TasksArchive", programmingTaskId = Model.ProgrammingTaskId }),
+            LinkIcon = "fas fa-chevron-left",
+            LinkText = Localizer["Повернутися на сторінку завдання"].Value
+        }
+    }))
+
+}

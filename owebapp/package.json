@@ -6,7 +6,10 @@
     "bootstrap": "^4.5.0",
     "jquery-validation": "^1.19.1",
     "jquery-validation-unobtrusive": "^3.2.11",
-    "@fortawesome/fontawesome-free": "^5.13.0"
+    "@fortawesome/fontawesome-free": "^5.13.0",
+    "trumbowyg": "^2.21.0",
+    "@highlightjs/cdn-assets": "^10.1.1",
+    "codejar": "^3.1.0"
   },
   "devDependencies": {
     "webpack": "^4.42.1",
@@ -15,7 +18,8 @@
     "css-loader": "^3.4.2",
     "mini-css-extract-plugin": "^0.9.0",
     "file-loader": "^6.0.0",
-    "svg-inline-loader": "^0.8.2"
+    "svg-inline-loader": "^0.8.2",
+    "copy-webpack-plugin": "^6.0.3"
   },
   "scripts": {
     "execute-webpack": "webpack"
