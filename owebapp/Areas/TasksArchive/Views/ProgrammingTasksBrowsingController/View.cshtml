@@ -55,8 +55,8 @@
                 <button class="btn btn-lg btn-primary rounded-circle shadow-lg p-0" id="SourceCodeActionButton"><i class="fas fa-cube"></i></button>
             </div>
             
-            <pre class="m-0">
-<code id="SourceCodeEditor" class="language-csharp m-0">// C# program to print Hello World!
+            <pre class="w-100 m-0">
+<code id="SourceCodeEditor" class="w-100 language-csharp m-0">// C# program to print Hello World!
 using System;
 
 // namespace declaration
@@ -140,8 +140,11 @@ namespace HelloWorldApp {
         }
         
         #SourceCodeEditor {
-            overflow-wrap: unset !important;
-            white-space: nowrap !important;
+            overflow-x: auto;
+            overflow-y: auto;
+            
+            white-space: unset !important;
+            resize: none !important;
             
             min-height: 400px;
             max-height: 600px;
@@ -210,6 +213,7 @@ namespace HelloWorldApp {
     
     <script>
         $(document).ready(function () {
+            document.execCommand("defaultParagraphSeparator", false, "br");
             let sourceCodeActionCard = $("#SourceCodeActionCard");
             
             sourceCodeActionCard.fadeOut(0);
