@@ -69,23 +69,7 @@
           <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
           <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
         </Content>
-        <Content Update="Views\Shared\ViewComponents\Shared\UserNavbar\ScrollNavigationItems.cshtml">
-          <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-          <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-        </Content>
-        <Content Update="Views\Shared\ViewComponents\Shared\Pagination.cshtml">
-          <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-          <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-        </Content>
-        <Content Update="Views\Shared\ViewComponents\Shared\ServiceHeader.cshtml">
-          <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-          <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-        </Content>
         <Content Update="Areas\Social\Views\UsersController\UserProfile.cshtml">
-          <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-          <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-        </Content>
-        <Content Update="Views\Shared\ViewComponents\Shared\DropleftMenu.cshtml">
           <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
           <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
         </Content>
@@ -154,8 +138,36 @@
           <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
           <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
         </Content>
-        <Content Remove="Migrations\**" />
         <Content Update="Areas\TasksArchive\Views\ProgrammingTasksBrowsingController\View.cshtml">
+          <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+          <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        </Content>
+        <Content Remove="wwwroot\external\**" />
+        <Content Update="ViewComponents\Views\ServiceHeader\DropleftMenu.cshtml">
+          <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+          <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        </Content>
+        <Content Update="ViewComponents\Views\ServiceHeader\ServiceHeader.cshtml">
+          <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+          <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        </Content>
+        <Content Update="ViewComponents\Views\Pagination.cshtml">
+          <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+          <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        </Content>
+        <Content Update="ViewComponents\Views\UserNavbar.cshtml">
+          <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+          <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        </Content>
+        <Content Update="ViewComponents\Views\GlobalModalDialogs\GlobalLogoutModalDialog.cshtml">
+          <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+          <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        </Content>
+        <Content Update="Areas\Administration\Views\SystemControlPanelController\SuperUser.cshtml">
+          <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+          <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        </Content>
+        <Content Update="Areas\TasksArchive\ViewComponents\Views\ProgrammingTasksBrowsingController\TestingApplicationCreationPartial.cshtml">
           <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
           <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
         </Content>
@@ -168,17 +180,17 @@
     
     <ItemGroup>
       <Compile Remove="wwwroot\bundle\**" />
-      <Compile Remove="Migrations\**" />
+      <Compile Remove="wwwroot\external\**" />
     </ItemGroup>
     
     <ItemGroup>
       <EmbeddedResource Remove="wwwroot\bundle\**" />
-      <EmbeddedResource Remove="Migrations\**" />
+      <EmbeddedResource Remove="wwwroot\external\**" />
     </ItemGroup>
     
     <ItemGroup>
       <None Remove="wwwroot\bundle\**" />
-      <None Remove="Migrations\**" />
+      <None Remove="wwwroot\external\**" />
     </ItemGroup>
     
     <ItemGroup>
@@ -1685,6 +1697,333 @@
       <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\xt256.css" />
       <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\zenburn.css" />
       <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\types\index.d.ts" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\highlight.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\highlight.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\1c.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\abnf.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\accesslog.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\actionscript.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\ada.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\angelscript.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\apache.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\applescript.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\arcade.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\arduino.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\armasm.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\asciidoc.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\aspectj.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\autohotkey.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\autoit.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\avrasm.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\awk.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\axapta.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\bash.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\basic.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\bnf.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\brainfuck.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\c-like.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\c.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\cal.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\capnproto.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\ceylon.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\clean.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\clojure-repl.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\clojure.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\cmake.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\coffeescript.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\coq.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\cos.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\cpp.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\crmsh.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\crystal.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\csharp.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\csp.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\css.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\d.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\dart.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\delphi.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\diff.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\django.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\dns.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\dockerfile.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\dos.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\dsconfig.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\dts.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\dust.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\ebnf.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\elixir.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\elm.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\erb.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\erlang-repl.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\erlang.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\excel.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\fix.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\flix.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\fortran.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\fsharp.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\gams.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\gauss.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\gcode.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\gherkin.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\glsl.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\gml.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\go.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\golo.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\gradle.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\groovy.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\haml.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\handlebars.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\haskell.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\haxe.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\hsp.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\htmlbars.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\http.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\hy.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\inform7.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\ini.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\irpf90.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\isbl.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\java.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\javascript.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\jboss-cli.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\json.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\julia-repl.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\julia.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\kotlin.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\lasso.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\latex.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\ldif.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\leaf.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\less.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\lisp.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\livecodeserver.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\livescript.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\llvm.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\lsl.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\lua.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\makefile.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\markdown.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\mathematica.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\matlab.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\maxima.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\mel.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\mercury.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\mipsasm.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\mizar.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\mojolicious.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\monkey.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\moonscript.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\n1ql.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\nginx.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\nim.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\nix.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\nsis.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\objectivec.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\ocaml.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\openscad.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\oxygene.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\parser3.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\perl.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\pf.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\pgsql.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\php-template.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\php.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\plaintext.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\pony.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\powershell.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\processing.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\profile.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\prolog.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\properties.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\protobuf.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\puppet.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\purebasic.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\python-repl.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\python.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\q.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\qml.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\r.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\reasonml.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\rib.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\roboconf.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\routeros.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\rsl.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\ruby.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\ruleslanguage.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\rust.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\sas.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\scala.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\scheme.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\scilab.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\scss.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\shell.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\smali.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\smalltalk.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\sml.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\sqf.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\sql.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\stan.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\stata.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\step21.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\stylus.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\subunit.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\swift.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\taggerscript.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\tap.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\tcl.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\thrift.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\tp.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\twig.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\typescript.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\vala.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\vbnet.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\vbscript-html.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\vbscript.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\verilog.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\vhdl.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\vim.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\x86asm.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\xl.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\xml.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\xquery.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\yaml.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\languages\zephir.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\a11y-dark.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\a11y-light.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\agate.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\an-old-hope.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\androidstudio.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\arduino-light.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\arta.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\ascetic.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\atelier-cave-dark.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\atelier-cave-light.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\atelier-dune-dark.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\atelier-dune-light.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\atelier-estuary-dark.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\atelier-estuary-light.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\atelier-forest-dark.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\atelier-forest-light.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\atelier-heath-dark.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\atelier-heath-light.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\atelier-lakeside-dark.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\atelier-lakeside-light.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\atelier-plateau-dark.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\atelier-plateau-light.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\atelier-savanna-dark.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\atelier-savanna-light.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\atelier-seaside-dark.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\atelier-seaside-light.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\atelier-sulphurpool-dark.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\atelier-sulphurpool-light.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\atom-one-dark-reasonable.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\atom-one-dark.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\atom-one-light.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\brown-paper.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\codepen-embed.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\color-brewer.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\darcula.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\dark.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\default.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\docco.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\dracula.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\far.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\foundation.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\github-gist.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\github.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\gml.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\googlecode.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\gradient-dark.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\grayscale.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\gruvbox-dark.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\gruvbox-light.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\hopscotch.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\hybrid.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\idea.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\ir-black.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\isbl-editor-dark.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\isbl-editor-light.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\kimbie.dark.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\kimbie.light.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\lightfair.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\lioshi.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\magula.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\mono-blue.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\monokai-sublime.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\monokai.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\night-owl.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\nnfx-dark.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\nnfx.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\nord.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\obsidian.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\ocean.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\paraiso-dark.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\paraiso-light.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\pojoaque.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\purebasic.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\qtcreator_dark.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\qtcreator_light.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\railscasts.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\rainbow.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\routeros.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\school-book.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\shades-of-purple.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\solarized-dark.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\solarized-light.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\srcery.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\sunburst.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\tomorrow-night-blue.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\tomorrow-night-bright.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\tomorrow-night-eighties.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\tomorrow-night.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\tomorrow.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\vs.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\vs2015.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\xcode.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\xt256.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bundle\external\highlightjs\styles\zenburn.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\external\jetbrainsmono\LICENSE" />
+      <_ContentIncludedByDefault Remove="wwwroot\external\jetbrainsmono\ttf\JetBrainsMono-Bold-Italic.ttf" />
+      <_ContentIncludedByDefault Remove="wwwroot\external\jetbrainsmono\ttf\JetBrainsMono-Bold.ttf" />
+      <_ContentIncludedByDefault Remove="wwwroot\external\jetbrainsmono\ttf\JetBrainsMono-ExtraBold-Italic.ttf" />
+      <_ContentIncludedByDefault Remove="wwwroot\external\jetbrainsmono\ttf\JetBrainsMono-ExtraBold.ttf" />
+      <_ContentIncludedByDefault Remove="wwwroot\external\jetbrainsmono\ttf\JetBrainsMono-Italic.ttf" />
+      <_ContentIncludedByDefault Remove="wwwroot\external\jetbrainsmono\ttf\JetBrainsMono-Medium-Italic.ttf" />
+      <_ContentIncludedByDefault Remove="wwwroot\external\jetbrainsmono\ttf\JetBrainsMono-Medium.ttf" />
+      <_ContentIncludedByDefault Remove="wwwroot\external\jetbrainsmono\ttf\JetBrainsMono-Regular.ttf" />
+      <_ContentIncludedByDefault Remove="wwwroot\external\jetbrainsmono\ttf\JetBrainsMonoNL-Bold-Italic.ttf" />
+      <_ContentIncludedByDefault Remove="wwwroot\external\jetbrainsmono\ttf\JetBrainsMonoNL-Bold.ttf" />
+      <_ContentIncludedByDefault Remove="wwwroot\external\jetbrainsmono\ttf\JetBrainsMonoNL-ExtraBold-Italic.ttf" />
+      <_ContentIncludedByDefault Remove="wwwroot\external\jetbrainsmono\ttf\JetBrainsMonoNL-ExtraBold.ttf" />
+      <_ContentIncludedByDefault Remove="wwwroot\external\jetbrainsmono\ttf\JetBrainsMonoNL-Italic.ttf" />
+      <_ContentIncludedByDefault Remove="wwwroot\external\jetbrainsmono\ttf\JetBrainsMonoNL-Medium-Italic.ttf" />
+      <_ContentIncludedByDefault Remove="wwwroot\external\jetbrainsmono\ttf\JetBrainsMonoNL-Medium.ttf" />
+      <_ContentIncludedByDefault Remove="wwwroot\external\jetbrainsmono\ttf\JetBrainsMonoNL-Regular.ttf" />
+      <_ContentIncludedByDefault Remove="wwwroot\external\jetbrainsmono\web\eot\JetBrainsMono-Bold-Italic.eot" />
+      <_ContentIncludedByDefault Remove="wwwroot\external\jetbrainsmono\web\eot\JetBrainsMono-Bold.eot" />
+      <_ContentIncludedByDefault Remove="wwwroot\external\jetbrainsmono\web\eot\JetBrainsMono-ExtraBold-Italic.eot" />
+      <_ContentIncludedByDefault Remove="wwwroot\external\jetbrainsmono\web\eot\JetBrainsMono-ExtraBold.eot" />
+      <_ContentIncludedByDefault Remove="wwwroot\external\jetbrainsmono\web\eot\JetBrainsMono-Italic.eot" />
+      <_ContentIncludedByDefault Remove="wwwroot\external\jetbrainsmono\web\eot\JetBrainsMono-Medium-Italic.eot" />
+      <_ContentIncludedByDefault Remove="wwwroot\external\jetbrainsmono\web\eot\JetBrainsMono-Medium.eot" />
+      <_ContentIncludedByDefault Remove="wwwroot\external\jetbrainsmono\web\eot\JetBrainsMono-Regular.eot" />
+      <_ContentIncludedByDefault Remove="wwwroot\external\jetbrainsmono\web\woff2\JetBrainsMono-Bold-Italic.woff2" />
+      <_ContentIncludedByDefault Remove="wwwroot\external\jetbrainsmono\web\woff2\JetBrainsMono-Bold.woff2" />
+      <_ContentIncludedByDefault Remove="wwwroot\external\jetbrainsmono\web\woff2\JetBrainsMono-ExtraBold-Italic.woff2" />
+      <_ContentIncludedByDefault Remove="wwwroot\external\jetbrainsmono\web\woff2\JetBrainsMono-ExtraBold.woff2" />
+      <_ContentIncludedByDefault Remove="wwwroot\external\jetbrainsmono\web\woff2\JetBrainsMono-Italic.woff2" />
+      <_ContentIncludedByDefault Remove="wwwroot\external\jetbrainsmono\web\woff2\JetBrainsMono-Medium-Italic.woff2" />
+      <_ContentIncludedByDefault Remove="wwwroot\external\jetbrainsmono\web\woff2\JetBrainsMono-Medium.woff2" />
+      <_ContentIncludedByDefault Remove="wwwroot\external\jetbrainsmono\web\woff2\JetBrainsMono-Regular.woff2" />
+      <_ContentIncludedByDefault Remove="wwwroot\external\jetbrainsmono\web\woff\JetBrainsMono-Bold-Italic.woff" />
+      <_ContentIncludedByDefault Remove="wwwroot\external\jetbrainsmono\web\woff\JetBrainsMono-Bold.woff" />
+      <_ContentIncludedByDefault Remove="wwwroot\external\jetbrainsmono\web\woff\JetBrainsMono-ExtraBold-Italic.woff" />
+      <_ContentIncludedByDefault Remove="wwwroot\external\jetbrainsmono\web\woff\JetBrainsMono-ExtraBold.woff" />
+      <_ContentIncludedByDefault Remove="wwwroot\external\jetbrainsmono\web\woff\JetBrainsMono-Italic.woff" />
+      <_ContentIncludedByDefault Remove="wwwroot\external\jetbrainsmono\web\woff\JetBrainsMono-Medium-Italic.woff" />
+      <_ContentIncludedByDefault Remove="wwwroot\external\jetbrainsmono\web\woff\JetBrainsMono-Medium.woff" />
+      <_ContentIncludedByDefault Remove="wwwroot\external\jetbrainsmono\web\woff\JetBrainsMono-Regular.woff" />
+      <_ContentIncludedByDefault Remove="Properties\launchSettings.json" />
     </ItemGroup>
     
 </Project>
