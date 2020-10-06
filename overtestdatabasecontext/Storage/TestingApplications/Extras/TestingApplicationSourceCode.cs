@@ -2,7 +2,5 @@
 
 namespace Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TestingApplications.Extras
 {
-    
     public class TestingApplicationSourceCode : SourceCodeStorage { }
-    
 }

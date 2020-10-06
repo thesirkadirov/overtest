@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+
 namespace Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Identity
 {
-    
     public class User : IdentityUser<Guid>
     {
-        
         [MinLength(3), MaxLength(255)]
         public string FullName { get; set; }
         
@@ -36,16 +36,12 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Identity
         public Guid? UserPhotoId { get; set; }
         
         public List<UserGroup> CuratedUserGroups { get; set; }
-        
     }
     
     public enum UserType
     {
-        Anonymous,
-        Student,
-        Instructor,
-        Administrator,
-        SuperUser
+        Student = 1,
+        Curator = 50,
+        SuperUser = 100
     }
-    
 }

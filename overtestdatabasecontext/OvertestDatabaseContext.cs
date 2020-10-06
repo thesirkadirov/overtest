@@ -37,6 +37,7 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
         public DbSet<ProgrammingLanguage> ProgrammingLanguages { get; set; }
         
         public DbSet<TestingApplication> TestingApplications { get; set; }
+        public DbSet<TestingApplication> TestingApplicationsResults { get; set; }
         
         public DbSet<Competition> Competitions { get; set; }
         /* ||=> */ public DbSet<CompetitionProgrammingTask> CompetitionProgrammingTasks { get; set; }
@@ -258,7 +259,6 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
                 entity.HasKey(a => a.Id);
 
                 entity.Property(a => a.Created).IsRequired();
-                entity.Property(a => a.ProcessingTime).HasDefaultValue(TimeSpan.Zero).IsRequired();
 
                 entity.Property(a => a.TestingType).IsRequired();
                 entity.Property(a => a.Status)
@@ -277,21 +277,6 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
                     
                 });
                 
-                entity.OwnsOne(a => a.TestingResults, builder =>
-                {
-                    
-                    builder.Property(r => r.RawTestingResults).HasDefaultValue();
-                    
-                    builder.Property(r => r.GivenDifficulty)
-                        .HasDefaultValue(0)
-                        .IsRequired();
-                    
-                    builder.Property(r => r.SolutionAdjudgement)
-                        .HasDefaultValue(TestingApplication.ApplicationTestingResults.SolutionAdjudgementType.ZeroSolution)
-                        .IsRequired();
-                    
-                });
-                
                 entity.HasOne(a => a.Author)
                     .WithMany()
                     .HasForeignKey(a => a.AuthorId)
@@ -305,6 +290,27 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database
                 entity.HasOne(a => a.ProgrammingTask)
                     .WithMany()
                     .HasForeignKey(a => a.ProgrammingTaskId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+            
+            /*
+             * [TestingApplicationResult] entity
+             */
+            
+            modelBuilder.Entity<TestingApplicationResult>(entity =>
+            {
+                entity.HasKey(r => r.Id);
+
+                entity.Property(r => r.ProcessingTime).IsRequired();
+                
+                entity.Property(r => r.RawTestingResults).HasDefaultValue().IsRequired();
+                
+                entity.Property(r => r.GivenDifficulty).IsRequired();
+                entity.Property(r => r.SolutionAdjudgement).IsRequired();
+
+                entity.HasOne(r => r.TestingApplication)
+                    .WithOne(a => a.TestingResult)
+                    .HasForeignKey<TestingApplicationResult>(r => r.TestingApplicationId)
                     .OnDelete(DeleteBehavior.Cascade);
             });
 

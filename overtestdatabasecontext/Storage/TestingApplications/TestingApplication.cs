@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Competitions;
 using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Identity;
 using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TasksArchive;
@@ -7,20 +6,17 @@ using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TestingApplications.
 
 namespace Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TestingApplications
 {
-    
     public class TestingApplication
     {
         
         public Guid Id { get; set; }
         
         public DateTime Created { get; set; }
-        public TimeSpan ProcessingTime { get; set; }
-        
-        public ApplicationTestingType TestingType { get; set; }
-        public ApplicationStatus Status { get; set; }
         
         public TestingApplicationSourceCode SourceCode { get; set; }
-        public ApplicationTestingResults TestingResults { get; set; }
+        public ApplicationTestingType TestingType { get; set; }
+        
+        public ApplicationStatus Status { get; set; }
         
         public User Author { get; set; }
         public Guid AuthorId { get; set; }
@@ -31,47 +27,25 @@ namespace Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TestingApplicati
         public ProgrammingTask ProgrammingTask { get; set; }
         public Guid ProgrammingTaskId { get; set; }
         
+        public TestingApplicationResult TestingResult { get; set; }
+        
         public enum ApplicationTestingType
         {
-            SyntaxMode,
-            DebugMode,
-            ReleaseMode
+            SyntaxMode = 1,
+            DebugMode = 50,
+            ReleaseMode = 100
         }
 
         public enum ApplicationStatus
         {
-            Waiting,
+            Waiting = 1,
+            Selected = 2,
             
-            Selected,
-            Preparation,
-            Compilation,
-            Testing,
+            AutomaticJudging = 90,
+            ManualJudging = 91,
             
-            AutomaticJudging,
-            ManualJudging,
-            
-            Verified
-        }
-
-        public class ApplicationTestingResults
-        {
-            
-            public string RawTestingResults { get; set; }
-            
-            [Range(typeof(byte), "0", "100")]
-            public byte GivenDifficulty { get; set; }
-
-            public SolutionAdjudgementType SolutionAdjudgement { get; set; }
-            
-            public enum SolutionAdjudgementType
-            {
-                ZeroSolution,
-                PartialSolution,
-                CombleteSolution
-            }
-            
+            Verified = 100
         }
         
     }
-    
 }
