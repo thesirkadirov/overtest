@@ -1,7 +1,7 @@
-﻿@using Sirkadirov.Overtest.WebApplication.ViewComponents.Shared
-@using System.Linq
+﻿@using System.Linq
 @using Microsoft.EntityFrameworkCore
-@using Sirkadirov.Overtest.Libraries.Shared.Database.Operators
+@using Sirkadirov.Overtest.WebApplication.ViewComponents
+@using Sirkadirov.Overtest.WebApplication.ViewComponents.GlobalModalDialogs
 
 @model Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Identity.User
 
@@ -88,12 +88,12 @@
           </div>
         </li>*@
 
-        @if (await DatabaseContext.UserPermissionsOperator.VerifyUserTypeSetAsync(currentUserId, OvertestUserPermissionsOperator.UserTypeSet.SuperUser))
+        @if (await DatabaseContext.UserPermissionsOperator.GetUserHasSpecifiedTypeAsync(currentUserId, UserType.Curator, UserType.SuperUser))
         {
 
           @* Administration *@
           <li class="nav-item">
-            <a class="nav-link disabled" href="#"><i class="fas fa-user-shield"></i> @Localizer["Панель керування"]</a>
+            <a class="nav-link" asp-area="Administration" asp-controller="SystemControlPanel" asp-action="ControlPanel"><i class="fas fa-user-shield"></i> @Localizer["Панель керування"]</a>
           </li>
 
         }
@@ -140,7 +140,7 @@
             
             <div class="dropdown-divider"></div>
             
-            <a class="dropdown-item" asp-controller="Auth" asp-action="LogOut">
+            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#@nameof(GlobalLogoutModalDialogViewComponent)">
               <i class="fas fa-sign-out-alt"></i> @Localizer["Вийти з системи"]
             </a>
             
@@ -159,4 +159,4 @@
 <!--div style="margin-top: 56px;"></div-->
 
 @* Border line (navigation scroller independent) *@
-<div class="m-0 border-bottom"></div>
+<div class="UserNavbarBottomBorderLineContainer m-0 border-bottom"></div>

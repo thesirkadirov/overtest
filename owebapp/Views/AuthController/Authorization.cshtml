@@ -2,7 +2,7 @@
 
 @{
     Layout = "Layouts/_DefaultEmptyLayout";
-    ViewBag.PageTitle = Localizer["Авторизація | Overtest"].Value;
+    ViewBag.PageTitle = Localizer["Вхід у систему | Overtest"].Value;
 }
 
 <main class="container no-selection-allowed">
@@ -21,16 +21,16 @@
                 
                 @Html.AntiForgeryToken()
                 
-                <div class="text-danger mt-2 mb-2">@Html.ValidationSummary()</div>
-                
                 <div class="form-group mt-2 mb-2">
                     <label asp-for="Email">@Localizer["Адреса e-mail:"]</label>
                     <input asp-for="Email" type="email" class="form-control rounded-lg" placeholder="@Localizer["franko@lnu.edu.ua"]"/>
+                    <span class="d-block invalid-feedback" asp-validation-for="Email"></span>
                 </div>
                 
                 <div class="form-group mt-2 mb-2">
                     <label asp-for="Password">@Localizer["Пароль:"]</label>
                     <input asp-for="Password" type="password" class="form-control rounded-lg" placeholder="@Localizer["***********"]"/>
+                    <span class="d-block invalid-feedback" asp-validation-for="Password"></span>
                 </div>
                 
                 <div class="custom-control custom-checkbox mt-2 mb-2">

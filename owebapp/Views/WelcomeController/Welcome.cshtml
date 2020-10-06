@@ -1,4 +1,5 @@
 ﻿@using Sirkadirov.Overtest.Libraries.Shared.Database.Storage
+@using Sirkadirov.Overtest.WebApplication.ViewComponents.GlobalModalDialogs
 @{
     Layout = "Layouts/_DefaultEmptyLayout";
     ViewBag.PageTitle = Localizer["Overtest"].Value;
@@ -22,27 +23,31 @@
 <main class="container no-selection-allowed">
     
     <div class="row mt-5 mb-5 pt-5 pb-5">
-        
+
         <div class="col-md-6 content-v-align-center text-center">
-            <img src="~/assets/svg/illustrations/undraw_code_review.svg" class="w-100" alt="Overtest"/>
+            <img src="~/assets/svg/illustrations/undraw_code_review.svg" class="w-100" style="-webkit-user-drag: none;" alt="Overtest"/>
         </div>
         
         <div class="col-md-6 content-v-align-center p-3">
-            <h3>@Localizer["Знайомся, Overtest!"]</h3>
-            <p class="lead">@Localizer["З допомогою Overtest, ти вивчатимеш програмування онлайн, зможеш брати участь у змаганнях з іншими користувачами, будеш поліпшувати свої навички та проводити вільний час з користю!"]</p>
+            <h3>@Localizer["Познайомтеся з Overtest!"]</h3>
+            <p class="lead">
+                @Localizer["Освітній проєкт, який робить викладання і вивчення програмування легшим і цікавішим, а також надає можливості для самореалізації студентів комп'ютерних спеціяльностей."]
+            </p>
             
             @if (Context.User.Identity.IsAuthenticated)
             {
                 <span>
-                    <a asp-controller="Welcome" asp-action="Home" class="btn btn-dark rounded-lg"><i class="fas fa-laptop-house"></i> @Localizer["Розпочати роботу"]</a>
-                    <a asp-controller="Auth" asp-action="LogOut" class="btn btn-light rounded-lg"><i class="fas fa-sign-out-alt"></i> @Localizer["Завершити сеанс"]</a>
+                    <a class="btn btn-dark rounded-lg shadow" asp-controller="Welcome" asp-action="Home"><i class="fas fa-laptop-house"></i> @Localizer["Розпочати роботу"]</a>
+                    &nbsp;
+                    <button class="btn btn-light rounded-lg shadow" data-toggle="modal" data-target="#@nameof(GlobalLogoutModalDialogViewComponent)"><i class="fas fa-sign-out-alt"></i> @Localizer["Вийти"]</button>
                 </span>
             }
             else
             {
                 <span>
-                    <a asp-controller="Auth" asp-action="Registration" class="btn btn-dark rounded-lg"><i class="fas fa-rocket"></i> @Localizer["Реєстрація"]</a>
-                    <a asp-controller="Auth" asp-action="Authorization" class="btn btn-light rounded-lg"><i class="fas fa-fingerprint"></i> @Localizer["Авторизація"]</a>
+                    <a asp-controller="Auth" asp-action="Registration" class="btn btn-dark rounded-lg shadow"><i class="fas fa-rocket"></i> @Localizer["Реєстрація"]</a>
+                    &nbsp;
+                    <a asp-controller="Auth" asp-action="Authorization" class="btn btn-light rounded-lg shadow"><i class="fas fa-fingerprint"></i> @Localizer["Авторизація"]</a>
                     <small class="d-block mt-1"><a href="" class="text-dark" onclick="alert('@Localizer["Зверніться до свого куратора!"]'); return false;">@Localizer["Втратили доступ до облікового запису?"]</a></small>
                 </span>
             }
@@ -53,28 +58,46 @@
     
     <div class="row">
         
-        <div class="col-md-4 content-v-align-center p-2">
-            <h5>@Localizer["Початок роботи з системою"]</h5>
-            <p>
-                @Localizer["Спеціяльно для тебе ми створили зрозумілі настанови по роботі з системою, на які не треба марнувати багато часу."]
-                <a target="_blank" href="https://docs.overtest.sirkadirov.com/">@Localizer["Детальніше"] <i class="fas fa-external-link-alt"></i></a>
-            </p>
+        <div class="col-md-4 p-2 align-self-center">
+            <div class="card rounded-lg border shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">@Localizer["Початок роботи з системою"]</h5>
+                    <p class="card-text">
+                        @Localizer["Дізнайся більше про Overtest, її можливості і про правила роботи з нею зі сторінок офіційних настанов з використання."]
+                    </p>
+                    <a class="btn btn-sm btn-block btn-dark rounded-lg stretched-link" target="_blank" href="https://docs.overtest.sirkadirov.com/">
+                        <i class="fas fa-external-link-alt"></i> @Localizer["Дізнатись більше"]
+                    </a>
+                </div>
+            </div>
         </div>
         
-        <div class="col-md-4 content-v-align-center p-2">
-            <h5>@Localizer["Додатки та плагіни для IDE"]</h5>
-            <p>
-                @Localizer["Використовуй увесь потенціял Overtest - з ним вивчення програмування стане ще зручнішим та швидшим."]
-                <a target="_blank" href="https://overtest.sirkadirov.com/">@Localizer["Детальніше"] <i class="fas fa-external-link-alt"></i></a>
-            </p>
+        <div class="col-md-4 p-2 align-self-center">
+            <div class="card rounded-lg border shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">@Localizer["Додаткові можливості"]</h5>
+                    <p class="card-text">
+                        @Localizer["Використовуй увесь потенціал системи, завантаживши офіційні застосунки для твого улюбленого середовища розробки."]
+                    </p>
+                    <a class="btn btn-sm btn-block btn-dark rounded-lg stretched-link" target="_blank" href="https://overtest.sirkadirov.com/">
+                        <i class="fas fa-external-link-alt"></i> @Localizer["Дізнатись більше"]
+                    </a>
+                </div>
+            </div>
         </div>
         
-        <div class="col-md-4 content-v-align-center p-2">
-            <h5>@Localizer["Стань ченджмейкером"]</h5>
-            <p>
-                @Localizer["Розкажи про Overtest своїм викладачам, друзям та знайомим - разом ми станемо рушіями змін, рушіями майбутнього!"]
-                <a target="_blank" href="https://overtest.sirkadirov.com/">@Localizer["Детальніше"] <i class="fas fa-external-link-alt"></i></a>
-            </p>
+        <div class="col-md-4 p-2 align-self-center">
+            <div class="card rounded-lg border shadow-sm">
+                <div class="card-body mt-auto">
+                    <h5 class="card-title">@Localizer["Стань ченджмейкером"]</h5>
+                    <p class="card-text">
+                        @Localizer["Розкажи про Overtest своїм викладачам, друзям та знайомим - разом ми станемо рушіями змін, рушіями майбутнього!"]
+                    </p>
+                    <a class="btn btn-sm btn-block btn-dark rounded-lg stretched-link" target="_blank" href="https://overtest.sirkadirov.com/">
+                        <i class="fas fa-external-link-alt"></i> @Localizer["Дізнатись більше"]
+                    </a>
+                </div>
+            </div>
         </div>
         
     </div>

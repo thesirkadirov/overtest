@@ -3,12 +3,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Identity;
 
-namespace Sirkadirov.Overtest.WebApplication.ViewComponents.Shared
+namespace Sirkadirov.Overtest.WebApplication.ViewComponents
 {
-
     public class UserNavbarViewComponent : ViewComponent
     {
-        
         private readonly UserManager<User> _userManager;
         
         public UserNavbarViewComponent(UserManager<User> userManager)
@@ -18,16 +16,12 @@ namespace Sirkadirov.Overtest.WebApplication.ViewComponents.Shared
         
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            
             if (!HttpContext.User.Identity.IsAuthenticated)
                 return Content(string.Empty);
 
             var currentUser = await _userManager.GetUserAsync(HttpContext.User);
 
-            return View("~/Views/Shared/ViewComponents/Shared/UserNavbar.cshtml", currentUser);
-
+            return View("~/ViewComponents/Views/UserNavbar.cshtml", currentUser);
         }
-        
     }
-    
 }

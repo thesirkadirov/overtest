@@ -1,0 +1,32 @@
+﻿@using Sirkadirov.Overtest.WebApplication.ViewComponents.GlobalModalDialogs
+<div class="modal fade no-selection-allowed" id="@nameof(GlobalLogoutModalDialogViewComponent)" tabindex="-1" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content rounded-lg border-danger">
+      <div class="modal-header">
+        
+        <h5 class="modal-title text-center"><i class="fas fa-sign-out-alt"></i></h5>
+        <h5 class="modal-title text-center ml-auto">@Localizer["Вихід з системи"]</h5>
+        <button class="close" data-dismiss="modal"><span>&times;</span></button>
+        
+      </div>
+      <div class="modal-body">
+        
+        <p class="lead m-0">
+          @Localizer["Ви точно хочете вийти з цього обілкового запису системи Overtest?"]
+          @Localizer["Впевніться у тому, щоб усі важливі дані було збережено."]
+        </p>
+        
+      </div>
+      <div class="modal-footer d-block">
+        
+        <form class="form-inline m-0" method="post" asp-controller="Auth" asp-action="LogOut">
+          @Html.AntiForgeryToken()
+          <button type="submit" class="btn btn-danger btn-block rounded-lg">
+            <i class="fas fa-door-open"></i> @Localizer["Вийти з системи"]
+          </button>
+        </form>
+        
+      </div>
+    </div>
+  </div>
+</div>

@@ -2,7 +2,7 @@
 
 @{
     Layout = "Layouts/_DefaultEmptyLayout";
-    ViewBag.PageTitle = Localizer["Авторизація | Overtest"].Value;
+    ViewBag.PageTitle = Localizer["Реєстрація в системі | Overtest"].Value;
 }
 
 <main class="container no-selection-allowed">
@@ -19,19 +19,19 @@
                 
                 @Html.AntiForgeryToken()
                 
-                <div class="text-danger mt-3 mb-3">@Html.ValidationSummary()</div>
-                
                 <div class="card rounded-lg shadow-sm mt-3 mb-3">
                     <div class="card-body">
                         
                         <div class="form-group mt-0 mb-2">
                             <label asp-for="FullName">@Localizer["Ваше повне ім'я:"]</label>
                             <input asp-for="FullName" type="text" class="form-control rounded-lg" placeholder="@Localizer["Іван Якович Франко"]"/>
+                            <span class="d-block invalid-feedback" asp-validation-for="FullName"></span>
                         </div>
                         
                         <div class="form-group mt-2 mb-0">
                             <label asp-for="Email">@Localizer["Контактна адреса e-mail:"]</label>
                             <input asp-for="Email" type="email" class="form-control rounded-lg" placeholder="@Localizer["ivan.franko@lnu.edu.ua"]"/>
+                            <span class="d-block invalid-feedback" asp-validation-for="Email"></span>
                             <small class="form-text text-muted">
                                 @Localizer["Вказана адреса електронної пошти буде використовуватися вами для входу в обліковий запис."]
                                 @Localizer["На неї також будуть приходити важливі сповіщення."]
@@ -47,11 +47,13 @@
                         <div class="form-group mt-0 mb-2">
                             <label asp-for="Password">@Localizer["Вигадайте пароль:"]</label>
                             <input asp-for="Password" type="password" class="form-control rounded-lg" placeholder="@Localizer["***********"]"/>
+                            <span class="d-block invalid-feedback" asp-validation-for="Password"></span>
                         </div>
                         
                         <div class="form-group mt-2 mb-0">
                             <label asp-for="PasswordRepeat">@Localizer["Повторіть пароль:"]</label>
                             <input asp-for="PasswordRepeat" type="password" class="form-control rounded-lg" placeholder="@Localizer["***********"]"/>
+                            <span class="d-block invalid-feedback" asp-validation-for="PasswordRepeat"></span>
                         </div>
                         
                     </div>
@@ -63,6 +65,7 @@
                         <div class="form-group mt-0 mb-0">
                             <label asp-for="SecurityToken">@Localizer["Токен приєднання:"]</label>
                             <input asp-for="SecurityToken" type="text" class="form-control rounded-lg" placeholder="@Localizer["Я люблю Overtest"]"/>
+                            <span class="d-block invalid-feedback" asp-validation-for="SecurityToken"></span>
                             <small class="form-text text-muted">
                                 @Localizer["Токен приєднання - це рядок, що складається з букв, чисел та спеціальних символів, який надає вам змогу швидко приєднатися до системи."]
                                 @Localizer["Якщо ви не маєте такого токену, зв'яжіться з вашим куратором, або ж з адміністратором системи."]
@@ -75,7 +78,7 @@
                 <div class="card rounded-lg shadow-sm mt-3 mb-3">
                     <div class="card-body">
                         
-                        <button class="btn btn-dark rounded-lg" type="submit"><i class="fas fa-user-add"></i> @Localizer["Зареєструватися"]</button>
+                        <button class="btn btn-dark rounded-lg" type="submit"><i class="fas fa-user-friends"></i> @Localizer["Зареєструватися"]</button>
                         <a class="btn btn-link" asp-controller="Welcome" asp-action="Welcome"><i class="fas fa-angle-left"></i> @Localizer["На початок"]</a>
                         
                     </div>

@@ -1,22 +1,15 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+#pragma warning disable 1998
 
-namespace Sirkadirov.Overtest.WebApplication.ViewComponents.Shared
+namespace Sirkadirov.Overtest.WebApplication.ViewComponents.ServiceHeader
 {
-
     public class DropleftMenuViewComponent : ViewComponent
     {
-        
-#pragma warning disable 1998
         public async Task<IViewComponentResult> InvokeAsync(Func<dynamic, object> menuDrawer)
         {
-            
-            return View("~/Views/Shared/ViewComponents/Shared/DropleftMenu.cshtml", menuDrawer);
-
+            return View("~/ViewComponents/Views/ServiceHeader/DropleftMenu.cshtml", menuDrawer);
         }
-#pragma warning restore 1998
-        
     }
-    
 }

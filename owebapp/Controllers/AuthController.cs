@@ -13,11 +13,9 @@ using Sirkadirov.Overtest.WebApplication.Models.AuthController;
 
 namespace Sirkadirov.Overtest.WebApplication.Controllers
 {
-    
     [Route("/Auth")]
     public class AuthController : Controller
     {
-
         private readonly OvertestDatabaseContext _databaseContext;
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
@@ -152,7 +150,7 @@ namespace Sirkadirov.Overtest.WebApplication.Controllers
                 if (!await _databaseContext.UserGroups.AnyAsync(g => g.AccessToken == securityToken))
                 {
                     ModelState.AddModelError(
-                        string.Empty,
+                        nameof(registrationModel.SecurityToken),
                         _localizer["Введено недійсний код доступу! Рекомендуємо вам зв'язатися з куратором, який надав цей код."]
                     );
                     return View(actionViewPath, registrationModel);
@@ -161,7 +159,7 @@ namespace Sirkadirov.Overtest.WebApplication.Controllers
                 if (await _databaseContext.Users.AnyAsync(u => u.Email == registrationModel.Email))
                 {
                     ModelState.AddModelError(
-                        string.Empty,
+                        nameof(registrationModel.Email),
                         _localizer["Користувач зі вказаною адресою Email вже зареєстрований! Можливо, вам слід відновити пароль до свого облікового запису?"]
                     );
                     return View(actionViewPath, registrationModel);
@@ -200,12 +198,13 @@ namespace Sirkadirov.Overtest.WebApplication.Controllers
                     await _signInManager.SignInAsync(newUser, true);
                     return RedirectToAction("Welcome", "Welcome");
                 }
-                else
+                
+                foreach (var identityError in registrationResult.Errors)
                 {
-                    foreach (var identityError in registrationResult.Errors)
-                    {
-                        ModelState.AddModelError(string.Empty, $"Error #{identityError.Code}: {identityError.Description}");
-                    }
+                    ModelState.AddModelError(
+                        nameof(registrationModel.Email),
+                        $"Error #{identityError.Code}: {identityError.Description}"
+                    );
                 }
                 
             }
@@ -214,13 +213,11 @@ namespace Sirkadirov.Overtest.WebApplication.Controllers
             
         }
         
-        [HttpGet, Route(nameof(LogOut))]
+        [HttpPost, ValidateAntiForgeryToken, Route(nameof(LogOut))]
         public async Task<IActionResult> LogOut()
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Welcome", "Welcome");
         }
-        
     }
-    
 }

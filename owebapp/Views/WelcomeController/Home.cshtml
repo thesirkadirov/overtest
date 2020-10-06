@@ -21,7 +21,7 @@
                         @Localizer["Overtest допоможе тобі з вивченням програмування, але твоє майбутнє завжди залишається тільки у твоїх руках - не змарнуй його!"]
                     </p>
                     
-                    <a asp-area="TasksArchive" asp-controller="ProgrammingTasksArchive" asp-action="List" class="btn btn-lg btn-dark rounded-lg"><i class="fas fa-compass"></i> @Localizer["Архів завдань"]</a>
+                    <a asp-area="TasksArchive" asp-controller="ProgrammingTasksArchive" asp-action="List" class="btn btn-lg btn-outline-dark rounded-lg"><i class="fas fa-compass"></i> @Localizer["Архів завдань"]</a>
                 </div>
                 
             </div>
@@ -30,17 +30,34 @@
     </div>
 }
 
-<div class="card-deck">
+<div class="row no-selection-allowed">
+    
+    @for (var i = 0; i < 2; i++)
+    {
+        <div class="col-md-6 p-2">
+            <div class="card rounded-lg border shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">@Localizer["Новий сервіс вже у розробці"]</h5>
+                    <p class="card-text">
+                        @Localizer["Замість цього блоку вже скоро з'явиться новий сервіс, який дасть тобі змогу ще швидше знаходити те, що ти шукаєш."]
+                    </p>
+                    <p class="card-text"><small class="text-muted">@Localizer["З повагою, Sirkadirov."]</small></p>
+                </div>
+            </div>
+        </div>
+    }
     
     @for (var i = 0; i < 3; i++)
     {
-        <div class="card border-0 shadow rounded-lg no-selection-allowed">
-            <div class="card-body">
-                <h5 class="card-title">@Localizer["Новий сервіс вже у розробці"]</h5>
-                <p class="card-text">
-                    @Localizer["Замість цього блоку вже скоро з'явиться новий сервіс, який дасть тобі змогу ще швидше знаходити те, що ти шукаєш."]
-                </p>
-                <p class="card-text"><small class="text-muted">@Localizer["З повагою, Sirkadirov."]</small></p>
+        <div class="col-md-4 p-2">
+            <div class="card rounded-lg border shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">@Localizer["Новий сервіс вже у розробці"]</h5>
+                    <p class="card-text">
+                        @Localizer["Замість цього блоку вже скоро з'явиться новий сервіс, який дасть тобі змогу ще швидше знаходити те, що ти шукаєш."]
+                    </p>
+                    <p class="card-text"><small class="text-muted">@Localizer["З повагою, Sirkadirov."]</small></p>
+                </div>
             </div>
         </div>
     }

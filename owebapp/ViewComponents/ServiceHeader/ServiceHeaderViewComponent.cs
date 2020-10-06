@@ -1,23 +1,19 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+#pragma warning disable 1998
 
-namespace Sirkadirov.Overtest.WebApplication.ViewComponents.Shared
+namespace Sirkadirov.Overtest.WebApplication.ViewComponents.ServiceHeader
 {
-
     public class ServiceHeaderViewComponent : ViewComponent
     {
-        
-#pragma warning disable 1998
         public async Task<IViewComponentResult> InvokeAsync(HeaderModel model)
         {
-            return View("~/Views/Shared/ViewComponents/Shared/ServiceHeader.cshtml", model);
+            return View("~/ViewComponents/Views/ServiceHeader/ServiceHeader.cshtml", model);
         }
-#pragma warning restore 1998
-
+        
         public class HeaderModel
         {
-
             public HeaderModel()
             {
                 SubtitleLink = new IconLinkData();
@@ -31,7 +27,7 @@ namespace Sirkadirov.Overtest.WebApplication.ViewComponents.Shared
 
             public class IconLinkData
             {
-                public bool Enabled { get; set; } = false;
+                public bool Enabled { get; set; }
                 public string LinkIcon { get; set; }
                 public string LinkText { get; set; }
                 public string LinkDestination { get; set; }
@@ -39,12 +35,9 @@ namespace Sirkadirov.Overtest.WebApplication.ViewComponents.Shared
 
             public class MenuDrawerData
             {
-                public bool Enabled { get; set; } = false;
+                public bool Enabled { get; set; }
                 public Func<dynamic, object> DrawMenuItems { get; set; }
             }
-            
         }
-        
     }
-    
 }

@@ -1,4 +1,6 @@
-﻿<!doctype html>
+﻿@using Sirkadirov.Overtest.WebApplication.ViewComponents.GlobalModalDialogs
+
+<!doctype html>
 <html lang="uk">
 
 <head>
@@ -32,6 +34,8 @@
 </div>
 
 @RenderBody()
+
+@(await Component.InvokeAsync<GlobalLogoutModalDialogViewComponent>())
 
 @await RenderSectionAsync("AdditionalFooterScripts", false)
 
