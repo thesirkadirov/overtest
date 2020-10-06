@@ -1,0 +1,9 @@
+﻿{
+  "name": "Overtest",
+  "short_name": "Overtest",
+  "theme_color": "#ffffff",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "scope": "/",
+  "start_url": "/"
+}

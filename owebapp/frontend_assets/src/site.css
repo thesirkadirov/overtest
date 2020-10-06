@@ -1,0 +1,173 @@
+﻿/*
+ * Bootstrap overrides
+ */
+
+:root {
+    --orange: #fe6700;
+    --primary: --orange !important;
+    --dark: #212121;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--dark);
+    font-weight: bold;
+}
+
+p.lead {
+    font-size: 1.4rem;
+}
+
+/* Border radius */
+.btn, pre, .alert, .form-control {
+    border-radius: 0;
+}
+
+/* Alerts */
+
+.alert {
+    border: 0;
+    margin: 0;
+}
+
+.alert-light, .alert-info, .alert-secondary {
+    color: var(--dark);
+}
+
+.alert-warning {
+    color: var(--dark);
+    background-color: var(--warning);
+}
+
+.alert-danger {
+    background-color: var(--danger);
+    color: var(--white);
+}
+
+/* Links */
+a, a:hover, .btn-link, .btn-link:hover {
+    color: var(--orange);
+}
+
+/* Buttons */
+.btn.btn-circle {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+}
+
+/* Pagination */
+.pagination .page-link, .pagination .page-link:hover, .pagination .disabled .page-link {
+    color: var(--dark);
+}
+.pagination .page-item.active .page-link, .pagination .page-item.active .page-link:hover {
+    background-color: var(--dark);
+    color: var(--white);
+    border-color: var(--dark);
+}
+
+/*
+ * Custom styles
+ */
+
+.content-v-align-center {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.no-selection-allowed {
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
+/*
+ * Global user navigation bar
+ */
+
+.navbar-global {
+    min-height: 56px;
+}
+.navbar-global a, .navbar-global .navbar-toggler .navbar-toggler-icon {
+    color: var(--dark);
+}
+.navbar-global .nav-link.active {
+    color: var(--orange);
+    background: none;
+}
+
+/*
+ * Navbar scroller
+ */
+
+.navbar.navbar-scroller {
+    display: block;
+    background-color: #ffffff;
+
+    padding-top: 0;
+    padding-bottom: 5px;
+}
+
+.navbar.navbar-scroller ul.navbar-nav {
+    display: block;
+    text-align: left;
+}
+
+.navbar.navbar-scroller ul.navbar-nav li.nav-item {
+    display: inline-block;
+
+    margin: 0;
+    padding: 0;
+}
+
+.navbar.navbar-scroller ul.navbar-nav li.nav-item .nav-link {
+    font-size: .9rem;
+    color: var(--gray-dark);
+
+    padding: 8px;
+}
+.navbar.navbar-scroller ul.navbar-nav li.nav-item .nav-link:hover {
+    color: var(--orange);
+}
+.navbar.navbar-scroller ul.navbar-nav li.nav-item .nav-link.active {
+    font-weight: 500;
+    color: var(--orange);
+}
+
+@media (max-width: 768px){
+    .navbar.navbar-scroller ul.navbar-nav {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+        text-align: left;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/*
+ * Web application preloader
+ */
+
+div.row.row-preloader {
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    width: 100%;
+    height: 100%;
+
+    z-index: 10000;
+    margin: 0;
+
+    background: var(--white);
+
+}
+
+div.row.row-preloader div.spinner-border {
+    color: var(--orange);
+}

@@ -1,0 +1,6 @@
+﻿{
+  "database": {
+    "provider": "mariadb",
+    "connection_string": "Server=localhost;Database=overtest;Uid=overtest;Pwd=overtest;SslMode=Preferred;"
+  }
+}

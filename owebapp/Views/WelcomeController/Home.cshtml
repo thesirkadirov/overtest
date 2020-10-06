@@ -1,0 +1,48 @@
+﻿@{
+    ViewBag.PageTitle = Localizer["Головна сторінка"].Value;
+}
+
+@section FullwidthSection
+{
+    <div class="jumbotron jumbotron-fluid bg-light border-bottom no-selection-allowed">
+        <div class="container">
+            
+            <div class="row">
+                
+                <div class="col-md-4 text-center mt-auto mb-auto">
+                    <img src="~/assets/svg/illustrations/undraw_To_the_stars.svg" class="w-75 mt-3 mb-3"/>
+                </div>
+                
+                <div class="col-md-8 mt-auto mb-auto">
+                    <h1 class="text-center text-md-left">@Localizer["Привіт! З чого почнемо?"]</h1>
+                    
+                    <p class="lead text-justify">
+                        @Localizer["Щоб стати знавцем своєї справи, ніколи не припиняй свого навчання - воно дає тобі необмежені можливості для самореалізації, про які ти навіть не здогадуєшся."]
+                        @Localizer["Overtest допоможе тобі з вивченням програмування, але твоє майбутнє завжди залишається тільки у твоїх руках - не змарнуй його!"]
+                    </p>
+                    
+                    <a asp-area="TasksArchive" asp-controller="ProgrammingTasksArchive" asp-action="List" class="btn btn-lg btn-dark rounded-lg"><i class="fas fa-compass"></i> @Localizer["Архів завдань"]</a>
+                </div>
+                
+            </div>
+            
+        </div>
+    </div>
+}
+
+<div class="card-deck">
+    
+    @for (var i = 0; i < 3; i++)
+    {
+        <div class="card border-0 shadow rounded-lg no-selection-allowed">
+            <div class="card-body">
+                <h5 class="card-title">@Localizer["Новий сервіс вже у розробці"]</h5>
+                <p class="card-text">
+                    @Localizer["Замість цього блоку вже скоро з'явиться новий сервіс, який дасть тобі змогу ще швидше знаходити те, що ти шукаєш."]
+                </p>
+                <p class="card-text"><small class="text-muted">@Localizer["З повагою, Sirkadirov."]</small></p>
+            </div>
+        </div>
+    }
+    
+</div>

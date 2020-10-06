@@ -1,0 +1,123 @@
+﻿@using Sirkadirov.Overtest.WebApplication.ViewComponents.Shared
+@model Sirkadirov.Overtest.WebApplication.Areas.Social.Models.UserGroupsController.UserGroupsListModel
+
+@{
+    ViewBag.PageTitle = string.Format(Localizer["Список груп користувача {0}"].Value, Model.CuratorFullName);
+    var isUserHasCuratorPrivileges = UserManager.GetUserId(Context.User) == Model.CuratorId.ToString();
+}
+
+@* ====== Service header ====== *@
+@section FullwidthSection
+{
+    
+    @{
+        Func<dynamic, object> DrawDropleftMenu() => 
+            @<span>
+                
+                <partial name="ViewComponents/Shared/DropleftMenu/CommonSupportDropleftMenuItems" />
+                
+                @if (isUserHasCuratorPrivileges)
+                {
+                    <div class="dropdown-divider"></div>
+                    
+                    <a class="dropdown-item" asp-area="Administration" asp-controller="UserGroupsAdministration" asp-action="Edit">
+                        <i class="fas fa-folder-plus"></i> @Localizer["Створити нову групу"]
+                    </a>
+                }
+                
+            </span>;
+    }
+
+
+    @(await Component.InvokeAsync<ServiceHeaderViewComponent>(new ServiceHeaderViewComponent.HeaderModel
+    {
+        PageTitle = string.Format(Localizer["Список груп користувачів"].Value, Model.CuratorFullName),
+        SubtitleLink = new ServiceHeaderViewComponent.HeaderModel.IconLinkData
+        {
+            Enabled = true,
+            LinkIcon = "fas fa-user-circle",
+            LinkText = Model.CuratorFullName,
+            LinkDestination = Url.Action("UserProfile", "Users", new { area = "Social", userId = Model.CuratorId })
+        },
+        MenuDrawer = new ServiceHeaderViewComponent.HeaderModel.MenuDrawerData
+        {
+            Enabled = true,
+            DrawMenuItems = DrawDropleftMenu()
+        }
+    }))
+
+}
+@* ====== /Service header ====== *@
+
+@if (isUserHasCuratorPrivileges)
+{
+    <div class="alert alert-primary rounded-lg border shadow mt-3 mb-3 no-selection-allowed alert-dismissible fade show">
+        <p class="mt-1 mb-1">
+            
+            <strong><i class="fas fa-info-circle"></i> @Localizer["Вітаємо!"]</strong>
+            @Localizer["Ваш обліковий запис має права доступу рівня \"Куратор\", що дозволяє вам здійснювати управління користувачами і їх розподілом за групами."]
+            @Localizer["Створивши нову групу, ви зможете запросити до неї своїх студентів або підлеглих."]
+            
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            
+        </p>
+    </div>
+}
+
+@* ====== Groups list view ====== *@
+@if (Model.UserGroupsList.Any())
+{
+    <div class="card-columns no-selection-allowed">
+        
+        @foreach (var userGroup in Model.UserGroupsList)
+        {
+            <div class="card rounded-lg shadow-sm">
+                
+                <div class="card-body position-relative">
+                    <a class="d-block h5 m-0 font-weight-bold text-dark text-decoration-none stretched-link"
+                       asp-area="Social"
+                       asp-controller="UserGroups"
+                       asp-action="View"
+                       asp-route-userGroupId="@userGroup.Id"
+                    >@userGroup.DisplayName</a>
+                </div>
+                
+                @if (isUserHasCuratorPrivileges)
+                {
+                    <div class="card-footer d-flex justify-content-between">
+                        
+                        <div>
+                            <a class="btn btn-warning btn-sm rounded-lg float-left" asp-area="Administration" asp-controller="UserGroupsAdministration" asp-action="Edit" asp-route-userGroupId="@userGroup.Id">
+                                <i class="fas fa-pen"></i> @Localizer["Редагувати"]
+                            </a>
+                        </div>
+                        
+                        <div>
+                            <a class="btn btn-danger btn-sm rounded-lg float-right" asp-area="Administration" asp-controller="UserGroupsAdministration" asp-action="Remove" asp-route-userGroupId="@userGroup.Id">
+                                <i class="fas fa-trash"></i> @Localizer["Видалити"]
+                            </a>
+                        </div>
+
+                    </div>
+                }
+                
+            </div>
+        }
+        
+    </div>
+}
+else
+{
+    <div class="card shadow-sm no-selection-allowed">
+        <div class="card-body">
+            <h5 class="m-0"><i class="fas fa-heart-broken"></i> @Localizer["Жодного розподілу за групами не знайдено"]</h5>
+            @if (isUserHasCuratorPrivileges)
+            {
+                <p class="mt-2 mb-0">
+                    @Localizer["Створіть нову групу за допомогою відповідного пункту меню, і запросіть до неї нових користувачів системи - це просто і зручно!"]
+                </p>
+            }
+        </div>
+    </div>
+}
+@* ====== /Groups list view ====== *@

@@ -1,0 +1,40 @@
+﻿<!doctype html>
+<html lang="uk">
+
+<head>
+    <title>@(ViewBag.PageTitle as string)</title>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <meta name="author" content="Yurii Kadirov / Sirkadirov">
+    <meta name="generator" content="Overtest">
+    <link rel="manifest" href="~/manifest.json">
+
+    <link rel="stylesheet" href="~/bundle/webapp.bundle.css">
+    @await RenderSectionAsync("AdditionalStyles", false)
+    
+    <script src="~/bundle/webapp.bundle.js"></script>
+    @await RenderSectionAsync("AdditionalHeaderScripts", false)
+    
+</head>
+
+<body>
+
+<div id="PageEverest"></div>
+
+<div class="row row-preloader">
+    
+    <div class="col-sm-12 mt-auto mb-auto text-center">
+        <div class="spinner-border"></div>
+    </div>
+    
+</div>
+
+@RenderBody()
+
+@await RenderSectionAsync("AdditionalFooterScripts", false)
+
+</body>
+
+</html>

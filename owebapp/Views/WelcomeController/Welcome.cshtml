@@ -1,0 +1,89 @@
+﻿@using Sirkadirov.Overtest.Libraries.Shared.Database.Storage
+@{
+    Layout = "Layouts/_DefaultEmptyLayout";
+    ViewBag.PageTitle = Localizer["Overtest"].Value;
+}
+
+@if (!DatabaseContext.SystemConfiguration[ConfigurationStorage.CommonKeys.OvertestInstallationFinished].BoolValue)
+{
+    <div class="alert alert-warning no-selection-allowed">
+        <div class="container">
+            
+            <strong><i class="fas fa-exclamation-triangle"></i> @Localizer["Увага!"]</strong>
+            
+            @Localizer["Необхідно завершити процес інсталяції системи, створивши суперкористувача та виконавши початкові налаштування."]
+            
+            <a class="btn btn-sm btn-light rounded-lg" asp-area="Installation" asp-controller="InstallationWizard" asp-action="Welcome">@Localizer["Встановити"]</a>
+            
+        </div>
+    </div>
+}
+
+<main class="container no-selection-allowed">
+    
+    <div class="row mt-5 mb-5 pt-5 pb-5">
+        
+        <div class="col-md-6 content-v-align-center text-center">
+            <img src="~/assets/svg/illustrations/undraw_code_review.svg" class="w-100" alt="Overtest"/>
+        </div>
+        
+        <div class="col-md-6 content-v-align-center p-3">
+            <h3>@Localizer["Знайомся, Overtest!"]</h3>
+            <p class="lead">@Localizer["З допомогою Overtest, ти вивчатимеш програмування онлайн, зможеш брати участь у змаганнях з іншими користувачами, будеш поліпшувати свої навички та проводити вільний час з користю!"]</p>
+            
+            @if (Context.User.Identity.IsAuthenticated)
+            {
+                <span>
+                    <a asp-controller="Welcome" asp-action="Home" class="btn btn-dark rounded-lg"><i class="fas fa-laptop-house"></i> @Localizer["Розпочати роботу"]</a>
+                    <a asp-controller="Auth" asp-action="LogOut" class="btn btn-light rounded-lg"><i class="fas fa-sign-out-alt"></i> @Localizer["Завершити сеанс"]</a>
+                </span>
+            }
+            else
+            {
+                <span>
+                    <a asp-controller="Auth" asp-action="Registration" class="btn btn-dark rounded-lg"><i class="fas fa-rocket"></i> @Localizer["Реєстрація"]</a>
+                    <a asp-controller="Auth" asp-action="Authorization" class="btn btn-light rounded-lg"><i class="fas fa-fingerprint"></i> @Localizer["Авторизація"]</a>
+                    <small class="d-block mt-1"><a href="" class="text-dark" onclick="alert('@Localizer["Зверніться до свого куратора!"]'); return false;">@Localizer["Втратили доступ до облікового запису?"]</a></small>
+                </span>
+            }
+            
+        </div>
+        
+    </div>
+    
+    <div class="row">
+        
+        <div class="col-md-4 content-v-align-center p-2">
+            <h5>@Localizer["Початок роботи з системою"]</h5>
+            <p>
+                @Localizer["Спеціяльно для тебе ми створили зрозумілі настанови по роботі з системою, на які не треба марнувати багато часу."]
+                <a target="_blank" href="https://docs.overtest.sirkadirov.com/">@Localizer["Детальніше"] <i class="fas fa-external-link-alt"></i></a>
+            </p>
+        </div>
+        
+        <div class="col-md-4 content-v-align-center p-2">
+            <h5>@Localizer["Додатки та плагіни для IDE"]</h5>
+            <p>
+                @Localizer["Використовуй увесь потенціял Overtest - з ним вивчення програмування стане ще зручнішим та швидшим."]
+                <a target="_blank" href="https://overtest.sirkadirov.com/">@Localizer["Детальніше"] <i class="fas fa-external-link-alt"></i></a>
+            </p>
+        </div>
+        
+        <div class="col-md-4 content-v-align-center p-2">
+            <h5>@Localizer["Стань ченджмейкером"]</h5>
+            <p>
+                @Localizer["Розкажи про Overtest своїм викладачам, друзям та знайомим - разом ми станемо рушіями змін, рушіями майбутнього!"]
+                <a target="_blank" href="https://overtest.sirkadirov.com/">@Localizer["Детальніше"] <i class="fas fa-external-link-alt"></i></a>
+            </p>
+        </div>
+        
+    </div>
+    
+    <footer>
+        <p class="text-center mt-5 mb-5">
+            Copyright &copy; 2016-@DateTime.UtcNow.Year, <a target="_blank" href="https://sirkadirov.com/">Sirkadirov</a>.
+            Overtest is a <a target="_blank" class="text-dark" href="https://overtest.sirkadirov.com/">free software project</a>.
+        </p>
+    </footer>
+    
+</main>

@@ -1,0 +1,303 @@
+﻿@using Sirkadirov.Overtest.WebApplication.ViewComponents.Shared
+@using Microsoft.EntityFrameworkCore
+@model Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Identity.User
+@{
+    ViewBag.PageTitle = string.Format(Localizer["Профіль користувача {0}"].Value, Model.FullName);
+    var currentUserId = new Guid(UserManager.GetUserId(Context.User));
+    var currentUserEditPrivileges = await DatabaseContext.UserPermissionsOperator.GetUserDataEditPermissionAsync(Model.Id, currentUserId);
+}
+
+@section FullwidthSection
+{
+    
+    <div class="border-bottom m-0 no-selection-allowed">
+        
+        <div class="container pt-5 pb-5">
+            
+            <div id="profileHeader" class="d-flex">
+                
+                <div class="align-self-center">
+                    <div class="media no-selection-allowed">
+            
+                        <style>
+                            .profile-photo {
+                                width: 100px;
+                                height: 100px;
+                                border-radius: 50%;
+                                background-color: var(--dark) !important;
+                                color: var(--white) !important;
+                            }
+                            .profile-photo.has-photo {
+                                background-image: url('https://via.placeholder.com/100');
+                                background-size: cover;
+                            }
+                            .profile-photo.has-photo .photo-placeholder {
+                                display: none;
+                            }
+                            .profile-photo:hover.has-photo .photo-placeholder{
+                                display: inline;
+                            }
+                            .profile-photo.user-online {
+                                border-style: solid;
+                                border-width: 5px;
+                                border-color: var(--success);
+                            }
+                        </style>
+            
+                        <div class="profile-photo user-online shadow-lg mr-4 d-flex justify-content-center align-self-center" title="@string.Format(Localizer["Остання дія виконана користувачем у {0} о {1}"].Value, Model.LastSeen.ToLongDateString(), Model.LastSeen.ToLongTimeString())">
+                            @if (Model.UserPhotoId == null)
+                            {
+                                <span class="photo-placeholder h1 font-weight-bold mt-auto mb-auto">@Model.FullName[0].ToString().ToUpper()</span>
+                            }
+                        </div>
+            
+                        <div class="media-body align-self-center text-wrap">
+                            <h3 class="m-0 text-break" title="@Model.FullName">@Model.FullName</h3>
+                            <h5 class="mt-1 mb-1 text-break font-weight-light">@Model.InstitutionName</h5>
+                            <span class="m-0">
+                                @switch (Model.Type)
+                                {
+                                    case UserType.SuperUser:
+                                        <span class="text-danger"><i class="fas fa-user-secret"></i> @Localizer["Суперадміністратор"]</span>
+                                        break;
+                                    case UserType.Administrator:
+                                        <span class="text-muted"><i class="fas fa-user-shield"></i> @Localizer["Адміністратор"]</span>
+                                        break;
+                                    case UserType.Instructor:
+                                        <span class="text-muted"><i class="fas fa-user-tie"></i> @Localizer["Інструктор"]</span>
+                                        break;
+                                    case UserType.Student:
+                                        <span class="text-muted"><i class="fas fa-user-graduate"></i> @Localizer["Студент"]</span>
+                                        break;
+                                    case UserType.Anonymous:
+                                        <span class="text-muted"><i class="fas fa-ghost"></i> Ich weiß es nicht</span>
+                                        break;
+                                }
+                            </span>
+                        </div>
+            
+                    </div>
+                </div>
+                
+                <div class="align-self-center ml-auto">
+                    
+                    @{
+                        Func<dynamic, object> DrawDropleftMenu() => 
+                            @<span>
+                                
+                                <partial name="ViewComponents/Shared/DropleftMenu/CommonSupportDropleftMenuItems"/>
+
+                                <div class="dropdown-divider"></div>
+
+                                @if (currentUserEditPrivileges)
+                                {
+                                    
+                                    <h6 class="dropdown-header">@Localizer["Управління обліковим записом"]</h6>
+                                    
+                                    <a class="dropdown-item" asp-area="Administration" asp-controller="UsersAdministration" asp-action="EditUserProfile" asp-route-userId="@Model.Id">
+                                        <i class="fas fa-user-edit"></i> @Localizer["Редагувати профіль"]
+                                    </a>
+                                    <a class="dropdown-item" asp-area="Administration" asp-controller="UsersAdministration" asp-action="ChangeUserPassword" asp-route-userId="@Model.Id">
+                                        <i class="fas fa-fingerprint"></i> @Localizer["Змінити пароль"]
+                                    </a>
+
+                                    if (Model.Id != currentUserId)
+                                    {
+                                        <div class="dropdown-divider"></div>
+                                        
+                                        <h6 class="dropdown-header">@Localizer["Адміністрування"]</h6>
+                                        
+                                        <a class="dropdown-item" data-toggle="modal" data-target="#userTypeChangeModal" href="#">
+                                            <i class="fas fa-shield-alt"></i> @Localizer["Змінити права доступу"]
+                                        </a>
+                                        
+                                        <a class="dropdown-item text-danger" data-toggle="modal" data-target="#userRemovalModal" href="#">
+                                            <i class="fas fa-trash-alt"></i> @Localizer["Видалити користувача"]
+                                        </a>
+                                        
+                                    }
+                                    
+                                }
+
+                            </span>;
+                    }
+                    
+                    @(await Component.InvokeAsync<DropleftMenuViewComponent>(DrawDropleftMenu()))
+                    
+                </div>
+                
+            </div>
+            
+        </div>
+        
+    </div>
+    
+}
+
+@if (currentUserEditPrivileges && Model.Id != currentUserId)
+{
+    @* Change user type modal *@
+    <div class="modal fade no-selection-allowed" id="userTypeChangeModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-center"><i class="fas fa-shield-alt"></i></h5>
+                    <h5 class="modal-title text-center ml-auto">@Localizer["Зміна прав доступу користувача"]</h5>
+                    <button class="close" data-dismiss="modal"><span>&times;</span></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-secondary text-justify mt-2 mb-3">
+                        <strong><i class="fas fa-exclamation-triangle"></i> @Localizer["Зверніть увагу!"]</strong>
+                        @Localizer["Після підвищення рівня доступу користувача, ви більше не зможете понизити його (наприклад, з \"Instructor\" до \"Student\")."]
+                        @Localizer["Це обумовлено можливостями, що надаються користувачам вищих рівнів доступу, а також теоретично можливою втратою важливої інформації."]
+                        @Localizer["Понижувати права доступу може лише суперадміністратор системи."]
+                    </div>
+                    <div class="row mt-3 mb-0">
+                        
+                        @{
+                            var currentUserType = await DatabaseContext.Users
+                                .Where(u => u.Id == currentUserId)
+                                .Select(s => s.Type)
+                                .FirstAsync();
+
+                            var studentTypeEnabled = currentUserType == UserType.SuperUser && Model.Type != UserType.Student;
+                            var instructorTypeEnabled = (currentUserType == UserType.SuperUser || currentUserType == UserType.Administrator) && Model.Type != UserType.Instructor;
+                            var administratorUserTypeEnabled = currentUserType == UserType.SuperUser && Model.Type != UserType.Administrator;
+                            
+                        }
+                        
+                        <div class="col-md pt-2 pb-2">
+                            <form class="form-inline m-0" method="post" asp-area="Administration" asp-controller="UsersAdministration" asp-action="ChangeUserType" asp-route-userId="@Model.Id">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="newUserType" value="@UserType.Student"/>
+                                <button type="submit" class="btn btn-primary btn-block rounded-lg" @(!studentTypeEnabled ? "disabled" : "")>
+                                    <i class="fas fa-user-graduate"></i> @nameof(UserType.Student)
+                                </button>
+                            </form>
+                        </div>
+
+                        <div class="col-md pt-2 pb-2">
+                            <form class="form-inline m-0" method="post" asp-area="Administration" asp-controller="UsersAdministration" asp-action="ChangeUserType" asp-route-userId="@Model.Id">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="newUserType" value="@UserType.Instructor"/>
+                                <button type="submit" class="btn btn-primary btn-block rounded-lg" @(!instructorTypeEnabled ? "disabled" : "")>
+                                    <i class="fas fa-chalkboard-teacher"></i> @nameof(UserType.Instructor)
+                                </button>
+                            </form>
+                        </div>
+
+                        <div class="col-md pt-2 pb-2">
+                            <form class="form-inline m-0" method="post" asp-area="Administration" asp-controller="UsersAdministration" asp-action="ChangeUserType" asp-route-userId="@Model.Id">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="newUserType" value="@UserType.Administrator"/>
+                                <button type="submit" class="btn btn-primary btn-block rounded-lg" @(!administratorUserTypeEnabled ? "disabled" : "")>
+                                    <i class="fas fa-user-shield"></i> @nameof(UserType.Administrator)
+                                </button>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @* /Change user type modal *@
+    
+    @* Remove user modal dialog *@
+    <div class="modal fade no-selection-allowed" id="userRemovalModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content border border-danger">
+                <div class="modal-header">
+                    <h5 class="modal-title text-center"><i class="fas fa-trash-alt"></i></h5>
+                    <h5 class="modal-title text-center ml-auto">@Localizer["Видалення користувача"]</h5>
+                    <button class="close" data-dismiss="modal"><span>&times;</span></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mt-2 mb-2">
+                        @Localizer["Ви дійсно хочете видалити зазначеного користувача і усі пов'язані з ним дані з системи?"]
+                        @Localizer["Цю дію відмінити неможливо!"]
+                    </p>
+                </div>
+                <div class="modal-footer d-flex justify-content-between">
+
+                    <button type="button" class="btn btn-outline-secondary rounded-lg" data-dismiss="modal"><i class="fas fa-fire-extinguisher"></i> @Localizer["Відмінити"]</button>
+
+                    <form method="post" asp-area="Administration" asp-controller="UsersAdministration" asp-action="RemoveUser" asp-route-userId="@Model.Id" class="form-inline">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-outline-danger rounded-lg"><i class="fas fa-trash-alt"></i> @Localizer["Видалити користувача"]</button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    @* /Remove user modal dialog *@
+}
+
+<div class="row m-0">
+    <div class="col-md-4">
+        
+        @{
+            Func<dynamic, object> DrawListGroupItem(string displayName, string value, string link = null) =>
+                @<div class="list-group-item border-0">
+                    <h5 class="mb-1 no-selection-allowed">@displayName</h5>
+                    <p class="mb-0">@value</p>
+                    @if (!string.IsNullOrWhiteSpace(link))
+                    {
+                        <a href="@link" class="stretched-link"></a>
+                    }
+                </div>;
+        }
+        
+        <div class="list-group rounded-lg border shadow-sm mt-3 mb-3">
+
+            @DrawListGroupItem(Localizer["Адреса електронної пошти"].Value, Model.Email, $"mailto:{Model.Email}")(null)
+            
+            @DrawListGroupItem(Localizer["Навчальний заклад"].Value, Model.InstitutionName, Url.Action("List", "Users", new { Area = "Social", institutionName = Model.InstitutionName }))(null)
+            
+            @if (Model.UserGroupId != null)
+            {
+                
+                @DrawListGroupItem(Localizer["Група"].Value, Model.UserGroup.DisplayName, Url.Action("View", "UserGroups", new { area = "Social", userGroupId = Model.UserGroupId }))(null)
+            }
+            else
+            {
+                @DrawListGroupItem(Localizer["Група"].Value, Localizer["Не належить до жодної з груп"].Value)(null)
+            }
+            
+        </div>
+        
+        <div class="list-group rounded-lg border shadow-sm mt-3 mb-3">
+            
+            @DrawListGroupItem(
+                Localizer["Унікальний ідентифікатор"].Value,
+                Model.Id.ToString()
+            )(null)
+                    
+        </div>
+        
+        <div class="list-group rounded-lg border shadow-sm mt-3 mb-3">
+            
+            @DrawListGroupItem(
+                Localizer["Остання дія в системі"].Value,
+                string.Format(Localizer["{0} о {1}"].Value, Model.LastSeen.ToLongDateString(), Model.LastSeen.ToLongTimeString())
+            )(null)
+            
+            @DrawListGroupItem(
+                Localizer["Дата і час реєстрації"].Value,
+                string.Format(Localizer["{0} о {1}"].Value, Model.Registered.ToLongDateString(), Model.Registered.ToLongTimeString())
+            )(null)
+            
+        </div>
+        
+    </div>
+    <div class="col-md-8">
+        
+        <div class="card rounded-lg mt-3 mb-3 no-selection-allowed">
+            <div class="card-body">
+                <p class="lead m-0">@Localizer["Сторінка користувача знаходиться на стадії розробки 🚀!"]</p>
+            </div>
+        </div>
+        
+    </div>
+</div>

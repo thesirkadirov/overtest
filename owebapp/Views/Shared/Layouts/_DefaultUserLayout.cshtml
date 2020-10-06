@@ -1,0 +1,21 @@
+﻿@{
+    Layout = "Layouts/_DefaultEmptyLayout";
+    ViewBag.PageTitle = $"{ViewBag.PageTitle.ToString()} | Overtest";
+}
+
+@await Component.InvokeAsync("UserNavbar")
+
+<section id="FullwidthSection" class="m-0 p-0">
+    @await RenderSectionAsync("FullwidthSection", false)
+</section>
+
+<main class="container mt-0 mb-0">
+    @RenderBody()
+</main>
+
+@section AdditionalHeaderScripts {
+    @await RenderSectionAsync("AdditionalHeaderScripts", false)
+}
+@section AdditionalFooterScripts {
+    @await RenderSectionAsync("AdditionalFooterScripts", false)
+}

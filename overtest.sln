@@ -1,0 +1,62 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29020.237
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Executables", "Executables", "{9479493E-9304-4D34-A040-0928A7A43A8D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{3CF1EE39-AFD4-4587-8248-9F924F6FAD09}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "overtestdatabasecontext", "overtestdatabasecontext\overtestdatabasecontext.csproj", "{212393EE-FCFC-41F8-904A-4D6F8BEEE41A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{D85DF5E8-17C5-42F0-99A6-6DA0B95D9A72}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "owebapp", "owebapp\owebapp.csproj", "{A21025E9-8C0A-465F-964E-E4D5B71DA92E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "overtestprogramexecutor", "overtestprogramexecutor\overtestprogramexecutor.csproj", "{28E8CBEF-6CE5-4472-861D-B682A194C026}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "otestingdaemon", "otestingdaemon\otestingdaemon.csproj", "{1FF80C52-FF03-412A-BA24-FAA76634BEF3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "overtestsharedmethods", "overtestsharedmethods\overtestsharedmethods.csproj", "{AE14A4C0-EB54-49FF-9E3C-BE132232A819}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{212393EE-FCFC-41F8-904A-4D6F8BEEE41A}.Debug|x64.ActiveCfg = Debug|x64
+		{212393EE-FCFC-41F8-904A-4D6F8BEEE41A}.Debug|x64.Build.0 = Debug|x64
+		{212393EE-FCFC-41F8-904A-4D6F8BEEE41A}.Release|x64.ActiveCfg = Release|x64
+		{212393EE-FCFC-41F8-904A-4D6F8BEEE41A}.Release|x64.Build.0 = Release|x64
+		{A21025E9-8C0A-465F-964E-E4D5B71DA92E}.Debug|x64.ActiveCfg = Debug|x64
+		{A21025E9-8C0A-465F-964E-E4D5B71DA92E}.Debug|x64.Build.0 = Debug|x64
+		{A21025E9-8C0A-465F-964E-E4D5B71DA92E}.Release|x64.ActiveCfg = Release|x64
+		{A21025E9-8C0A-465F-964E-E4D5B71DA92E}.Release|x64.Build.0 = Release|x64
+		{1FF80C52-FF03-412A-BA24-FAA76634BEF3}.Debug|x64.ActiveCfg = Debug|x64
+		{1FF80C52-FF03-412A-BA24-FAA76634BEF3}.Debug|x64.Build.0 = Debug|x64
+		{1FF80C52-FF03-412A-BA24-FAA76634BEF3}.Release|x64.ActiveCfg = Release|x64
+		{1FF80C52-FF03-412A-BA24-FAA76634BEF3}.Release|x64.Build.0 = Release|x64
+		{28E8CBEF-6CE5-4472-861D-B682A194C026}.Debug|x64.ActiveCfg = Debug|x64
+		{28E8CBEF-6CE5-4472-861D-B682A194C026}.Debug|x64.Build.0 = Debug|x64
+		{28E8CBEF-6CE5-4472-861D-B682A194C026}.Release|x64.ActiveCfg = Release|x64
+		{28E8CBEF-6CE5-4472-861D-B682A194C026}.Release|x64.Build.0 = Release|x64
+		{AE14A4C0-EB54-49FF-9E3C-BE132232A819}.Debug|x64.ActiveCfg = Debug|x64
+		{AE14A4C0-EB54-49FF-9E3C-BE132232A819}.Debug|x64.Build.0 = Debug|x64
+		{AE14A4C0-EB54-49FF-9E3C-BE132232A819}.Release|x64.ActiveCfg = Release|x64
+		{AE14A4C0-EB54-49FF-9E3C-BE132232A819}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{212393EE-FCFC-41F8-904A-4D6F8BEEE41A} = {3CF1EE39-AFD4-4587-8248-9F924F6FAD09}
+		{A21025E9-8C0A-465F-964E-E4D5B71DA92E} = {9479493E-9304-4D34-A040-0928A7A43A8D}
+		{28E8CBEF-6CE5-4472-861D-B682A194C026} = {3CF1EE39-AFD4-4587-8248-9F924F6FAD09}
+		{1FF80C52-FF03-412A-BA24-FAA76634BEF3} = {9479493E-9304-4D34-A040-0928A7A43A8D}
+		{AE14A4C0-EB54-49FF-9E3C-BE132232A819} = {3CF1EE39-AFD4-4587-8248-9F924F6FAD09}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {44AC54C8-50C4-47D9-AF22-01E333180157}
+	EndGlobalSection
+EndGlobal

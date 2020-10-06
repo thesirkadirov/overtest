@@ -1,0 +1,11 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Sirkadirov.Overtest.Libraries.Shared.Database
+@using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Identity
+@using Sirkadirov.Overtest.WebApplication
+
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@inject OvertestDatabaseContext DatabaseContext
+@inject UserManager<User> UserManager
+@inject IViewLocalizer Localizer

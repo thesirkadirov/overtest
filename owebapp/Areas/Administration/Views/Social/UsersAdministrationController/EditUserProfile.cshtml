@@ -1,0 +1,54 @@
+﻿@using Microsoft.EntityFrameworkCore
+@using Sirkadirov.Overtest.WebApplication.ViewComponents.Shared
+@model Sirkadirov.Overtest.WebApplication.Areas.Administration.Models.Social.UsersAdministrationController.EditUserProfileModel
+
+@{
+    var userFullName = await DatabaseContext.Users
+        .Where(u => u.Id == Model.UserId)
+        .Select(s => s.FullName)
+        .FirstAsync();
+    
+    ViewBag.PageTitle = string.Format(Localizer["Редагування профілю користувача {0}"].Value, userFullName);
+}
+
+@section FullwidthSection
+{
+    
+    @(await Component.InvokeAsync<ServiceHeaderViewComponent>(new ServiceHeaderViewComponent.HeaderModel
+    {
+        PageTitle = Localizer["Редагування облікових даних"].Value,
+        SubtitleLink = new ServiceHeaderViewComponent.HeaderModel.IconLinkData
+        {
+            Enabled = true,
+            LinkDestination = Url.Action("UserProfile", "Users", new { area = "Social", Model.UserId }),
+            LinkIcon = "fas fa-user-circle",
+            LinkText = string.Format(Localizer["Повернутися до профілю {0}"].Value, userFullName)
+        }
+    }))
+
+}
+
+<form class="mt-0 mb-0" method="post" asp-action="EditUserProfile" asp-route-userId="@Model.UserId">
+    
+    @Html.AntiForgeryToken()
+    
+    <div class="text-danger mt-3 mb-3">@Html.ValidationSummary()</div>
+    
+    <input type="hidden" asp-for="UserId" value="@Model.UserId" />
+    
+    <div class="form-group mt-3 mb-3">
+        <label asp-for="FullName">@Localizer["Повне ім'я:"]</label>
+        <input type="text" class="form-control rounded-lg" asp-for="FullName" placeholder="Іван Якович Франко" />
+    </div>
+    
+    <div class="form-group mt-3 mb-3">
+        <label asp-for="InstitutionName">@Localizer["Назва навчального закладу:"]</label>
+        <input type="text" class="form-control rounded-lg" asp-for="InstitutionName" placeholder="Львівський національний університет імені Івана Франка" />
+    </div>
+    
+    <div class="d-flex justify-content-between mt-3 mb-3">
+        <button type="reset" class="btn btn-outline-secondary rounded-lg"><i class="fas fa-window-close"></i> @Localizer["Відмінити зміни"]</button>
+        <button type="submit" class="btn btn-dark rounded-lg"><i class="fas fa-save"></i> @Localizer["Зберегти зміни"]</button>
+    </div>
+    
+</form>

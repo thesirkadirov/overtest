@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <RootNamespace>Sirkadirov.Overtest.Libraries.Shared.ProgramExecutor</RootNamespace>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Title>Overtest Program Executor Library</Title>
+        <Authors>Yurii Kadirov / Sirkadirov</Authors>
+        <Copyright>Copyright (C) 2020, Yurii Kadirov. All rights reserved.</Copyright>
+        <PackageProjectUrl>https://overtest.sirkadirov.com/</PackageProjectUrl>
+        <Company>Yurii Kadirov / Sirkadirov</Company>
+        <Product>Overtest Program Executor Library</Product>
+        <Configurations>Release;Debug</Configurations>
+        <Platforms>x64</Platforms>
+    </PropertyGroup>
+
+</Project>

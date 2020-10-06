@@ -1,0 +1,25 @@
+﻿@using Sirkadirov.Overtest.WebApplication.ViewComponents.Shared
+@model Sirkadirov.Overtest.WebApplication.ViewComponents.Shared.ServiceHeaderViewComponent.HeaderModel
+
+@* Page header *@
+<div class="application-page-header jumbotron jumbotron-fluid bg-white pt-5 pb-3 mb-2 no-selection-allowed">
+    <div class="container">
+            
+        <div class="d-flex m-0">
+            <div class="align-self-center">
+                <h3 class="m-0">@Model.PageTitle</h3>
+                @if (Model.SubtitleLink.Enabled)
+                {
+                    <a class="text-dark text-decoration-none" href="@Model.SubtitleLink.LinkDestination"><i class="@Model.SubtitleLink.LinkIcon"></i> @Model.SubtitleLink.LinkText</a>
+                }
+            </div>
+            <div class="align-self-center ml-auto">
+                @if (Model.MenuDrawer.Enabled)
+                {
+                    @(await Component.InvokeAsync<DropleftMenuViewComponent>(Model.MenuDrawer.DrawMenuItems))
+                }
+            </div>
+        </div>
+            
+    </div>
+</div>

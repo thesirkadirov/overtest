@@ -1,0 +1,178 @@
+﻿@using Sirkadirov.Overtest.WebApplication.ViewComponents.Shared
+@using Microsoft.EntityFrameworkCore
+@model Sirkadirov.Overtest.WebApplication.Models.Shared.Pagination.PaginatedListModel<Sirkadirov.Overtest.WebApplication.Areas.Social.Models.UsersController.UsersListItemModel>
+@{
+                                                                                                                                                                                
+    ViewBag.PageTitle = Localizer["Користувачі і рейтинг"].Value;
+    
+    /*
+     * User groups list
+     */
+    
+    var userGroupsList = await DatabaseContext.Users
+        .Where(u => u.Type == UserType.Instructor || u.Type == UserType.Administrator || u.Type == UserType.SuperUser)
+        .Join(
+            DatabaseContext.UserGroups,
+            user => user.Id, userGroup => userGroup.GroupCuratorId,
+            (user, group) => new
+            {
+                CuratorId = user.Id,
+                CuratorFullName = user.FullName,
+                UserGroupId = group.Id,
+                UserGroupDisplayName = group.DisplayName
+            }
+        )
+        .OrderBy(order => order.CuratorFullName)
+        .ThenBy(additionalOrder => additionalOrder.UserGroupDisplayName)
+        .ToListAsync();
+    
+}
+
+@* ====== Service header ====== *@
+@section FullwidthSection
+{
+    
+    @{
+        Func<dynamic, object> DrawDropleftMenu() => 
+            @<span>
+                
+                <partial name="ViewComponents/Shared/DropleftMenu/CommonSupportDropleftMenuItems" />
+                
+            </span>;
+    }
+    
+    @(await Component.InvokeAsync<ServiceHeaderViewComponent>(new ServiceHeaderViewComponent.HeaderModel
+    {
+        PageTitle = Localizer["Користувачі і рейтинг"].Value,
+        MenuDrawer = new ServiceHeaderViewComponent.HeaderModel.MenuDrawerData
+        {
+            Enabled = true,
+            DrawMenuItems = DrawDropleftMenu()
+        }
+    }))
+    
+}
+@* ====== /Service header ====== *@
+
+@* ====== Search form ====== *@
+<div class="card rounded-lg border-0 shadow mt-0 mb-0 no-selection-allowed">
+    <div class="card-body">
+        <form class="m-0" method="get" asp-action="List" asp-route-page="1">
+            
+            <!-- Search query -->
+            <div class="form-group mb-3">
+                <input type="text" class="form-control rounded-lg" name="searchQuery" value="@(ViewData["SpecifiedSearchQuery"] as string)" placeholder="@Localizer["Введіть ваш пошуковий запит"]">
+            </div>
+            
+            <div class="row mb-3">
+                <div class="col">
+                    <input type="text" class="form-control rounded-lg" name="institutionName" value="@(ViewData["SpecifiedInstitutionName"] as string)" placeholder="@Localizer["Назва навчального закладу"]">
+                </div>
+                <div class="col">
+                    <select class="form-control rounded-lg" name="groupId">
+                        
+                        @{
+                            string InsertSelectedAttributeIfNeeded(Guid? currentCategoryId)
+                            {
+                                return ViewData["SpecifiedUsersGroupId"] as Guid? == currentCategoryId ? "selected" : "";
+                            }
+                        }
+                        
+                        <!option value="" @InsertSelectedAttributeIfNeeded(null)>@Localizer["Усі групи користувачів"]</!option>
+                        
+                        @if (userGroupsList.Any())
+                        {
+                            foreach (var userGroupInfo in userGroupsList)
+                            {
+                                <!option value="@userGroupInfo.UserGroupId" @InsertSelectedAttributeIfNeeded(userGroupInfo.UserGroupId)>
+                                    @userGroupInfo.CuratorFullName / @userGroupInfo.UserGroupDisplayName
+                                </!option>
+                            }
+                        }
+                        else
+                        {
+                            <option>@Localizer["Жодної групи не знайдено :("]</option>
+                        }
+                        
+                    </select>
+                </div>
+            </div>
+            
+            <button class="btn btn-block btn-dark rounded-lg" type="submit"><i class="fas fa-search"></i> @Localizer["Пошук"]</button>
+            
+        </form>
+        
+        @if ((ViewData["SpecifiedUsersGroupId"] as Guid?).HasValue || !string.IsNullOrEmpty(ViewData["SpecifiedInstitutionName"] as string) || !string.IsNullOrEmpty(ViewData["SpecifiedSearchQuery"] as string))
+        {
+            <div class="text-right">
+                <a class="small" asp-action="List" asp-route-page="1"><i class="fas fa-window-close"></i> Скинути параметри пошуку</a>
+            </div>
+        }
+        
+    </div>
+</div>
+@* ====== /Search form ====== *@
+
+@* ====== Items view ====== *@
+<div class="mt-4 mb-4">
+    @if (Model.ItemsList.Any())
+    {
+        
+        <ul class="list-group list-group-flush no-selection-allowed">
+            @foreach (var item in Model.ItemsList)
+            {
+                
+                <li class="list-group-item">
+                    <div class="media">
+                        <img src="https://via.placeholder.com/60" class="align-self-center rounded-lg shadow-sm mr-3" style="width: 60px; height: 60px;" title="@item.FullName" alt="@item.FullName"/>
+                        <div class="media-body">
+                            <h5 class="m-0">
+                                <a class="text-dark text-decoration-none" asp-area="Social" asp-controller="Users" asp-action="UserProfile" asp-route-userId="@item.Id">@item.FullName</a>
+                            </h5>
+                            <div class="m-0">
+                                <span class="text-muted" title="@Localizer["Навчальний заклад"]">@item.InstitutionName</span>
+                            </div>
+                            <h6 class="m-0">
+                                
+                                @if (item.UserGroupId == null)
+                                {
+                                    <span class="badge badge-light" title="@Localizer["Користувач не є членом жодної з існуючих груп."]">
+                                        <i class="fas fa-users"></i> @Localizer["Поза групою"]
+                                    </span>
+                                }
+                                else
+                                {
+                                    var userGroup = userGroupsList.First(g => g.UserGroupId == item.UserGroupId);
+                                    
+                                    <a class="badge badge-light" title="@string.Format(Localizer["Куратор: {0}"].Value, userGroup.CuratorFullName)" asp-area="Social" asp-controller="UserGroups" asp-action="View" asp-route-userGroupId="@item.UserGroupId">
+                                        <i class="fas fa-users"></i> @userGroup.UserGroupDisplayName
+                                    </a>
+                                }
+                                
+                                <span class="badge badge-light" title="@Localizer["Тип облікового запису"]"><i class="fas fa-user-shield"></i> @item.Type.ToString()</span>
+                                <span class="badge badge-success" title="@Localizer["Рейтинг"]"><i class="fas fa-fist-raised"></i> @item.Rating</span>
+                            </h6>
+                        </div>
+                    </div>
+                </li>
+                
+            }
+        </ul>
+        
+        @(await Component.InvokeAsync<PaginationViewComponent>(Model.Pagination))
+        
+    }
+    else
+    {
+        <div class="card shadow-sm no-selection-allowed">
+            <div class="card-body">
+                <h5 class="m-0"><i class="fas fa-heart-broken"></i> @Localizer["За вашим пошуковим запитом нікого не знайдено!"]</h5>
+                <p class="mt-2 mb-2">
+                    @Localizer["Дуже шкода, але за вказаними параметрами пошуку нам не вдалося знайти жодного користувача системи."]
+                </p>
+                <a class="btn btn-light" asp-action="List"><i class="fas fa-dragon"></i> @Localizer["Користувачі і рейтинг"]</a>
+            </div>
+        </div>
+    }
+</div>
+@* ====== /Items view ====== *@

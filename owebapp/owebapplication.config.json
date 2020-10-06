@@ -1,0 +1,33 @@
+﻿{
+  
+  "server": {
+    "endpoints": [
+      "http://127.0.0.1:8080/",
+      "http://10.1.0.100:8080/"
+    ]
+  },
+  
+  "diagnostics": {
+    "logging": {
+      "enabled": true,
+      "targets": {
+        "console": {
+          "enabled": true,
+          "levels": {
+            "minimum": "Trace",
+            "maximum": "Fatal"
+          }
+        },
+        "files": {
+          "enabled": true,
+          "path": "Z:\\overtest-data\\logs\\owebapp\\",
+          "levels": {
+            "minimum": "Trace",
+            "maximum": "Fatal"
+          }
+        }
+      }
+    }
+  }
+  
+}

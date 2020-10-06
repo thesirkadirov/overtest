@@ -1,0 +1,81 @@
+﻿{
+  
+  "general": {
+    "parallelism": 4,
+    "empty_delay": 1000,
+    "storage": {
+      "path": "D:\\overtest-data\\",
+      "custom_naming": {
+        "testing_data_directory": "td",
+        "testing_applications_directory": "ta",
+        "temp_directory": "tmp",
+        "hash_file": "hash.dat"
+      }
+    }
+  },
+  
+  "security": {
+    
+    /*
+     * "RUN_AS" FEATURE
+     */
+    
+    "run_as": {
+      "enabled": true,
+      "username": "overtest",
+      "password": "overtest",
+      "domain": ""
+    }
+    
+  },
+  
+  "compilers": [
+    
+    /* GNU C++ */
+    
+    {
+      "id": "",
+      "compiler": {
+        "path": "",
+        "arguments": ""
+      },
+      "executor": {
+        "path": "",
+        "arguments": ""
+      }
+    }
+    
+  ],
+  
+  "diagnostics": {
+    
+    "logging": {
+      
+      "enabled": true,
+      
+      "targets": {
+        
+        "console": {
+          "enabled": true,
+          "levels": {
+            "minimum": "Trace",
+            "maximum": "Fatal"
+          }
+        },
+        
+        "files": {
+          "enabled": true,
+          "path": "D:\\overtest-data\\logs\\otestingdaemon\\",
+          "levels": {
+            "minimum": "Trace",
+            "maximum": "Fatal"
+          }
+        }
+        
+      }
+      
+    }
+    
+  }
+  
+}

@@ -1,0 +1,157 @@
+﻿@using Sirkadirov.Overtest.WebApplication.ViewComponents.Shared
+@using Sirkadirov.Overtest.Libraries.Shared.Database.Operators
+@model List<Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TasksArchive.ProgrammingTaskCategory>
+
+@{
+    ViewBag.PageTitle = Localizer["Категорії завдань"].Value;
+    var currentUserId = new Guid(UserManager.GetUserId(Context.User));
+    var currentUserHasAdministratorPrivileges = await DatabaseContext.UserPermissionsOperator.VerifyUserTypeSetAsync(currentUserId, OvertestUserPermissionsOperator.UserTypeSet.Administrator);
+}
+
+@section FullwidthSection
+{
+    
+    @{
+        Func<dynamic, object> DrawDropleftMenu() => 
+            @<span>
+                
+                <partial name="ViewComponents/Shared/DropleftMenu/CommonSupportDropleftMenuItems" />
+                
+                <div class="dropdown-divider"></div>
+                
+                @if (await DatabaseContext.UserPermissionsOperator.VerifyUserTypeSetAsync(currentUserId, OvertestUserPermissionsOperator.UserTypeSet.Administrator))
+                {
+                    <a class="dropdown-item" asp-area="Administration" asp-controller="CategoriesAdministration" asp-action="Create"><i class="fas fa-file"></i> @Localizer["Створити категорію"]</a>
+                }
+                
+            </span>;
+    }
+
+
+    @(await Component.InvokeAsync<ServiceHeaderViewComponent>(new ServiceHeaderViewComponent.HeaderModel
+    {
+        PageTitle = Localizer["Категорії завдань"].Value,
+        SubtitleLink = new ServiceHeaderViewComponent.HeaderModel.IconLinkData
+        {
+            Enabled = true,
+            LinkDestination = Url.Action("List", "ProgrammingTasksArchive", new { area = "TasksArchive" }),
+            LinkIcon = "fas fa-chevron-left",
+            LinkText = Localizer["Повернутися до Архіву завдань"].Value
+        },
+        MenuDrawer = new ServiceHeaderViewComponent.HeaderModel.MenuDrawerData
+        {
+            Enabled = true,
+            DrawMenuItems = DrawDropleftMenu()
+        }
+    }))
+
+}
+
+@if (currentUserHasAdministratorPrivileges)
+{
+    <div class="modal fade no-selection-allowed" id="categoryRemovalModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-center"><i class="fas fa-trash-alt"></i></h5>
+                    <h5 class="modal-title text-center ml-auto">@Localizer["Видалення категорії"] "<span id="categoryRemovalTitle"></span>"</h5>
+                    <button class="close" data-dismiss="modal"><span>&times;</span></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mt-2 mb-2">
+                        @Localizer["Ви дійсно хочете видалити зазнечену категорію завдань з системи?"]
+                        @Localizer["Ця дія є безповортною - усю інформацію, пов'язану з цією категорією завдань буде втрачено!"]
+                    </p>
+                    <hr/>
+                    <p class="mt-2 mb-2">
+                        <strong>@Localizer["Зверніть увагу на те, що прив'язані до цієї категорії завдання не будуть видалені з системи!"]</strong>
+                        @Localizer["Натомість, вони просто не матимуть прив'язки до будь-якої категорії."]
+                        @Localizer["Знайти їх у \"Архіві завдань\", обравши модифікатор пошуку \"За всіма категоріями\"."]
+                        @Localizer["Ви зможете прив'язати завдання до іншої категорії одразу ж після виконання цієї операції."]
+                    </p>
+                </div>
+                <div class="modal-footer d-flex justify-content-between">
+                    
+                    <button type="button" class="btn btn-secondary rounded-lg" data-dismiss="modal"><i class="fas fa-fire-extinguisher"></i> @Localizer["Відмінити"]</button>
+                    
+                    <form method="post" asp-area="Administration" asp-controller="CategoriesAdministration" asp-action="Remove" class="form-inline">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="tasksCategoryId" value="" />
+                        <button type="submit" class="btn btn-outline-danger rounded-lg"><i class="fas fa-trash-alt"></i> @Localizer["Видалити категорію"]</button>
+                    </form>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        $('#categoryRemovalModal').on('show.bs.modal', function (event) {
+            let button = $(event.relatedTarget);
+            let modal = $(this);
+            modal.find("#categoryRemovalTitle").text(button.data('category-title'));
+            modal.find("input[name='tasksCategoryId']").val(button.data('category-id'));
+        })
+    </script>
+}
+
+@if (Model.Count > 0)
+{
+    <div class="card-columns no-selection-allowed">
+        @foreach (var tasksCategory in Model)
+        {
+            <div class="card rounded-lg shadow-sm">
+                
+                <div class="card-body position-relative">
+                    
+                    <a class="d-block h5 m-0 font-weight-bold text-dark text-decoration-none stretched-link"
+                       asp-area="TasksArchive"
+                       asp-controller="ProgrammingTasksArchive"
+                       asp-action="List"
+                       asp-route-category="@tasksCategory.Id">@tasksCategory.DisplayName</a>
+                    
+                    @if (!string.IsNullOrWhiteSpace(tasksCategory.Description))
+                    {
+                        <p class="card-text mt-2 mb-0">@tasksCategory.Description</p>
+                    }
+                    
+                </div>
+                
+                @if (currentUserHasAdministratorPrivileges)
+                {
+                    <div class="card-footer d-flex justify-content-between">
+                        
+                        <div>
+                            @* Edit category link *@
+                            <a class="btn btn-warning btn-sm rounded-lg" title="@Localizer["Редагувати інформацію про категорію"]" asp-area="Administration" asp-controller="CategoriesAdministration" asp-action="Edit" asp-route-categoryId="@tasksCategory.Id">
+                                <i class="fas fa-pen"></i> @Localizer["Редагувати"]
+                            </a>
+                        </div>
+                        
+                        <div>
+                            @* Remove category link *@
+                            <button class="btn btn-danger btn-sm rounded-lg" title="@Localizer["Видалити категорію"]" data-toggle="modal" data-target="#categoryRemovalModal" data-category-id="@tasksCategory.Id" data-category-title="@tasksCategory.DisplayName">
+                                <i class="fas fa-trash"></i> @Localizer["Видалити"]
+                            </button>
+                        </div>
+                        
+                    </div>
+                }
+                
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="card shadow-sm no-selection-allowed">
+        <div class="card-body">
+            <h5 class="m-0"><i class="fas fa-heart-broken"></i> @Localizer["Категорізація завдань відсутня"]</h5>
+            <p class="mt-2 mb-2">
+                @Localizer["Доступних для перегляду категорій не знайдено."]
+                @Localizer["Можливо, вам слід скористатися пошуком по Архіву завдань?"]
+            </p>
+            <a class="btn btn-light rounded-lg" asp-action="List"><i class="fas fa-archive"></i> @Localizer["Перейти до Архіву завдань"]</a>
+        </div>
+    </div>
+}
