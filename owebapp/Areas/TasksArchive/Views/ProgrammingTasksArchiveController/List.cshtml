@@ -1,6 +1,6 @@
 ﻿@using Microsoft.EntityFrameworkCore
-@using Sirkadirov.Overtest.Libraries.Shared.Database.Operators
-@using Sirkadirov.Overtest.WebApplication.ViewComponents.Shared
+@using Sirkadirov.Overtest.WebApplication.ViewComponents
+@using Sirkadirov.Overtest.WebApplication.ViewComponents.ServiceHeader
 @model Sirkadirov.Overtest.WebApplication.Models.Shared.Pagination.PaginatedListModel<Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TasksArchive.ProgrammingTask>
 @{
     ViewBag.PageTitle = Localizer["Архів завдань"].Value;
@@ -20,9 +20,9 @@
         Func<dynamic, object> DrawDropleftMenu() => 
             @<span>
                 
-                <partial name="ViewComponents/Shared/DropleftMenu/CommonSupportDropleftMenuItems" />
+                <partial name="~/ViewComponents/Views/ServiceHeader/DropleftMenu/CommonSupportDropleftMenuItems.cshtml" />
                 
-                @if (await DatabaseContext.UserPermissionsOperator.VerifyUserTypeSetAsync(currentUserId, OvertestUserPermissionsOperator.UserTypeSet.Administrator))
+                @if (await DatabaseContext.UserPermissionsOperator.GetUserHasSpecifiedTypeAsync(currentUserId, UserType.SuperUser))
                 {
                     <div class="dropdown-divider"></div>
                     
@@ -46,73 +46,62 @@
     
 }
 
-<form class="mb-5 p-0 no-selection-allowed" asp-area="TasksArchive" asp-controller="ProgrammingTasksArchive" asp-action="List" method="get">
-    <div class="input-group shadow-sm">
+@* ====== Search form ====== *@
+<div class="card rounded-lg border shadow mt-0 mb-4 no-selection-allowed">
+    <div class="card-body">
+        <form class="m-0" method="get" asp-area="TasksArchive" asp-controller="ProgrammingTasksArchive" asp-action="List" asp-route-page="1">
+            
+            <!-- Search query -->
+            <div class="form-group mb-3">
+                <input name="searchQuery" type="text" class="form-control rounded-lg" placeholder="@Localizer["Вкажіть ваш пошуковий запит"]" value="@(ViewData["SearchQuery"] as string)">
+            </div>
+            
+            <div class="row">
+                <div class="col">
+                    
+                    <select name="category" class="custom-select rounded-lg">
+                        @{
+                            string InsertSelectedAttributeIfNeeded(Guid? currentCategoryId)
+                            {
+                                return ViewData["SelectedCategoryId"] as Guid? == currentCategoryId ? "selected" : "";
+                            }
+                        }
+
+                        <!option value="" @InsertSelectedAttributeIfNeeded(null)>@Localizer["Усі категорії"]</!option>
+
+                        @if (taskCategoriesList.Count > 0)
+                        {
+                            foreach (var (categoryId, categoryDisplayName) in taskCategoriesList)
+                            {
+                                <!option value="@categoryId.ToString()" @InsertSelectedAttributeIfNeeded(categoryId)>@categoryDisplayName</!option>
+                            }
+                        }
+                        else
+                        {
+                            <option>@Localizer["Категорії завдань відсутні :("]</option>
+                        }
+                    </select>
+                    
+                </div>
+                <div class="col">
+                    
+                    <button type="submit" class="btn btn-dark btn-block rounded-lg"><i class="fas fa-search"></i> @Localizer["Пошук"]</button>
+                    
+                </div>
+            </div>
+            
+        </form>
         
         @if (!string.IsNullOrWhiteSpace(ViewData["SearchQuery"] as string) || ViewData["SelectedCategoryId"] is Guid)
         {
-            <div class="input-group-prepend">
-                <a class="btn btn-dark" asp-area="TasksArchive" asp-controller="ProgrammingTasksArchive" asp-action="List"><i class="fas fa-times-circle"></i></a>
+            <div class="text-right">
+                <a class="small" asp-action="List" asp-route-page="1"><i class="fas fa-window-close"></i> Скинути параметри пошуку</a>
             </div>
         }
         
-        <input name="searchQuery" type="text" class="form-control" placeholder="@Localizer["Вкажіть ваш пошуковий запит"]" value="@(ViewData["SearchQuery"] as string)">
-        
-        <div class="input-group-append w-25">
-            <select name="category" class="form-control">
-                
-                @{
-                    string InsertSelectedAttributeIfNeeded(Guid? currentCategoryId)
-                    {
-                        return ViewData["SelectedCategoryId"] as Guid? == currentCategoryId ? "selected" : "";
-                    }
-                }
-                
-                <!option value="" @InsertSelectedAttributeIfNeeded(null)>@Localizer["Усі категорії"]</!option>
-                
-                @if (taskCategoriesList.Count > 0)
-                {
-                    foreach (var (categoryId, categoryDisplayName) in taskCategoriesList)
-                    {
-                        <!option value="@categoryId.ToString()" @InsertSelectedAttributeIfNeeded(categoryId)>@categoryDisplayName</!option>
-                    }
-                }
-                else
-                {
-                    <option>@Localizer["Категорії завдань відсутні :("]</option>
-                }
-            </select>
-        </div>
-        
-        <div class="input-group-append">
-            <button class="btn btn-dark"><i class="fas fa-search"></i></button>
-        </div>
-        
     </div>
-</form>
-
-@if (ViewData["SelectedCategoryId"] is Guid)
-{
-    
-    var categoryId = ViewData["SelectedCategoryId"] as Guid?;
-    var categoryTitle = taskCategoriesList.First(c => c.Key == categoryId).Value;
-    var categoryDescription = await DatabaseContext.ProgrammingTaskCategories
-        .Where(c => c.Id == categoryId)
-        .Select(c => c.Description)
-        .AsNoTracking()
-        .FirstAsync();
-    
-    if (!string.IsNullOrWhiteSpace(categoryDescription))
-    {
-        <div class="card rounded-lg shadow-sm mt-0 mb-5 no-selection-allowed">
-            <div class="card-body">
-                <h5 class="card-title">@categoryTitle</h5>
-                @categoryDescription
-            </div>
-        </div>
-    }
-    
-}
+</div>
+@* ====== /Search form ====== *@
 
 @if (Model.ItemsList.Count > 0)
 {
@@ -121,30 +110,34 @@
         TODO: Реалізувати обчислення статистики вирішуваності завдань
     *@
     
-    <div class="row no-selection-allowed">
+    <div class="list-group mt-4 mb-4 no-selection-allowed">
+        
         <style>
             .programming-task-list-item:hover h5 {
                 color: var(--orange) !important;
             }
         </style>
+        
         @foreach (var programmingTask in Model.ItemsList)
         {
-            <div class="col-md-6 p-2">
-                <div class="card h-100 rounded-lg shadow-sm">
-                    <div class="card-body programming-task-list-item d-flex justify-content-between">
-                        <div class="align-self-center">
-                            <h5 class="m-0 text-dark text-decoration-none">@programmingTask.Title</h5>
-                            <span class="d-block text-muted">@taskCategoriesList.FirstOrDefault(c => c.Key == programmingTask.CategoryId).Value</span>
-                            <a class="stretched-link" asp-area="TasksArchive" asp-controller="ProgrammingTasksBrowsing" asp-action="View" asp-route-programmingTaskId="@programmingTask.Id"></a>
+            <div class="m-0 p-1">
+                <div class="programming-task-list-item list-group-item list-group-item-action border rounded-lg">
+                    <div class="d-flex justify-content-between">
+                        <div class="align-self-center" style="max-width: 70%;">
+                            <h5 class="m-0 text-dark text-decoration-none text-truncate">@programmingTask.Title</h5>
+                            <span class="d-block text-muted text-truncate">@taskCategoriesList.FirstOrDefault(c => c.Key == programmingTask.CategoryId).Value</span>
                         </div>
+
                         <div class="align-self-center text-right text-muted">
                             <samp class="d-block text-nowrap">@programmingTask.Difficulty% <i class="fas fa-award"></i></samp>
                             <samp class="d-block text-nowrap">N/A <i class="fas fa-poll"></i></samp>
                         </div>
                     </div>
+                    <a class="stretched-link" asp-area="TasksArchive" asp-controller="ProgrammingTasksBrowsing" asp-action="View" asp-route-programmingTaskId="@programmingTask.Id"></a>
                 </div>
             </div>
         }
+        
     </div>
     
     @(await Component.InvokeAsync<PaginationViewComponent>(Model.Pagination))

@@ -1,0 +1,264 @@
+﻿@using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TestingApplications
+@using Microsoft.EntityFrameworkCore
+@model Sirkadirov.Overtest.WebApplication.Areas.TasksArchive.ViewComponents.Models.ProgrammingTasksBrowsingController.TestingApplicationCreationPartialModel
+
+@{
+    var currentUserId = new Guid(UserManager.GetUserId(Context.User));
+    Guid? currentCompetitionId = null;
+}
+
+<div class="jumbotron rounded-0 pt-3 pb-3 pl-0 pr-0 m-0" id="SourceCodeJumbotron">
+    
+    <div class="fade-background-object close-button"></div>
+    
+    <div class="container-lg position-relative">
+        
+        <div id="SourceCodeActionCards" class="no-selection-allowed">
+            
+            <div class="SourceCodeActionCard card rounded-lg shadow-lg">
+                <div class="card-body h-100 p-4">
+                    <button class="btn btn-link text-secondary text-decoration-none rounded-circle text-right close-button"><i class="fas fa-times-circle"></i></button>
+                    
+                    <div class="d-flex justify-content-between h-100">
+                        
+                        <div class="align-self-center">
+                            <button class="btn btn-link p-0 text-decoration-none text-center" style="color: var(--orange) !important;">
+                                <i class="fas fa-question-circle" style="font-size: 30px;"></i>
+                                <span class="d-none d-sm-block">@Localizer["Допомога"]</span>
+                            </button>
+                        </div>
+
+                        <div class="align-self-center text-center pl-3 pr-3">
+                            <div class="border-left" style="height: 100% !important; min-height: 80px;"></div>
+                        </div>
+
+                        <div class="w-100 align-self-center">
+                            <h5><i class="fas fa-cube"></i> @Localizer["Перевірка розв'язку"]</h5>
+                            <form method="post" enctype="multipart/form-data" class="m-0" asp-area="TasksArchive" asp-controller="ProgrammingTasksTestingApplications" asp-action="SubmitTestingApplication">
+                                
+                                @Html.AntiForgeryToken()
+                                
+                                <input type="hidden" asp-for="ProgrammingTaskId" />
+                                <textarea class="d-none" id="SourceCodeInput" asp-for="SourceCode"></textarea>
+                                
+                                <div class="input-group">
+                                    <select asp-for="TestingType" class="custom-select rounded-left">
+                                        <option value="@TestingApplication.ApplicationTestingType.SyntaxMode">@Localizer["Syntax | Перевірка синтаксису"]</option>
+                                        <option value="@TestingApplication.ApplicationTestingType.DebugMode">@Localizer["Debug | Зневадження на згенерованому тесті"]</option>
+                                        <option value="@TestingApplication.ApplicationTestingType.ReleaseMode">@Localizer["Release | Остаточна перевірка розв'язку"]</option>
+                                    </select>
+                                    
+                                    @{
+                                        var programmingLanguagesList = await DatabaseContext.ProgrammingLanguages
+                                            .OrderBy(o => o.DisplayName)
+                                            .ToListAsync();
+                                    }
+                                    
+                                    <select id="ProgrammingLanguageSelectMenu" asp-for="ProgrammingLanguageId" class="custom-select">
+                                        <option data-highlight="text" value="">@Localizer["Оберіть мову програмування і компілятор"]</option>
+                                        @foreach (var programmingLanguage in programmingLanguagesList)
+                                        {
+                                            <!option value="@programmingLanguage.Id" data-highlight="@programmingLanguage.SyntaxHighlightingOptions" @(Model.ProgrammingLanguageId == programmingLanguage.Id ? "selected" : string.Empty)>@programmingLanguage.DisplayName</!option>
+                                        }
+                                    </select>
+                                    
+                                    <div class="input-group-append">
+                                        <button id="SendTestingApplicationRequestButton" type="submit" class="btn btn-block btn-dark rounded-right">
+                                            <i class="fas fa-paper-plane"></i> <span class="d-none d-sm-inline">@Localizer["Надіслати"]</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+
+                    </div>
+                    
+                </div>
+            </div>
+            
+        </div>
+        
+        <div class="no-selection-allowed">
+            <button class="btn btn-lg btn-primary rounded-circle shadow-lg p-0" id="SourceCodeActionButton"><i class="fas fa-cube"></i></button>
+        </div>
+        
+        <div id="SourceCodeEditor" class="rounded-lg">@Model.SourceCode</div>
+        
+    </div>
+    
+</div>
+
+@{
+    var previousSubmissionsCount = await DatabaseContext.TestingApplications
+        .Where(a => a.AuthorId == currentUserId)
+        .Where(a => a.ProgrammingTaskId == Model.ProgrammingTaskId)
+        .Where(a => a.CompetitionId == currentCompetitionId)
+        .CountAsync();
+    
+    if (previousSubmissionsCount > 0)
+    {
+        <div class="previous-submissions-alert alert alert-secondary alert-dismissible rounded-0 m-0 fade show no-selection-allowed">
+            <div class="container d-flex justify-content-between">
+                <div class="align-self-center">
+                    <strong class="alert-title d-block d-sm-inline mr-2"><i class="fas fa-stream"></i> @Localizer["Попередні спроби"]</strong>
+                    @string.Format(Localizer["Вами виконано {0} спроб розв'язати це завдання."].Value, previousSubmissionsCount)
+                    <a class="stretched-link text-dark d-inline d-sm-none" href=""></a>
+                </div>
+                <a class="btn btn-sm btn-outline-secondary rounded-pill ml-auto stretched-link d-none d-sm-block" href="" target="_blank"><i class="fas fa-external-link-alt"></i> @Localizer["Переглянути"]</a>
+            </div>
+        </div>
+        
+        <style>
+            div.alert.previous-submissions-alert:hover strong.alert-title {
+                color: var(--orange) !important;
+            }
+            div.alert.previous-submissions-alert:hover a.btn.btn-outline-secondary:hover {
+                background-color: transparent !important;
+                border-color: var(--orange) !important;
+                color: var(--orange) !important;
+            }
+        </style>
+    }
+}
+
+<style>
+    #SourceCodeJumbotron {
+        position: relative !important;
+        background-color: #212121 !important;
+    }
+    
+    #SourceCodeEditor {
+        height: 450px;
+        margin: 0;
+        font-size: 16px;
+        background-color: #212121 !important;
+    }
+    
+    #SourceCodeEditor .ace_gutter {
+        background: transparent !important;
+    }
+    
+    /* Large screens */
+    /*@@media (min-width: 992px) {
+        #SourceCodeJumbotron {
+            position: sticky !important;
+            top: 56px;
+            z-index: 1000;
+        }
+    }*/
+    
+    .fade-background-object {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        background-color: #212121;
+        opacity: 0.8;
+        z-index: 9;
+    }
+    
+    #SourceCodeActionButton {
+        background-color: var(--orange) !important;
+        border-color: var(--orange) !important;
+        width: 55px;
+        height: 55px;
+        position: absolute;
+        right: 40px;
+        bottom: 20px;
+        z-index: 1;
+        
+        opacity: 0.8;
+    }
+    #SourceCodeActionButton:hover {
+        opacity: 1;
+    }
+    
+    #SourceCodeActionCards {
+        position: absolute;
+        left: 20px;
+        right: 20px;
+        bottom: 5px;
+        z-index: 10;
+    }
+    #SourceCodeActionCards .close-button {
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
+</style>
+
+<script src="~/bundle/external/acejs/ace.js"></script>
+
+<script>
+    $(document).ready(function () { window.onbeforeunload = confirm; });
+</script>
+
+<script>
+    $(document).ready(function () {
+        let codeEditor = ace.edit("SourceCodeEditor");
+        let programmingLanguageSelectMenu = $("#ProgrammingLanguageSelectMenu");
+        
+        codeEditor.setTheme("ace/theme/nord_dark"); // monokai
+        codeEditor.setShowPrintMargin(false);
+        codeEditor.setHighlightActiveLine(true);
+        
+        //codeEditor.session.setNewLineMode("windows");
+        codeEditor.session.setTabSize(4);
+        codeEditor.session.setUseSoftTabs(true);
+        codeEditor.session.setMode("ace/mode/text");
+        
+        codeEditor.setOptions({
+            enableBasicAutocompletion: true,
+            enableLiveAutocompletion: true,
+            enableSnippets: true
+        });
+        
+        // Syntax highlighting
+        programmingLanguageSelectMenu.change(function () {
+            if ($("#ProgrammingLanguageSelectMenu option[data-highlight]").length > 0) {
+                let appliedSyntaxHighlighter = $( "#ProgrammingLanguageSelectMenu option:selected" ).data("highlight");
+                
+                if (appliedSyntaxHighlighter === undefined)
+                    codeEditor.session.setMode("ace/mode/text");
+                
+                codeEditor.session.setMode("ace/mode/" + appliedSyntaxHighlighter);
+            }
+            else {
+                codeEditor.session.setMode("ace/mode/text");
+            }
+        });
+        programmingLanguageSelectMenu.change();
+        
+        // Source code fetching
+        function fetchSourceCodeFromEditor() {
+            $("#SourceCodeInput").val(codeEditor.getSession().getValue());
+        }
+        codeEditor.getSession().on("change", function () {
+            fetchSourceCodeFromEditor();
+        });
+        fetchSourceCodeFromEditor();
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        let sourceCodeActionCardsContainer = $("#SourceCodeActionCards");
+        let fadeBackgroundObject = $(".fade-background-object");
+        
+        sourceCodeActionCardsContainer.fadeOut(0);
+        fadeBackgroundObject.fadeOut(0);
+        
+        $("#SourceCodeActionButton").click(function () {
+            // $("#PageEverest")[0].scrollIntoView(false);
+            sourceCodeActionCardsContainer.fadeIn(300);
+            fadeBackgroundObject.fadeIn(300);
+        });
+        
+        $("#SourceCodeJumbotron .close-button").click(function() {
+            sourceCodeActionCardsContainer.fadeOut(300);
+            fadeBackgroundObject.fadeOut(300);
+        });
+    });
+</script>

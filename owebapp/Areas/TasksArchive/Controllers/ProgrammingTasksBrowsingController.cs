@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Sirkadirov.Overtest.Libraries.Shared.Database;
-using Sirkadirov.Overtest.Libraries.Shared.Database.Operators;
 using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Identity;
 using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TasksArchive;
 using Sirkadirov.Overtest.WebApplication.Areas.Administration.Controllers;
@@ -22,7 +21,7 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.TasksArchive.Controllers
         private readonly OvertestDatabaseContext _databaseContext;
         private readonly UserManager<User> _userManager;
         private readonly IStringLocalizer<ProgrammingTasksAdministrationController> _localizer;
-
+        
         public ProgrammingTasksBrowsingController(OvertestDatabaseContext databaseContext, UserManager<User> userManager, IStringLocalizer<ProgrammingTasksAdministrationController> localizer)
         {
             _databaseContext = databaseContext;
@@ -40,7 +39,7 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.TasksArchive.Controllers
             
             var currentUserId = new Guid(_userManager.GetUserId(HttpContext.User));
 
-            if (!await _databaseContext.UserPermissionsOperator.VerifyUserTypeSetAsync(currentUserId, OvertestUserPermissionsOperator.UserTypeSet.Administrator))
+            if (!await _databaseContext.UserPermissionsOperator.GetUserHasSpecifiedTypeAsync(currentUserId, UserType.SuperUser))
             {
                 if (!await _databaseContext.ProgrammingTasks.AnyAsync(t => t.Id == programmingTaskId && t.VisibleInFreeMode))
                     return Forbid();

@@ -1,11 +1,10 @@
-﻿@using Sirkadirov.Overtest.WebApplication.ViewComponents.Shared
-@using Sirkadirov.Overtest.Libraries.Shared.Database.Operators
+﻿@using Sirkadirov.Overtest.WebApplication.ViewComponents.ServiceHeader
 @model List<Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TasksArchive.ProgrammingTaskCategory>
 
 @{
     ViewBag.PageTitle = Localizer["Категорії завдань"].Value;
     var currentUserId = new Guid(UserManager.GetUserId(Context.User));
-    var currentUserHasAdministratorPrivileges = await DatabaseContext.UserPermissionsOperator.VerifyUserTypeSetAsync(currentUserId, OvertestUserPermissionsOperator.UserTypeSet.Administrator);
+    var currentUserHasAdministratorPrivileges = await DatabaseContext.UserPermissionsOperator.GetUserHasSpecifiedTypeAsync(currentUserId, UserType.SuperUser);
 }
 
 @section FullwidthSection
@@ -15,11 +14,11 @@
         Func<dynamic, object> DrawDropleftMenu() => 
             @<span>
                 
-                <partial name="ViewComponents/Shared/DropleftMenu/CommonSupportDropleftMenuItems" />
+                <partial name="~/ViewComponents/Views/ServiceHeader/DropleftMenu/CommonSupportDropleftMenuItems.cshtml" />
                 
                 <div class="dropdown-divider"></div>
                 
-                @if (await DatabaseContext.UserPermissionsOperator.VerifyUserTypeSetAsync(currentUserId, OvertestUserPermissionsOperator.UserTypeSet.Administrator))
+                @if (currentUserHasAdministratorPrivileges)
                 {
                     <a class="dropdown-item" asp-area="Administration" asp-controller="CategoriesAdministration" asp-action="Create"><i class="fas fa-file"></i> @Localizer["Створити категорію"]</a>
                 }

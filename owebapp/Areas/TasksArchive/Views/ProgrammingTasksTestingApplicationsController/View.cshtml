@@ -1,0 +1,248 @@
+﻿@using Microsoft.EntityFrameworkCore
+@using Sirkadirov.Overtest.WebApplication.ViewComponents.ServiceHeader
+@using System.Text
+@model Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TestingApplications.TestingApplication
+@{
+    var authorPersonalInfo = await DatabaseContext.Users
+        .Where(u => u.Id == Model.AuthorId)
+        .Select(s => new { s.Id, s.FullName })
+        .AsNoTracking()
+        .FirstAsync();
+    var programmingTaskInfo = await DatabaseContext.ProgrammingTasks
+        .Where(t => t.Id == Model.ProgrammingTaskId)
+        .Select(s => new { s.Id, s.Title, s.Difficulty })
+        .AsNoTracking()
+        .FirstAsync();
+    var programmingLanguageInfo = await DatabaseContext.ProgrammingLanguages
+        .Where(l => l.Id == Model.SourceCode.ProgrammingLanguageId)
+        .Select(s => new {s.Id, s.DisplayName})
+        .AsNoTracking()
+        .FirstAsync();
+    
+    ViewBag.PageTitle = string.Format(
+        Localizer["Результати тестування розв'язку до завдання \"{0}\" від користувача {1}"].Value,
+        programmingTaskInfo.Title, authorPersonalInfo.FullName
+    );
+}
+
+@section FullwidthSection
+{
+    
+    @{
+        Func<dynamic, object> DrawDropleftMenu() => 
+            @<span>
+                
+                <partial name="~/ViewComponents/Views/ServiceHeader/DropleftMenu/CommonSupportDropleftMenuItems.cshtml" />
+                
+                <div class="dropdown-divider"></div>
+                
+            </span>;
+    }
+
+
+
+    @(await Component.InvokeAsync<ServiceHeaderViewComponent>(new ServiceHeaderViewComponent.HeaderModel
+    {
+        PageTitle = Localizer["Результати тестування"].Value,
+        SubtitleLink = new ServiceHeaderViewComponent.HeaderModel.IconLinkData
+        {
+            Enabled = true,
+            LinkDestination = Url.Action("View", "ProgrammingTasksBrowsing", new { area = "TasksArchive", programmingTaskId = programmingTaskInfo.Id }),
+            LinkIcon = "fas fa-chevron-left",
+            LinkText = string.Format("Сторінка завдання {0}", programmingTaskInfo.Title)
+        },
+        MenuDrawer = new ServiceHeaderViewComponent.HeaderModel.MenuDrawerData
+        {
+            Enabled = true,
+            DrawMenuItems = DrawDropleftMenu()
+        }
+    }))
+
+}
+
+<div class="card rounded-lg shadow-sm mt-2 mb-2 no-selection-allowed">
+    <div class="card-body">
+        
+        <div class="row justify-content-center">
+            <div class="col-md-2 pt-0 pb-2">
+                <h2 class="m-0 text-center">50%</h2>
+                <span class="d-block small text-center">@Localizer["пройдено тестів"]</span>
+            </div>
+            <div class="col-md-2 pt-0 pb-2">
+                <h2 class="m-0 text-center">0.50 / 1</h2>
+                <span class="d-block small text-center">@Localizer["рейтингу отримано"]</span>
+            </div>
+            <div class="col-md-2 pt-0 pb-2">
+                <h2 class="m-0 text-center">0%</h2>
+                <span class="d-block small text-center">@Localizer["вірогідності плагіату"]</span>
+            </div>
+        </div>
+        
+        <div class="pt-2 pb-0">
+            <div class="progress rounded-lg shadow-sm" style="height: 25px;">
+                @for (var i = 0; i < 1; i++)
+                {
+                    <div class="progress-bar bg-success" style="width: 50%;">
+                        <strong>50%</strong>
+                    </div>
+                    <div class="progress-bar bg-warning" style="width: 25%;">
+                        <strong class="text-dark">25%</strong>
+                    </div>
+                    <div class="progress-bar bg-danger" style="width: 25%;">
+                        <strong>25%</strong>
+                    </div>
+                }
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+<div class="row">
+    
+    <div class="col-md-4 pt-3 pb-3">
+        
+        <div class="list-group rounded-lg shadow-sm mb-2 no-selection-allowed">
+            <div class="list-group-item list-group-item-action">
+                <h6 class="m-0">@Localizer["Автор розв'язку"]</h6>
+                <div>@authorPersonalInfo.FullName</div>
+                <a class="stretched-link" asp-area="Social" asp-controller="Users" asp-action="UserProfile" asp-route-userId="@authorPersonalInfo.Id"></a>
+            </div>
+            <div class="list-group-item list-group-item-action">
+                <h6 class="m-0">@Localizer["Розв'язане завдання"]</h6>
+                <div>@programmingTaskInfo.Title</div>
+                <a class="stretched-link" asp-area="TasksArchive" asp-controller="ProgrammingTasksBrowsing" asp-action="View" asp-route-programmingTaskId="@programmingTaskInfo.Id"></a>
+            </div>
+            <div class="list-group-item list-group-item-action">
+                <h6 class="m-0">@Localizer["Пов'язане змагання"]</h6>
+                <div>@Localizer["Прив'язка до змагання відсутня"]</div>
+            </div>
+        </div>
+        
+        <div class="list-group rounded-lg shadow-sm mb-2 no-selection-allowed">
+            <div class="list-group-item list-group-item-action">
+                <h6 class="m-0">@Localizer["Дата і час створення запиту"]</h6>
+                <div>@string.Format("{0} о {1}", Model.Created.ToLongDateString(), Model.Created.ToLongTimeString())</div>
+            </div>
+            <div class="list-group-item list-group-item-action">
+                <h6 class="m-0">@Localizer["Тип запиту на тестування"]</h6>
+                <div>@Model.TestingType.ToString()</div>
+            </div>
+            <div class="list-group-item list-group-item-action">
+                <h6 class="m-0">@Localizer["Статус запиту на тестування"]</h6>
+                <div>@Model.Status.ToString()</div>
+            </div>
+            <div class="list-group-item list-group-item-action">
+                <h6 class="m-0 no-selection-allowed">@Localizer["Ідентифікатор розв'язку"]</h6>
+                <div><pre class="m-0">@Model.Id</pre></div>
+            </div>
+        </div>
+        
+    </div>
+    
+    <div class="col-md-8 pt-3 pb-3">
+        
+        <div class="card mb-2 rounded-lg shadow-sm">
+            <div class="card-body">
+                <h6 class="d-block d-md-flex justify-content-between m-0 no-selection-allowed">
+                    @Localizer["Компіляція програми"]
+                    <span class="badge badge-pill badge-success">@Localizer["успішно"]</span>
+                </h6>
+                <hr class="mt-2 mb-2"/>
+                <pre class="rounded-lg m-0" style="overflow: auto !important; max-height: 300px;">Compiler text output</pre>
+            </div>
+        </div>
+        
+        <div class="card mb-2 rounded-lg shadow-sm no-selection-allowed">
+            <div class="card-body">
+                <h6 class="d-block d-md-flex justify-content-between m-0">
+                    @Localizer["Тестування програми"]
+                    <span class="badge badge-pill badge-warning">@Localizer["частково"]</span>
+                </h6>
+                <hr class="mt-2 mb-2"/>
+                <div class="table-responsive m-0">
+                    
+                    <table class="table table-borderless table-hover rounded-lg m-0">
+                        <thead>
+                        <tr>
+                            <th scope="col">@Localizer["#"]</th>
+                            <th scope="col">@Localizer["Назва тесту"]</th>
+                            <th scope="col">@Localizer["PT ліміт"]</th>
+                            <th scope="col">@Localizer["WS ліміт"]</th>
+                            <th scope="col">@Localizer["ET ліміт"]</th>
+                            <th scope="col">@Localizer["Результат"]</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        
+                        <tr>
+                            <th scope="row">1</th>
+                            <td>Test number 1</td>
+                            <td>1000 ms</td>
+                            <td>32000 bytes</td>
+                            <td>5000 ms</td>
+                            <td><span class="badge badge-pill badge-success">@Localizer["успішно"]</span></td>
+                        </tr>
+                        
+                        <tr>
+                            <th scope="row">2</th>
+                            <td>Test number 2</td>
+                            <td>1000 ms</td>
+                            <td>32000 bytes</td>
+                            <td>5000 ms</td>
+                            <td><span class="badge badge-pill badge-success">@Localizer["успішно"]</span></td>
+                        </tr>
+                        
+                        <tr>
+                            <th scope="row">3</th>
+                            <td>Test number 3</td>
+                            <td>1000 ms</td>
+                            <td>32000 bytes</td>
+                            <td>5000 ms</td>
+                            <td><span class="badge badge-pill badge-warning">@Localizer["частково"]</span></td>
+                        </tr>
+                        
+                        <tr>
+                            <th scope="row">4</th>
+                            <td>Test number 4</td>
+                            <td>1000 ms</td>
+                            <td>32000 bytes</td>
+                            <td>5000 ms</td>
+                            <td><span class="badge badge-pill badge-danger">@Localizer["провалено"]</span></td>
+                        </tr>
+                        
+                        </tbody>
+                    </table>
+                    
+                </div>
+            </div>
+        </div>
+        
+        @*<div class="card mb-2 rounded-lg shadow-sm">
+            <div class="card-body">
+                <h6 class="d-block d-md-flex justify-content-between m-0 no-selection-allowed">
+                    @Localizer["Початковий код розв'язку"]
+                    <span class="badge badge-pill badge-secondary">@programmingLanguageInfo.DisplayName</span>
+                </h6>
+                <hr class="mt-2 mb-2"/>
+                <pre class="rounded-lg m-0" style="overflow: auto !important; max-height: 200px;">@Encoding.UTF8.GetString(Model.SourceCode.SourceCode)</pre>
+            </div>
+        </div>*@
+        
+        <div class="alert alert-success rounded-lg border border-success shadow-sm m-0 no-selection-allowed">
+            <div class="row">
+                <div class="col-md-2 mt-auto mb-auto">
+                    <div class="text-center display-4">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                </div>
+                <div class="col-md-10 mt-auto mb-auto">
+                    <h6>@Localizer["Розв'язок успішно захищено!"]</h6>
+                    <p class="m-0">@Localizer["Ви отримали максимальну кількість балів за розв'язання цього завдання."].Value</p>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    
+</div>

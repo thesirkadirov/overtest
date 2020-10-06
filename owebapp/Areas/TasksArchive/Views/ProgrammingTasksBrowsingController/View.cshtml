@@ -1,7 +1,6 @@
 ﻿@using Microsoft.EntityFrameworkCore
-@using Sirkadirov.Overtest.Libraries.Shared.Database.Operators
 @using Microsoft.AspNetCore.Hosting
-@using System.IO
+@using Sirkadirov.Overtest.WebApplication.Areas.TasksArchive.ViewComponents.ProgrammingTasksBrowsingController
 
 @inject IWebHostEnvironment WebHostEnvironment
 
@@ -10,86 +9,22 @@
     ViewBag.PageTitle = Model.Title;
     
     var currentUserId = new Guid(UserManager.GetUserId(Context.User));
-    var currentUserHasAdminPrivileges = await DatabaseContext.UserPermissionsOperator.VerifyUserTypeSetAsync(
-        currentUserId,
-        OvertestUserPermissionsOperator.UserTypeSet.Administrator
-    );
+    var currentUserHasAdminPrivileges = await DatabaseContext.UserPermissionsOperator.GetUserHasSpecifiedTypeAsync(currentUserId, UserType.SuperUser);
 }
 
 @section FullwidthSection
 {
-    <div class="jumbotron position-relative rounded-0 pt-3 pb-3 pl-0 pr-0 m-0" style="background-color: #1e1e1e;" id="SourceCodeJumbotron">
-        
-        <div class="fade-background-object close-button"></div>
-        
-        <div class="container-lg position-relative">
-            
-            <div class="no-selection-allowed">
-                
-                <div class="card rounded-lg shadow-lg" id="SourceCodeActionCard">
-                    <div class="card-body p-4">
-                        <button class="btn btn-link text-secondary text-decoration-none rounded-circle text-right close-button"><i class="fas fa-times-circle"></i></button>
-                        <h5><i class="fas fa-cube"></i> @Localizer["Перевірка розв'язку"]</h5>
-                        <form class="m-0">
-                            
-                            <div class="input-group">
-                                <select class="form-control rounded-left">
-                                    <option>@Localizer["Syntax | Перевірка синтаксису"]</option>
-                                    <option>@Localizer["Debug | Зневадження на власному тесті"]</option>
-                                    <option>@Localizer["Release | Остаточна перевірка розв'язку"]</option>
-                                </select>
-                                <select class="form-control">
-                                    <option>.NET Core C#</option>S
-                                    <option>.NET Core F#</option>
-                                    <option>Java 8</option>
-                                </select>
-                                <div class="input-group-append">
-                                    <button type="submit" class="btn btn-block btn-dark rounded-right">@Localizer["Відправити"]</button>
-                                </div>
-                            </div>
-                            
-                        </form>
-                    </div>
-                </div>
-                
-                <button class="btn btn-lg btn-primary rounded-circle shadow-lg p-0" id="SourceCodeActionButton"><i class="fas fa-cube"></i></button>
-            </div>
-            
-            <pre class="w-100 m-0">
-<code id="SourceCodeEditor" class="w-100 language-csharp m-0">// C# program to print Hello World!
-using System;
-
-// namespace declaration
-namespace HelloWorldApp {
     
-    // Class declaration
-    public class Geeks {
-        
-        // Main Method
-        public static void Main(string[] args) {
-            
-            // statement
-            // printing Hello World!
-            Console.WriteLine("Hello, world!");
-            
-        }
-        
-    }
-    
-}</code></pre>
-
-        </div>
-        
-    </div>
+    @(await Component.InvokeAsync<TestingApplicationCreationPartialViewComponent>(Model.Id))
     
     <div class="application-page-header jumbotron jumbotron-fluid bg-white pt-5 pb-3 mb-2 no-selection-allowed">
         <div class="container">
-                
+
             <div class="m-0">
                 <div>
                     <h2 class="m-0">@Model.Title</h2>
-                    
-                    <div class="overflow-auto text-nowrap pt-1 pb-0">
+
+                    <div class="overflow-auto text-nowrap pt-0 pb-0">
                         @if (Model.CategoryId != null)
                         {
                             var programmingTaskCategoryDisplayName = await DatabaseContext.ProgrammingTaskCategories
@@ -97,138 +32,44 @@ namespace HelloWorldApp {
                                 .Select(s => s.DisplayName)
                                 .AsNoTracking()
                                 .FirstAsync();
-                            
-                            <a class="btn btn-light btn-sm rounded-pill shadow-sm d-inline-block ml-0 mr-1" asp-controller="ProgrammingTasksArchive" asp-action="List" asp-route-category="@Model.CategoryId">
+
+                            <a class="btn btn-sm btn-link text-dark d-inline-block p-0 mr-1" asp-controller="ProgrammingTasksArchive" asp-action="List" asp-route-category="@Model.CategoryId">
                                 <i class="fas fa-list-alt"></i> @programmingTaskCategoryDisplayName
                             </a>
                         }
-                        <button class="btn btn-light btn-sm rounded-pill shadow-sm d-inline-block ml-0 mr-1">
+                        <button class="btn btn-sm btn-link text-dark d-inline-block p-0 mr-1">
                             <i class="fas fa-star"></i> @string.Format(Localizer["Складність {0}%"].Value, Model.Difficulty)
                         </button>
-                        
+
                         @if (currentUserHasAdminPrivileges)
                         {
-                            <a class="btn btn-light btn-sm rounded-pill shadow-sm d-inline-block ml-0 mr-1" asp-area="Administration" asp-controller="ProgrammingTasksAdministration" asp-action="EditDetails" asp-route-programmingTaskId="@Model.Id">
+                            <a class="btn btn-sm btn-link d-inline-block p-0 mr-1" asp-area="Administration" asp-controller="ProgrammingTasksAdministration" asp-action="EditDetails" asp-route-programmingTaskId="@Model.Id">
                                 <i class="fas fa-edit"></i> @Localizer["Редагувати"]
                             </a>
                         }
                     </div>
                 </div>
             </div>
-                
+
         </div>
     </div>
+    
+    <div class="container">
+        <div id="ProgrammingTaskDescriptionPanel" class="no-selection-allowed mt-0 mb-5">
+            @Html.Raw(Model.Description)
+        </div>
+    </div>
+    
 }
-
-<div id="ProgrammingTaskDescriptionPanel" class="no-selection-allowed mt-0 mb-5">
-    @Html.Raw(Model.Description)
-</div>
 
 @section AdditionalHeaderScripts
 {
-    <link rel="stylesheet" href="~/bundle/external/highlightjs/styles/vs2015.min.css"/>
     <style>
-        .fade-background-object {
-            position: absolute;
-            left: 0;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            background-color: #212121;
-            opacity: 0.8;
-            z-index: 1;
+        .UserNavbarBottomBorderLineContainer {
+            display: none !important;
         }
-        
-        #SourceCodeEditor {
-            overflow-x: auto;
-            overflow-y: auto;
-            
-            white-space: unset !important;
-            resize: none !important;
-            
-            min-height: 400px;
-            max-height: 600px;
-        }
-        
-        #SourceCodeActionButton {
-            width: 55px;
-            height: 55px;
-            position: absolute;
-            right: 40px;
-            bottom: 20px;
-        }
-        
-        #SourceCodeActionCard {
-            position: absolute;
-            left: 20px;
-            right: 20px;
-            bottom: 5px;
-            z-index: 1;
-        }
-        #SourceCodeActionCard .close-button {
-            position: absolute;
-            top: 0;
-            right: 0;
-        }
-        
         div#ProgrammingTaskDescriptionPanel img {
             max-width: 100%;
         }
     </style>
-}
-
-@section AdditionalFooterScripts
-{
-    <script src="~/bundle/external/highlightjs/highlight.min.js"></script>
-    
-    @foreach (var languageSupportLibraryName in await File.ReadAllLinesAsync(System.IO.Path.Combine(WebHostEnvironment.WebRootPath, "config", "code_editor_supported_languages.inc")))
-    {
-        <script src="@System.IO.Path.Combine(Url.Content("~/bundle/external/highlightjs/languages/"), languageSupportLibraryName)"></script>
-    }
-    
-    <!--suppress SillyAssignmentJS -->
-    <script type="module">
-        
-        import {CodeJar} from '@Url.Content("~/bundle/external/codejar/codejar.js")';
-        // import {withLineNumbers} from '@Url.Content("~/bundle/external/codejar/linenumbers.js")';
-        
-        const highlightExec = editor => {
-            // highlight.js does not trims old tags,
-            // let's do it by this hack.
-            editor.textContent = editor.textContent;
-            hljs.highlightBlock(editor)
-        }
-        
-        let sourceCodeEditor = CodeJar(
-            document.querySelector('#SourceCodeEditor'),
-            highlightExec,
-            {
-                tab: ' '.repeat(4), // default is '\t'
-                indentOn: /[(\[{]$/, // default is /{$/
-            }
-        );
-        
-        hljs.initHighlightingOnLoad();
-    </script>
-    
-    <script>
-        $(document).ready(function () {
-            document.execCommand("defaultParagraphSeparator", false, "br");
-            let sourceCodeActionCard = $("#SourceCodeActionCard");
-            
-            sourceCodeActionCard.fadeOut(0);
-            $(".fade-background-object").fadeOut(0);
-            
-            $("#SourceCodeActionButton").click(function () {
-                // $("#PageEverest")[0].scrollIntoView(false);
-                sourceCodeActionCard.fadeIn(300);
-                $(".fade-background-object").fadeIn(300);
-            });
-            
-            $("#SourceCodeJumbotron .close-button").click(function() {
-                sourceCodeActionCard.fadeOut(300);
-                $(".fade-background-object").fadeOut(300);
-            });
-        });
-    </script>
 }
