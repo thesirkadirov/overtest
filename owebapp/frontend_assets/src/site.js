@@ -55,3 +55,12 @@ window.CopyTextToClipboard = function (text) {
     document.execCommand("copy");
     $temp.remove();
 }
+
+/*
+ * Bootstrap forms
+ */
+$.validator.unobtrusive.options = {
+    // validClass: "is-valid",
+    errorClass: "is-invalid"
+};
+$.validator.setDefaults($.validator.unobtrusive.options);

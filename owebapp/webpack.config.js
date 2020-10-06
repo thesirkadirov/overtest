@@ -72,12 +72,8 @@ module.exports = {
                     to: path.resolve(bundleFolder, 'external', 'trumbowyg')
                 },
                 {
-                    from: path.resolve('node_modules', '@highlightjs', 'cdn-assets'),
-                    to: path.resolve(bundleFolder, 'external', 'highlightjs')
-                },
-                {
-                    from: path.resolve('node_modules', 'codejar'),
-                    to: path.resolve(bundleFolder, 'external', 'codejar')
+                    from: path.resolve('node_modules', 'ace-builds', 'src-min-noconflict'),
+                    to: path.resolve(bundleFolder, 'external', 'acejs')
                 }
             ],
             options: {
