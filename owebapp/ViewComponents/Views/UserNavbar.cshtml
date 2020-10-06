@@ -1,0 +1,162 @@
+﻿@using Sirkadirov.Overtest.WebApplication.ViewComponents.Shared
+@using System.Linq
+@using Microsoft.EntityFrameworkCore
+@using Sirkadirov.Overtest.Libraries.Shared.Database.Operators
+
+@model Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Identity.User
+
+@{
+  var currentUserId = new Guid(UserManager.GetUserId(Context.User));
+}
+
+<nav class="navbar navbar-global navbar-expand-lg bg-white sticky-top no-selection-allowed">
+  <div class="container">
+
+    <a class="navbar-brand font-weight-bold" asp-controller="Welcome" asp-action="Welcome">
+      <img src="~/assets/svg/logos/sirkadirov-logo.svg" width="30" height="30" class="d-inline-block align-top" loading="lazy" alt="Overtest" /> <span>Overtest</span>
+    </a>
+
+    <a class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#@nameof(UserNavbarViewComponent)">
+      <span class="fas fa-bars text-dark"></span>
+    </a>
+
+    <div class="collapse navbar-collapse" id="@nameof(UserNavbarViewComponent)">
+
+      <ul class="navbar-nav mr-auto">
+        
+        @* Home link *@
+        <li class="nav-item">
+          <a class="nav-link" asp-controller="Welcome" asp-action="Home"><i class="fas fa-home"></i> @Localizer["Головна"]</a>
+        </li>
+        @* /Home link *@
+
+        @* Users dropdown *@
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown"><i class="fas fa-users"></i> @Localizer["Користувачі"]</a>
+          <div class="dropdown-menu">
+
+            <a class="dropdown-item" asp-area="Social" asp-controller="Users" asp-action="List"><i class="fas fa-compass"></i> @Localizer["Користувачі і рейтинг"]</a>
+            <a class="dropdown-item" asp-area="Social" asp-controller="UserGroups" asp-action="List"><i class="fas fa-user-friends"></i> @Localizer["Групи користувачів"]</a>
+
+          </div>
+        </li>
+        @* /Users dropdown *@
+
+        @* Tasks dropdown *@
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown"><i class="fas fa-cubes"></i> @Localizer["Завдання"]</a>
+          <div class="dropdown-menu">
+            
+            <a class="dropdown-item" asp-area="TasksArchive" asp-controller="ProgrammingTasksArchive" asp-action="List">
+              <i class="fas fa-archive"></i> @Localizer["Архів завдань"]
+            </a>
+
+            <a class="dropdown-item" asp-area="TasksArchive" asp-controller="ProgrammingTasksArchive" asp-action="Categories">
+              <i class="fas fa-th-list"></i> @Localizer["Категорії завдань"]
+            </a>
+
+            <div class="dropdown-divider"></div>
+
+            <h6 class="dropdown-header text-dark text-uppercase">@Localizer["Мої розв'язки"]</h6>
+
+            <a class="dropdown-item" href="#"><i class="fas fa-flask"></i> @Localizer["Список тестувань"]</a>
+
+            <a class="dropdown-item" href="#"><i class="fas fa-radiation"></i> @Localizer["Відкладені завдання"]</a>
+
+          </div>
+        </li>
+        @* /Tasks dropdown *@
+
+        @* Activities dropdown *@
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown"><i class="fas fa-shapes"></i> @Localizer["Активності"]</a>
+          <div class="dropdown-menu">
+
+            <a class="dropdown-item disabled" href="#"><i class="fas fa-campground"></i> @Localizer["Домашні завдання"] <span class="badge badge-warning">SOON</span></a>
+            <a class="dropdown-item disabled" href="#"><i class="fas fa-snowboarding"></i> @Localizer["Змагання і екзамени"] <span class="badge badge-warning">SOON</span></a>
+
+          </div>
+        </li>
+        @* /Activities dropdown *@
+
+        @*
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown"><i class="fas fa-folder"></i> @Localizer[""]</a>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" href="#">@Localizer[""]</a>
+            <a class="dropdown-item" href="#">@Localizer[""]</a>
+          </div>
+        </li>*@
+
+        @if (await DatabaseContext.UserPermissionsOperator.VerifyUserTypeSetAsync(currentUserId, OvertestUserPermissionsOperator.UserTypeSet.SuperUser))
+        {
+
+          @* Administration *@
+          <li class="nav-item">
+            <a class="nav-link disabled" href="#"><i class="fas fa-user-shield"></i> @Localizer["Панель керування"]</a>
+          </li>
+
+        }
+
+      </ul>
+
+      @* User menu *@
+      <ul class="navbar-nav">
+        
+        @{
+          var userFullName = await DatabaseContext.Users
+            .Where(u => u.Id == currentUserId)
+            .Select(u => u.FullName)
+            .FirstAsync();
+        }
+        
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle text-dark" href="#" title="@userFullName" data-toggle="dropdown">
+            <i class="fas fa-user-circle"></i> <span class="d-md-none d-lg-none d-xl-none text-truncate">@userFullName</span>
+          </a>
+          <div class="dropdown-menu dropdown-menu-right">
+            
+            <h6 class="dropdown-header text-dark text-uppercase text-truncate">@userFullName</h6>
+            
+            <a class="dropdown-item" asp-area="Social" asp-controller="Users" asp-action="Profile">
+              <i class="fas fa-id-card"></i> @Localizer["Мій профіль"]
+            </a>
+            
+            <a class="dropdown-item" asp-area="Administration" asp-controller="UsersAdministration" asp-action="EditUserProfile" asp-route-userId="@currentUserId">
+              <i class="fas fa-user-edit"></i> @Localizer["Редагувати профіль"]
+            </a>
+            
+            <div class="dropdown-divider"></div>
+            
+            <h6 class="dropdown-header text-dark text-uppercase">@Localizer["Допомога і підтримка"]</h6>
+            
+            <a class="dropdown-item" target="_blank" href="https://overtest.sirkadirov.com/">
+              <i class="fas fa-external-link-alt"></i> @string.Format(Localizer["Офіційний вебсайт {0}"].Value, "Overtest")
+            </a>
+            
+            <a class="dropdown-item" target="_blank" href="https://docs.overtest.sirkadirov.com/">
+              <i class="fas fa-external-link-alt"></i> @string.Format(Localizer["Документація {0}"].Value, "Overtest")
+            </a>
+            
+            <div class="dropdown-divider"></div>
+            
+            <a class="dropdown-item" asp-controller="Auth" asp-action="LogOut">
+              <i class="fas fa-sign-out-alt"></i> @Localizer["Вийти з системи"]
+            </a>
+            
+          </div>
+        </li>
+        
+      </ul>
+      @* /User menu *@
+
+    </div>
+
+  </div>
+</nav>
+
+@* Hidden spacer (for fixed navbar) *@
+<!--div style="margin-top: 56px;"></div-->
+
+@* Border line (navigation scroller independent) *@
+<div class="m-0 border-bottom"></div>
