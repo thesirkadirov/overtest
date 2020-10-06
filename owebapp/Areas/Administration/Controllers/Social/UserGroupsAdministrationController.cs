@@ -17,10 +17,9 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.Administration.Controllers
     
     [Area("Administration")]
     [Route("/Administration/Social/UserGroups")]
-    [AllowedUserTypesFilter(UserType.Instructor, UserType.Administrator, UserType.SuperUser)]
+    [AllowedUserTypesFilter(UserType.Curator, UserType.SuperUser)]
     public class UserGroupsAdministrationController : Controller
     {
-        
         private const string ViewsDirectoryPath = "~/Areas/Administration/Views/Social/UserGroupsAdministrationController/";
         
         private readonly OvertestDatabaseContext _databaseContext;
@@ -202,7 +201,6 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.Administration.Controllers
             Url.Action("JoinByInviteSecurityToken", "Auth", new { securityToken }, HttpContext.Request.Scheme);
         
         #endregion
-        
     }
     
 }

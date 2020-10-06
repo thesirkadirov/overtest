@@ -1,0 +1,97 @@
+﻿@using Sirkadirov.Overtest.WebApplication.ViewComponents.ServiceHeader
+@model Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TasksArchive.Extras.ProgrammingLanguage
+
+@{
+    ViewBag.PageTitle = Localizer["Редагування інформації про компілятор"].Value;
+}
+
+@section FullwidthSection
+{
+
+    @(await Component.InvokeAsync<ServiceHeaderViewComponent>(new ServiceHeaderViewComponent.HeaderModel
+    {
+        PageTitle = Model.Id == default ? Localizer["Новий компілятор"].Value : Model.DisplayName,
+        SubtitleLink = new ServiceHeaderViewComponent.HeaderModel.IconLinkData
+        {
+            Enabled = true,
+            LinkDestination = Url.Action("List", "ProgrammingLanguagesAdministration", new { area = "Administration" }),
+            LinkIcon = "fas fa-chevron-left",
+            LinkText = Localizer["Управління компіляторами"].Value
+        }
+    }))
+
+}
+
+<div class="row">
+    <div class="col-md-8 pt-3 pb-3">
+        
+        @if (Model.Id != default)
+        {
+            <div class="form-group">
+                <div class="alert alert-info rounded-lg shadow-sm">
+                    <span class="font-weight-bold no-selection-allowed">@Localizer["Ідентифікатор компілятора: "]</span> <kbd class="d-inline rounded-lg">@Model.Id</kbd>
+                </div>
+            </div>
+        }
+        
+        <form class="no-selection-allowed" method="post">
+            
+            @Html.AntiForgeryToken()
+
+            <input type="hidden" asp-for="Id"/>
+            
+            <div class="form-group">
+                <label asp-for="DisplayName">@Localizer["Відображувана назва компілятора:"]</label>
+                <input asp-for="DisplayName" type="text" class="form-control rounded-lg" placeholder="@Localizer[".NET Core C#"]"/>
+                <span class="d-block invalid-feedback" asp-validation-for="DisplayName"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Description">@Localizer["Особливості використання:"]</label>
+                <textarea asp-for="Description" type="text" class="form-control rounded-lg"></textarea>
+                <span class="d-block invalid-feedback" asp-validation-for="Description"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="SyntaxHighlightingOptions">@Localizer["Параметри підсвічування коду:"]</label>
+                <input asp-for="SyntaxHighlightingOptions" type="text" class="form-control rounded-lg"/>
+                <span class="d-block invalid-feedback" asp-validation-for="SyntaxHighlightingOptions"></span>
+            </div>
+
+            <div class="text-right">
+                <button type="submit" class="btn btn-primary rounded-lg"><i class="fas fa-save"></i> @Localizer["Зберегти"]</button>
+            </div>
+
+        </form>
+
+    </div>
+    <div class="col-md-4 pt-3 pb-3 no-selection-allowed">
+
+        <div class="card rounded-lg shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title m-0">@Localizer["Наступні кроки"]</h5>
+                @Localizer[""]
+                <ol class="p-0" style="list-style: inside decimal;">
+                    <li class="mt-2 mb-2">@Localizer["Перегляньте офіційні настанови з адміністрування Overtest"]</li>
+                    <li class="mt-2 mb-2">@Localizer["Додайте інформацію про обраний вами компілятор до Overtest за допомогою цього сервісу"]</li>
+                    <li class="mt-2 mb-2">@Localizer["Встановіть відповідний компілятор на обрані комп'ютери, де попередньо встановлено агент тестування Overtest"]</li>
+                    <li class="mt-2 mb-2">@Localizer["Налаштуйте модуль компіляції агента тестування Overtest, як це вказано у настановах з адміністрування системи"]</li>
+                </ol>
+                <a class="btn btn-sm btn-block btn-dark rounded-lg stretched-link" href="https://docs.overtest.sirkadirov.com/" target="_blank"><i class="fas fa-external-link-alt"></i> @Localizer["Перейти до документації"]</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section AdditionalHeaderScripts
+{
+    <style>
+        div.card.programming-language-card:hover {
+            border-color: var(--orange) !important;
+        }
+        div.card.programming-language-card:hover .card-title {
+            color: var(--orange) !important;
+        }
+    </style>
+}

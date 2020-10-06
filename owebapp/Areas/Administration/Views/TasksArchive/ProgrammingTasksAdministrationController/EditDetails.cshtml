@@ -1,5 +1,5 @@
 ﻿@using Microsoft.EntityFrameworkCore
-@using Sirkadirov.Overtest.WebApplication.ViewComponents.Shared
+@using Sirkadirov.Overtest.WebApplication.ViewComponents.ServiceHeader
 @model Sirkadirov.Overtest.WebApplication.Areas.Administration.Models.TasksArchive.ProgrammingTasksAdministrationController.ProgrammingTaskEditDetailsModel
 @{
     var programmingTaskTitle = await DatabaseContext.ProgrammingTasks
@@ -42,28 +42,28 @@
     <div class="form-group mt-3 mb-3">
         <label asp-for="Title">@Localizer["Назва завдання:"]</label>
         <input asp-for="Title" type="text" class="form-control rounded-lg" placeholder="@Localizer["Hello, world!"]">
-        <div class="text-danger mt-2 mb-0">@Html.ValidationMessageFor(m => m.Title)</div>
+        <span class="d-block invalid-feedback" asp-validation-for="Title"></span>
     </div>
     
     <div class="form-group mt-3 mb-3">
         <label asp-for="CategoryId">@Localizer["Категорія завдань:"]</label>
-        <select asp-for="CategoryId" type="text" class="form-control rounded-lg" asp-items="@programmingTaskCategoriesList">
+        <select asp-for="CategoryId" type="text" class="custom-select rounded-lg" asp-items="@programmingTaskCategoriesList">
             <option>@Localizer["Оберіть категорію завдань"]</option>
             <!option value="" @(Model.CategoryId == null ? "selected" : "")>@Localizer["-- Без категорії --"]</!option>
         </select>
-        <div class="text-danger mt-2 mb-0">@Html.ValidationMessageFor(m => m.CategoryId)</div>
+        <span class="d-block invalid-feedback" asp-validation-for="CategoryId"></span>
     </div>
     
     <div class="form-group mt-3 mb-3">
         <label asp-for="Difficulty">@Localizer["Складність завдання (0 - 100):"]</label>
         <input asp-for="Difficulty" type="number" min="0" max="100" class="form-control rounded-lg">
-        <div class="text-danger mt-2 mb-0">@Html.ValidationMessageFor(m => m.Difficulty)</div>
+        <span class="d-block invalid-feedback" asp-validation-for="Difficulty"></span>
     </div>
     
     <div class="form-group mt-3 mb-3">
         <label>@Localizer["Повний опис завдання:"]</label>
         <textarea asp-for="Description" id="ProgrammingTaskDescriptionTextArea" class="form-control rounded-lg"></textarea>
-        <div class="text-danger mt-2 mb-0">@Html.ValidationMessageFor(m => m.Description)</div>
+        <span class="d-block invalid-feedback" asp-validation-for="Description"></span>
     </div>
     
     <div class="custom-control custom-switch mt-3 mb-3">
@@ -74,6 +74,12 @@
     <div class="custom-control custom-switch mt-3 mb-3">
         <input asp-for="VisibleInCompetitionMode" type="checkbox" class="custom-control-input">
         <label class="custom-control-label" asp-for="VisibleInCompetitionMode">@Localizer["Дозволити використання у змаганнях"]</label>
+    </div>
+    
+    <div class="mt-3 mb-3">
+        <a asp-action="EditTestingData" asp-route-programmingTaskId="@Model.ProgrammingTaskId">
+            <i class="fas fa-pen-square"></i> @Localizer["Редагувати дані для тестування"]
+        </a>
     </div>
     
     <div class="d-flex justify-content-between mt-3 mb-3">

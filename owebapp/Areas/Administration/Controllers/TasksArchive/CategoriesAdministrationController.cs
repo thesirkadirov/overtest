@@ -12,7 +12,7 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.Administration.Controllers
 {
     [Area("Administration")]
     [Route("/Administration/TasksArchive/Categories")]
-    [AllowedUserTypesFilter(UserType.Administrator, UserType.SuperUser)]
+    [AllowedUserTypesFilter(UserType.SuperUser)]
     public class CategoriesAdministrationController : Controller
     {
         

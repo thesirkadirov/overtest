@@ -1,0 +1,95 @@
+﻿@using Sirkadirov.Overtest.WebApplication.ViewComponents.ServiceHeader
+@model List<Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TasksArchive.Extras.ProgrammingLanguage>
+
+@{
+    ViewBag.PageTitle = Localizer["Управління компіляторами"].Value;
+
+    var currentUserId = new Guid(UserManager.GetUserId(Context.User));
+    var isSuperUser = await DatabaseContext.UserPermissionsOperator.GetUserHasSpecifiedTypeAsync(currentUserId, UserType.SuperUser);
+}
+
+@section FullwidthSection
+{
+    
+    @{
+        Func<dynamic, object> DrawDropleftMenu() => 
+            @<span>
+                
+                <partial name="~/ViewComponents/Views/ServiceHeader/DropleftMenu/CommonSupportDropleftMenuItems.cshtml" />
+                
+                @if (isSuperUser)
+                {
+                    <div class="dropdown-divider"></div>
+                    
+                    <a class="dropdown-item" asp-area="Administration" asp-controller="ProgrammingLanguagesAdministration" asp-action="Create">
+                        <i class="fas fa-file-alt"></i> @Localizer["Додати новий компілятор"]
+                    </a>
+                }
+                
+            </span>;
+    }
+    
+    @(await Component.InvokeAsync<ServiceHeaderViewComponent>(new ServiceHeaderViewComponent.HeaderModel
+    {
+        PageTitle = isSuperUser ? Localizer["Управління компіляторами"].Value : Localizer["Доступні компілятори"].Value,
+        MenuDrawer = new ServiceHeaderViewComponent.HeaderModel.MenuDrawerData
+        {
+            Enabled = true,
+            DrawMenuItems = DrawDropleftMenu()
+        }
+    }))
+
+}
+
+@if (Model.Count > 0)
+{
+    <div class="card-columns no-selection-allowed">
+        @foreach (var programmingLanguage in Model)
+        {
+            <div class="card programming-language-card rounded-lg border shadow-sm">
+                <div class="card-body position-relative">
+                    <h5 class="card-title m-0">@programmingLanguage.DisplayName <mark class="font-weight-light small">@programmingLanguage.SyntaxHighlightingOptions</mark></h5>
+                    @programmingLanguage.Description
+                    <a class="stretched-link" asp-area="Administration" asp-controller="ProgrammingLanguagesAdministration" asp-action="Edit" asp-route-programmingLanguageId="@programmingLanguage.Id"></a>
+                </div>
+                @if (isSuperUser)
+                {
+                    <div class="card-footer">
+                        <small class="text-muted">
+                            <form class="form-inline" asp-action="Remove" asp-route-programmingLanguageId="@programmingLanguage.Id">
+                                <a class="btn btn-sm btn-link text-decoration-none rounded-lg" asp-area="Administration" asp-controller="ProgrammingLanguagesAdministration" asp-action="Edit" asp-route-programmingLanguageId="@programmingLanguage.Id">
+                                    <i class="fas fa-pen-alt"></i> @Localizer["Редагувати"]
+                                </a>
+                                <button type="submit" class="btn btn-sm btn-link text-decoration-none text-danger rounded-lg" onclick="return confirm('@Localizer["Видалити вказаний компілятор?"]');">
+                                    <i class="fas fa-trash-alt"></i> @Localizer["Видалити"]
+                                </button>
+                            </form>
+                        </small>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="no-selection-allowed">
+        <div class="alert alert-primary rounded-lg">
+            @Localizer["Адміністратором системи ще не було додано жодного компілятора."]
+            @Localizer["Можливо, ви б хотіли додати перший компілятор?"]
+            <a class="btn btn-sm btn-primary rounded-lg" asp-area="Administration" asp-controller="ProgrammingLanguagesAdministration" asp-action="Create"><i class="fas fa-file-alt"></i> @Localizer["Розпочати"]</a>
+        </div>
+    </div>
+}
+
+@section AdditionalHeaderScripts
+{
+    <style>
+        div.card.programming-language-card:hover {
+            border-color: var(--orange) !important;
+        }
+        div.card.programming-language-card:hover .card-title {
+            color: var(--orange) !important;
+        }
+    </style>
+}

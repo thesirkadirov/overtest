@@ -156,64 +156,9 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.Administration.Controllers
             
             return View(actionViewPath, model);
         }
-
-        [HttpPost, ValidateAntiForgeryToken, Route("Edit/UserType/{userId:guid}")]
-        [AllowedUserTypesFilter(UserType.Administrator, UserType.SuperUser)]
-        public async Task<IActionResult> ChangeUserType(Guid userId, UserType newUserType)
-        {
-            if (!await UserExists(userId))
-                return NotFound();
-
-            if (newUserType == UserType.Anonymous)
-                return Forbid();
-            
-            var curatorUserId = new Guid(_userManager.GetUserId(HttpContext.User));
-            
-            if (!await _databaseContext.UserPermissionsOperator.GetUserDataEditPermissionAsync(userId, curatorUserId, false))
-                return Forbid();
-            
-            var curatorUserType = await _databaseContext.Users
-                .Where(u => u.Id == curatorUserId)
-                .Select(s => s.Type)
-                .FirstAsync();
-
-            var currentUserType = await _databaseContext.Users
-                .Where(u => u.Id == userId)
-                .Select(s => s.Type)
-                .FirstAsync();
-
-            if (newUserType == curatorUserType)
-                return Forbid();
-            
-            if (currentUserType == newUserType)
-                return Forbid();
-            
-            if (curatorUserType == UserType.Administrator)
-            {
-                if ((currentUserType == UserType.Student && newUserType == UserType.Instructor) ||
-                    (currentUserType == UserType.Anonymous && newUserType == UserType.Instructor))
-                {
-                    await UpdateUserType();
-                }
-            }
-            else if (curatorUserType == UserType.SuperUser)
-            {
-                await UpdateUserType();
-            }
-
-            return RedirectToAction("UserProfile", "Users", new { area = "Social", userId });
-            
-            async Task UpdateUserType()
-            {
-                var userObject = await _databaseContext.Users.FirstAsync(u => u.Id == userId);
-                userObject.Type = newUserType;
-                _databaseContext.Users.Update(userObject);
-                await _databaseContext.SaveChangesAsync();
-            }
-        }
         
         [HttpPost, ValidateAntiForgeryToken, Route("Edit/Remove/{userId:guid}")]
-        [AllowedUserTypesFilter(UserType.Instructor, UserType.Administrator, UserType.SuperUser)]
+        [AllowedUserTypesFilter(UserType.Curator, UserType.SuperUser)]
         public async Task<IActionResult> RemoveUser(Guid userId)
         {
             if (!await UserExists(userId))

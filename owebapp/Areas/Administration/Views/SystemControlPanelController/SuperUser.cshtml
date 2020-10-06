@@ -1,0 +1,142 @@
+﻿@using Sirkadirov.Overtest.WebApplication.ViewComponents.ServiceHeader
+@{
+    ViewBag.PageTitle = Localizer["Панель керування"].Value;
+}
+
+@section FullwidthSection
+{
+    
+    @(await Component.InvokeAsync<ServiceHeaderViewComponent>(new ServiceHeaderViewComponent.HeaderModel
+    {
+        PageTitle = Localizer["Панель керування"].Value
+    }))
+
+}
+
+<div class="card-columns no-selection-allowed">
+    
+    <div class="card administrative-card rounded-lg shadow-sm">
+        <div class="card-body position-relative">
+            <h5 class="card-title m-0">@Localizer["Архів завдань"]</h5>
+        </div>
+        <div class="list-group list-group-flush">
+            
+            <a class="list-group-item list-group-item-action" asp-area="Administration" asp-controller="ProgrammingTasksAdministration" asp-action="Create">
+                <i class="fas fa-arrow-alt-circle-right"></i> @Localizer["Створити нове завдання"]
+            </a>
+            <a class="list-group-item list-group-item-action" asp-area="TasksArchive" asp-controller="ProgrammingTasksArchive" asp-action="List">
+                <i class="fas fa-arrow-alt-circle-right"></i> @Localizer["Переглянути Архів завдань"]
+            </a>
+            <a class="list-group-item list-group-item-action disabled" href="#">
+                <i class="fas fa-arrow-alt-circle-right"></i> @Localizer["Управління завданнями"]
+            </a>
+            <a class="list-group-item list-group-item-action disabled" href="#">
+                <i class="fas fa-arrow-alt-circle-right"></i> @Localizer["Приховані завдання"]
+            </a>
+
+            <div class="list-group-item font-weight-bold">@Localizer["Категорії завдань"]</div>
+            
+            <a class="list-group-item list-group-item-action" asp-area="Administration" asp-controller="CategoriesAdministration" asp-action="Create">
+                <i class="fas fa-arrow-alt-circle-right"></i> @Localizer["Створити нову категорію"]
+            </a>
+            <a class="list-group-item list-group-item-action" asp-area="TasksArchive" asp-controller="ProgrammingTasksArchive" asp-action="Categories">
+                <i class="fas fa-arrow-alt-circle-right"></i> @Localizer["Переглянути категорії завдань"]
+            </a>
+            
+            <div class="list-group-item font-weight-bold">@Localizer["Імпорт та експорт завдань"]</div>
+            
+            <a class="list-group-item list-group-item-action disabled" href="#">
+                <i class="fas fa-arrow-alt-circle-right"></i> @Localizer["Імпорт завдань"]
+            </a>
+            <a class="list-group-item list-group-item-action disabled" href="#">
+                <i class="fas fa-arrow-alt-circle-right"></i> @Localizer["Експорт завдань"]
+            </a>
+
+            <div class="list-group-item font-weight-bold">@Localizer["Підсистема тестування"]</div>
+            
+            <a class="list-group-item list-group-item-action" asp-area="Administration" asp-controller="ProgrammingLanguagesAdministration" asp-action="List">
+                <i class="fas fa-arrow-alt-circle-right"></i> @Localizer["Управління компіляторами"]
+            </a>
+            <a class="list-group-item list-group-item-action disabled" href="#">
+                <i class="fas fa-arrow-alt-circle-right"></i> @Localizer["Статистика тестувань"]
+            </a>
+
+        </div>
+    </div>
+    
+    <div class="card administrative-card rounded-lg shadow-sm">
+        <div class="card-body">
+            <h5 class="card-title m-0">@Localizer["Користувачі"]</h5>
+        </div>
+        <div class="list-group list-group-flush">
+            
+            <a class="list-group-item list-group-item-action" asp-area="Social" asp-controller="Users" asp-action="List">
+                <i class="fas fa-arrow-alt-circle-right"></i> @Localizer["Користувачі системи"]
+            </a>
+            
+            <a class="list-group-item list-group-item-action disabled" href="#">
+                <i class="fas fa-arrow-alt-circle-right"></i> @Localizer["Управління користувачами"]
+            </a>
+            
+            <div class="list-group-item font-weight-bold">@Localizer["Користувачі і ролі"]</div>
+            
+            <a class="list-group-item list-group-item-action disabled" href="#">
+                <i class="fas fa-arrow-alt-circle-right"></i> @Localizer["Викладачі і куратори"]
+            </a>
+            <a class="list-group-item list-group-item-action" asp-area="Social" asp-controller="UserGroups" asp-action="List">
+                <i class="fas fa-arrow-alt-circle-right"></i> @Localizer["Студентські групи"]
+            </a>
+            
+            <div class="list-group-item font-weight-bold">@Localizer["Швидкі дії"]</div>
+            
+            <a class="list-group-item list-group-item-action disabled" href="#">
+                <i class="fas fa-arrow-alt-circle-right"></i> @Localizer["Вимкнути усі посилання для запрошення нових користувачів"]
+            </a>
+            
+        </div>
+    </div>
+    
+    <div class="card administrative-card rounded-lg shadow-sm">
+        <div class="card-body">
+            <h5 class="card-title m-0">@Localizer["Система Overtest"]</h5>
+        </div>
+        <div class="list-group list-group-flush">
+            
+            <a class="list-group-item list-group-item-action disabled" href="#">
+                <i class="fas fa-arrow-alt-circle-right"></i> @Localizer["Глобальні налаштування"]
+            </a>
+            <a class="list-group-item list-group-item-action disabled" href="#">
+                <i class="fas fa-arrow-alt-circle-right"></i> @Localizer["Інформація про версії і оновлення"]
+            </a>
+            
+            <div class="list-group-item font-weight-bold">@Localizer["Корисні посилання"]</div>
+            
+            <a class="list-group-item list-group-item-action" target="_blank" href="https://overtest.sirkadirov.com/">
+                <i class="fas fa-external-link-alt"></i> @Localizer["Офіційний сайт Overtest"]
+            </a>
+            <a class="list-group-item list-group-item-action" target="_blank" href="https://docs.overtest.sirkadirov.com/">
+                <i class="fas fa-external-link-alt"></i> @Localizer["Настанови з використання і адміністрування системи"]
+            </a>
+            
+        </div>
+    </div>
+    
+    @*<div class="card administrative-card rounded-lg shadow-sm">
+        <div class="card-body">
+            <h5 class="card-title m-0">@Localizer["Test"]</h5>
+        </div>
+        <div class="list-group list-group-flush">
+            <a class="list-group-item list-group-item-action" href="#"><i class="fas fa-arrow-alt-circle-right"></i> @Localizer["Test"]</a>
+        </div>
+    </div>*@
+    
+</div>
+
+@section AdditionalHeaderScripts
+{
+    <style>
+        div.card-columns div.card.administrative-card div.list-group a.list-group-item:hover {
+            color: var(--orange) !important;
+        }
+    </style>
+}

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -14,7 +15,7 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.Administration.Controllers
 {
     [Area("Administration")]
     [Route("/Administration/TasksArchive/ProgrammingTasks")]
-    [AllowedUserTypesFilter(UserType.Administrator, UserType.SuperUser)]
+    [AllowedUserTypesFilter(UserType.SuperUser)]
     public class ProgrammingTasksAdministrationController : Controller
     {
         
@@ -158,16 +159,104 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.Administration.Controllers
         [HttpGet, Route(nameof(EditTestingData) + "/{programmingTaskId:guid}")]
         public async Task<IActionResult> EditTestingData(Guid programmingTaskId)
         {
-            throw new NotImplementedException();
+            const string actionViewPath = ViewsDirectoryPath + nameof(EditTestingData) + ".cshtml";
+            
+            if (!await ProgrammingTaskExists(programmingTaskId))
+                return NotFound();
+
+            return View(actionViewPath, new ProgrammingTaskEditTestingDataModel { ProgrammingTaskId = programmingTaskId });
         }
         
-        [HttpPost, Route(nameof(EditTestingData) + "/{programmingTaskId:guid}")]
+        [HttpPost, ValidateAntiForgeryToken, Route(nameof(EditTestingData) + "/{programmingTaskId:guid}")]
         public async Task<IActionResult> EditTestingData(Guid programmingTaskId, ProgrammingTaskEditTestingDataModel model)
         {
-            throw new NotImplementedException();
+            const string actionViewPath = ViewsDirectoryPath + nameof(EditTestingData) + ".cshtml";
+            
+            if (!await ProgrammingTaskExists(programmingTaskId))
+                return NotFound();
+            
+            model.ProgrammingTaskId = programmingTaskId;
+            
+            if (!ModelState.IsValid)
+            {
+                model.TestingDataFile = null;
+                return View(actionViewPath, model);
+            }
+            
+            try
+            {
+                if (model.TestingDataFile == null)
+                    throw new FormatException();
+                
+                if (model.TestingDataFile.Length == 0)
+                    throw new FormatException();
+                
+                var fileExtension = (Path.GetExtension(model.TestingDataFile.FileName) ?? throw new FormatException())
+                    .Replace(".", string.Empty);
+                
+                if (fileExtension != "zip")
+                    throw new FormatException();
+            }
+            catch
+            {
+                ModelState.AddModelError(
+                    nameof(model.TestingDataFile),
+                    _localizer["Завантажений вами файл не є допустимим типом файлу!"]
+                );
+                model.TestingDataFile = null;
+                return View(actionViewPath, model);
+            }
+            
+            var programmingTaskObject = new ProgrammingTask { Id = programmingTaskId };
+            
+            using (var binaryReader = new BinaryReader(model.TestingDataFile.OpenReadStream()))
+            {
+                programmingTaskObject.TestingData = new ProgrammingTask.ProgrammingTaskTestingData
+                {
+                    DataPackageFile = binaryReader.ReadBytes((int) model.TestingDataFile.Length),
+                    DataPackageHash = Guid.NewGuid().ToString()
+                };
+            }
+            
+            model.TestingDataFile = null;
+            
+            _databaseContext.ProgrammingTasks.Attach(programmingTaskObject);
+            _databaseContext.Entry(programmingTaskObject.TestingData).Property(p => p.DataPackageFile).IsModified = true;
+            _databaseContext.Entry(programmingTaskObject.TestingData).Property(p => p.DataPackageHash).IsModified = true;
+            await _databaseContext.SaveChangesAsync();
+            
+            return RedirectToAction("View", "ProgrammingTasksBrowsing", new
+            {
+                area = "TasksArchive",
+                programmingTaskId
+            });
         }
         
         #endregion
+
+        [HttpGet, Route(nameof(DownloadTestingData) + "/{programmingTaskId:guid}")]
+        public async Task<IActionResult> DownloadTestingData(Guid programmingTaskId)
+        {
+            const string contentType = "application/zip";
+            
+            if (!await ProgrammingTaskExists(programmingTaskId))
+                return NotFound();
+
+            var testingData = await _databaseContext.ProgrammingTasks
+                .Where(t => t.Id == programmingTaskId)
+                .Select(s => s.TestingData.DataPackageFile)
+                .FirstAsync();
+
+            if (testingData == null)
+                return NotFound();
+
+            HttpContext.Response.ContentType = contentType;
+            
+            return new FileContentResult(testingData, contentType)
+            {
+                FileDownloadName = $"TestingData_{programmingTaskId}_{DateTime.UtcNow.ToShortDateString()}_{DateTime.UtcNow.ToShortTimeString()}.zip"
+            };
+        }
         
         [HttpPost, ValidateAntiForgeryToken, Route(nameof(Remove) + "/{programmingTaskId:guid}")]
         public async Task<IActionResult> Remove(Guid programmingTaskId)

@@ -1,5 +1,5 @@
 ﻿@using Microsoft.EntityFrameworkCore
-@using Sirkadirov.Overtest.WebApplication.ViewComponents.Shared
+@using Sirkadirov.Overtest.WebApplication.ViewComponents.ServiceHeader
 @model Sirkadirov.Overtest.WebApplication.Areas.Administration.Models.TasksArchive.ProgrammingTasksAdministrationController.ProgrammingTaskEditTestingDataModel
 @{
     var programmingTaskTitle = await DatabaseContext.ProgrammingTasks
@@ -20,10 +20,30 @@
         SubtitleLink = new ServiceHeaderViewComponent.HeaderModel.IconLinkData
         {
             Enabled = true,
-            LinkDestination = Url.Action("View", "ProgrammingTasksBrowsing", new { area = "TasksArchive", programmingTaskId = Model.ProgrammingTaskId }),
+            LinkDestination = Url.Action("EditDetails", "ProgrammingTasksAdministration", new { area = "Administration", programmingTaskId = Model.ProgrammingTaskId }),
             LinkIcon = "fas fa-chevron-left",
-            LinkText = Localizer["Повернутися на сторінку завдання"].Value
+            LinkText = Localizer["Редагування загальної інформації"].Value
         }
     }))
 
 }
+
+<form class="m-0" method="post" enctype="multipart/form-data" asp-action="EditTestingData" asp-route-programmingTaskId="@Model.ProgrammingTaskId">
+    
+    @Html.AntiForgeryToken()
+    
+    <input type="hidden" asp-for="ProgrammingTaskId" value="@Model.ProgrammingTaskId" />
+    
+    <div class="text-danger mt-3 mb-3">@Html.ValidationSummary()</div>
+    
+    <div class="custom-file mt-3 mb-3">
+        <input type="file" asp-for="TestingDataFile" accept=".zip" class="custom-file-input rounded-lg">
+        <label class="custom-file-label" asp-for="TestingDataFile" data-browse="@Localizer["Обрати файл"]">@Localizer["Файл з даними для тестування"]</label>
+    </div>
+    
+    <div class="d-flex justify-content-between mt-3 mb-3">
+        <a class="btn btn-outline-primary rounded-lg" asp-action="DownloadTestingData" asp-route-programmingTaskId="@Model.ProgrammingTaskId" target="_blank"><i class="fas fa-download"></i> @Localizer["Поточний файл"]</a>
+        <button type="submit" class="btn btn-dark rounded-lg"><i class="fas fa-save"></i> @Localizer["Зберегти зміни"]</button>
+    </div>
+    
+</form>
