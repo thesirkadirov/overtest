@@ -88,13 +88,14 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.Social.Controllers
                     where (institutionName == null || institutionName.Length == 0 ||
                            EF.Functions.Like(user.InstitutionName, $"%{institutionName}%"))
                     // Left join with testing applications
-                    join application in _databaseContext.TestingApplications on user.Id equals application.AuthorId into
-                        applications
+                    join application
+                        in _databaseContext.TestingApplications.Include(i => i.TestingResult)
+                        on user.Id equals application.AuthorId
+                        into applications
                     from application in applications
                         .Where(a => a.CompetitionId == null)
                         .Where(a => a.Status == TestingApplication.ApplicationStatus.Verified)
-                        .Where(a => a.TestingResults.SolutionAdjudgement != TestingApplication.ApplicationTestingResults
-                            .SolutionAdjudgementType.ZeroSolution)
+                        .Where(a => a.TestingResult.SolutionAdjudgement != TestingApplicationResult.SolutionAdjudgementType.ZeroSolution)
                         .Where(a => a.TestingType == TestingApplication.ApplicationTestingType.ReleaseMode)
                         .DefaultIfEmpty()
                     // Select joined data
@@ -102,7 +103,7 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.Social.Controllers
                     {
                         user.Id, user.Type, user.UserGroupId,
                         user.FullName, user.InstitutionName,
-                        application.TestingResults.GivenDifficulty
+                        application.TestingResult.GivenDifficulty
                     }
                 ).GroupBy(g => new
                 {

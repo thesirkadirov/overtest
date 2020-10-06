@@ -1,5 +1,4 @@
-﻿@using Sirkadirov.Overtest.WebApplication.ViewComponents.Shared
-@using Microsoft.EntityFrameworkCore
+﻿@using Sirkadirov.Overtest.WebApplication.ViewComponents.ServiceHeader
 @model Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Identity.User
 @{
     ViewBag.PageTitle = string.Format(Localizer["Профіль користувача {0}"].Value, Model.FullName);
@@ -34,7 +33,7 @@
                             .profile-photo.has-photo .photo-placeholder {
                                 display: none;
                             }
-                            .profile-photo:hover.has-photo .photo-placeholder{
+                            .profile-photo:hover.has-photo .photo-placeholder {
                                 display: inline;
                             }
                             .profile-photo.user-online {
@@ -60,16 +59,13 @@
                                     case UserType.SuperUser:
                                         <span class="text-danger"><i class="fas fa-user-secret"></i> @Localizer["Суперадміністратор"]</span>
                                         break;
-                                    case UserType.Administrator:
-                                        <span class="text-muted"><i class="fas fa-user-shield"></i> @Localizer["Адміністратор"]</span>
-                                        break;
-                                    case UserType.Instructor:
+                                    case UserType.Curator:
                                         <span class="text-muted"><i class="fas fa-user-tie"></i> @Localizer["Інструктор"]</span>
                                         break;
                                     case UserType.Student:
                                         <span class="text-muted"><i class="fas fa-user-graduate"></i> @Localizer["Студент"]</span>
                                         break;
-                                    case UserType.Anonymous:
+                                    default:
                                         <span class="text-muted"><i class="fas fa-ghost"></i> Ich weiß es nicht</span>
                                         break;
                                 }
@@ -85,7 +81,7 @@
                         Func<dynamic, object> DrawDropleftMenu() => 
                             @<span>
                                 
-                                <partial name="ViewComponents/Shared/DropleftMenu/CommonSupportDropleftMenuItems"/>
+                                <partial name="~/ViewComponents/Views/ServiceHeader/DropleftMenu/CommonSupportDropleftMenuItems.cshtml" />
 
                                 <div class="dropdown-divider"></div>
 
@@ -106,10 +102,6 @@
                                         <div class="dropdown-divider"></div>
                                         
                                         <h6 class="dropdown-header">@Localizer["Адміністрування"]</h6>
-                                        
-                                        <a class="dropdown-item" data-toggle="modal" data-target="#userTypeChangeModal" href="#">
-                                            <i class="fas fa-shield-alt"></i> @Localizer["Змінити права доступу"]
-                                        </a>
                                         
                                         <a class="dropdown-item text-danger" data-toggle="modal" data-target="#userRemovalModal" href="#">
                                             <i class="fas fa-trash-alt"></i> @Localizer["Видалити користувача"]
@@ -136,73 +128,6 @@
 
 @if (currentUserEditPrivileges && Model.Id != currentUserId)
 {
-    @* Change user type modal *@
-    <div class="modal fade no-selection-allowed" id="userTypeChangeModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title text-center"><i class="fas fa-shield-alt"></i></h5>
-                    <h5 class="modal-title text-center ml-auto">@Localizer["Зміна прав доступу користувача"]</h5>
-                    <button class="close" data-dismiss="modal"><span>&times;</span></button>
-                </div>
-                <div class="modal-body">
-                    <div class="alert alert-secondary text-justify mt-2 mb-3">
-                        <strong><i class="fas fa-exclamation-triangle"></i> @Localizer["Зверніть увагу!"]</strong>
-                        @Localizer["Після підвищення рівня доступу користувача, ви більше не зможете понизити його (наприклад, з \"Instructor\" до \"Student\")."]
-                        @Localizer["Це обумовлено можливостями, що надаються користувачам вищих рівнів доступу, а також теоретично можливою втратою важливої інформації."]
-                        @Localizer["Понижувати права доступу може лише суперадміністратор системи."]
-                    </div>
-                    <div class="row mt-3 mb-0">
-                        
-                        @{
-                            var currentUserType = await DatabaseContext.Users
-                                .Where(u => u.Id == currentUserId)
-                                .Select(s => s.Type)
-                                .FirstAsync();
-
-                            var studentTypeEnabled = currentUserType == UserType.SuperUser && Model.Type != UserType.Student;
-                            var instructorTypeEnabled = (currentUserType == UserType.SuperUser || currentUserType == UserType.Administrator) && Model.Type != UserType.Instructor;
-                            var administratorUserTypeEnabled = currentUserType == UserType.SuperUser && Model.Type != UserType.Administrator;
-                            
-                        }
-                        
-                        <div class="col-md pt-2 pb-2">
-                            <form class="form-inline m-0" method="post" asp-area="Administration" asp-controller="UsersAdministration" asp-action="ChangeUserType" asp-route-userId="@Model.Id">
-                                @Html.AntiForgeryToken()
-                                <input type="hidden" name="newUserType" value="@UserType.Student"/>
-                                <button type="submit" class="btn btn-primary btn-block rounded-lg" @(!studentTypeEnabled ? "disabled" : "")>
-                                    <i class="fas fa-user-graduate"></i> @nameof(UserType.Student)
-                                </button>
-                            </form>
-                        </div>
-
-                        <div class="col-md pt-2 pb-2">
-                            <form class="form-inline m-0" method="post" asp-area="Administration" asp-controller="UsersAdministration" asp-action="ChangeUserType" asp-route-userId="@Model.Id">
-                                @Html.AntiForgeryToken()
-                                <input type="hidden" name="newUserType" value="@UserType.Instructor"/>
-                                <button type="submit" class="btn btn-primary btn-block rounded-lg" @(!instructorTypeEnabled ? "disabled" : "")>
-                                    <i class="fas fa-chalkboard-teacher"></i> @nameof(UserType.Instructor)
-                                </button>
-                            </form>
-                        </div>
-
-                        <div class="col-md pt-2 pb-2">
-                            <form class="form-inline m-0" method="post" asp-area="Administration" asp-controller="UsersAdministration" asp-action="ChangeUserType" asp-route-userId="@Model.Id">
-                                @Html.AntiForgeryToken()
-                                <input type="hidden" name="newUserType" value="@UserType.Administrator"/>
-                                <button type="submit" class="btn btn-primary btn-block rounded-lg" @(!administratorUserTypeEnabled ? "disabled" : "")>
-                                    <i class="fas fa-user-shield"></i> @nameof(UserType.Administrator)
-                                </button>
-                            </form>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    @* /Change user type modal *@
-    
     @* Remove user modal dialog *@
     <div class="modal fade no-selection-allowed" id="userRemovalModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">

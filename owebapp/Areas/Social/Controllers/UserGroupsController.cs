@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Sirkadirov.Overtest.Libraries.Shared.Database;
-using Sirkadirov.Overtest.Libraries.Shared.Database.Operators;
 using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.Identity;
 using Sirkadirov.Overtest.Libraries.Shared.Database.Storage.TestingApplications;
 using Sirkadirov.Overtest.WebApplication.Areas.Social.Models.UserGroupsController;
@@ -37,7 +36,7 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.Social.Controllers
             if (!await _databaseContext.Users.AnyAsync(u => u.Id == userId))
                 return NotFound();
             
-            if (!await _databaseContext.UserPermissionsOperator.VerifyUserTypeSetAsync((Guid) userId, OvertestUserPermissionsOperator.UserTypeSet.Curator))
+            if (!await _databaseContext.UserPermissionsOperator.GetUserHasSpecifiedTypeAsync(userId.Value, UserType.Curator, UserType.SuperUser))
             {
                 var previousUserId = (Guid)userId;
                 userId = await _databaseContext.Users
@@ -83,17 +82,20 @@ namespace Sirkadirov.Overtest.WebApplication.Areas.Social.Controllers
                 (
                     from user in _databaseContext.Users
                     where (user.UserGroupId == userGroupId)
-                    join application in _databaseContext.TestingApplications on user.Id equals application.AuthorId into applications 
+                    join application
+                        in _databaseContext.TestingApplications.Include(i => i.TestingResult)
+                        on user.Id equals application.AuthorId
+                        into applications
                     from application in applications
                         .Where(a => a.CompetitionId == null)
                         .Where(a => a.Status == TestingApplication.ApplicationStatus.Verified)
-                        .Where(a => a.TestingResults.SolutionAdjudgement != TestingApplication.ApplicationTestingResults.SolutionAdjudgementType.ZeroSolution)
+                        .Where(a => a.TestingResult.SolutionAdjudgement != TestingApplicationResult.SolutionAdjudgementType.ZeroSolution)
                         .Where(a => a.TestingType == TestingApplication.ApplicationTestingType.ReleaseMode)
                         .DefaultIfEmpty()
                     select new 
                     {
                         user.Id, user.Type, user.FullName, user.InstitutionName, 
-                        application.TestingResults.GivenDifficulty
+                        application.TestingResult.GivenDifficulty
                     }
                 )
                 .GroupBy(g => new

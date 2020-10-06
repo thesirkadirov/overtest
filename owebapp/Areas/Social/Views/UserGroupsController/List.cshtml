@@ -1,8 +1,8 @@
-﻿@using Sirkadirov.Overtest.WebApplication.ViewComponents.Shared
+﻿@using Sirkadirov.Overtest.WebApplication.ViewComponents.ServiceHeader
 @model Sirkadirov.Overtest.WebApplication.Areas.Social.Models.UserGroupsController.UserGroupsListModel
 
 @{
-    ViewBag.PageTitle = string.Format(Localizer["Список груп користувача {0}"].Value, Model.CuratorFullName);
+    ViewBag.PageTitle = string.Format(Localizer["Список список студентських груп куратора {0}"].Value, Model.CuratorFullName);
     var isUserHasCuratorPrivileges = UserManager.GetUserId(Context.User) == Model.CuratorId.ToString();
 }
 
@@ -14,7 +14,7 @@
         Func<dynamic, object> DrawDropleftMenu() => 
             @<span>
                 
-                <partial name="ViewComponents/Shared/DropleftMenu/CommonSupportDropleftMenuItems" />
+                <partial name="~/ViewComponents/Views/ServiceHeader/DropleftMenu/CommonSupportDropleftMenuItems.cshtml" />
                 
                 @if (isUserHasCuratorPrivileges)
                 {
@@ -31,7 +31,7 @@
 
     @(await Component.InvokeAsync<ServiceHeaderViewComponent>(new ServiceHeaderViewComponent.HeaderModel
     {
-        PageTitle = string.Format(Localizer["Список груп користувачів"].Value, Model.CuratorFullName),
+        PageTitle = string.Format(Localizer["Список студентських груп"].Value, Model.CuratorFullName),
         SubtitleLink = new ServiceHeaderViewComponent.HeaderModel.IconLinkData
         {
             Enabled = true,
@@ -55,8 +55,8 @@
         <p class="mt-1 mb-1">
             
             <strong><i class="fas fa-info-circle"></i> @Localizer["Вітаємо!"]</strong>
-            @Localizer["Ваш обліковий запис має права доступу рівня \"Куратор\", що дозволяє вам здійснювати управління користувачами і їх розподілом за групами."]
-            @Localizer["Створивши нову групу, ви зможете запросити до неї своїх студентів або підлеглих."]
+            @Localizer["Ваш обліковий запис має права доступу рівня \"Куратор\", що дозволяє вам здійснювати управління Студентами і їх розподілом за групами."]
+            @Localizer["Створивши нову групу, ви зможете запросити до неї своїх студентів."]
             
             <button type="button" class="close" data-dismiss="alert">&times;</button>
             

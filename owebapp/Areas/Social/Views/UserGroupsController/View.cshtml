@@ -1,5 +1,5 @@
-﻿@using Sirkadirov.Overtest.WebApplication.ViewComponents.Shared
-@using Microsoft.EntityFrameworkCore
+﻿@using Microsoft.EntityFrameworkCore
+@using Sirkadirov.Overtest.WebApplication.ViewComponents.ServiceHeader
 @model List<Sirkadirov.Overtest.WebApplication.Areas.Social.Models.UserGroupsController.UserGroupUsersListItemModel>
 @{
                                                                                                                     
@@ -30,7 +30,7 @@
         Func<dynamic, object> DrawDropleftMenu() => 
             @<span>
                 
-                <partial name="ViewComponents/Shared/DropleftMenu/CommonSupportDropleftMenuItems" />
+                <partial name="~/ViewComponents/Views/ServiceHeader/DropleftMenu/CommonSupportDropleftMenuItems.cshtml" />
                 
                 <div class="dropdown-divider"></div>
                 

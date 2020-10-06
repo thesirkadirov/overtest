@@ -1,8 +1,9 @@
-﻿@using Sirkadirov.Overtest.WebApplication.ViewComponents.Shared
-@using Microsoft.EntityFrameworkCore
+﻿@using Microsoft.EntityFrameworkCore
+@using Sirkadirov.Overtest.WebApplication.ViewComponents
+@using Sirkadirov.Overtest.WebApplication.ViewComponents.ServiceHeader
 @model Sirkadirov.Overtest.WebApplication.Models.Shared.Pagination.PaginatedListModel<Sirkadirov.Overtest.WebApplication.Areas.Social.Models.UsersController.UsersListItemModel>
 @{
-                                                                                                                                                                                
+    
     ViewBag.PageTitle = Localizer["Користувачі і рейтинг"].Value;
     
     /*
@@ -10,7 +11,7 @@
      */
     
     var userGroupsList = await DatabaseContext.Users
-        .Where(u => u.Type == UserType.Instructor || u.Type == UserType.Administrator || u.Type == UserType.SuperUser)
+        .Where(u => u.Type == UserType.Curator || u.Type == UserType.SuperUser)
         .Join(
             DatabaseContext.UserGroups,
             user => user.Id, userGroup => userGroup.GroupCuratorId,
@@ -36,7 +37,7 @@
         Func<dynamic, object> DrawDropleftMenu() => 
             @<span>
                 
-                <partial name="ViewComponents/Shared/DropleftMenu/CommonSupportDropleftMenuItems" />
+                <partial name="~/ViewComponents/Views/ServiceHeader/DropleftMenu/CommonSupportDropleftMenuItems.cshtml" />
                 
             </span>;
     }
@@ -55,7 +56,7 @@
 @* ====== /Service header ====== *@
 
 @* ====== Search form ====== *@
-<div class="card rounded-lg border-0 shadow mt-0 mb-0 no-selection-allowed">
+<div class="card rounded-lg border shadow mt-0 mb-0 no-selection-allowed">
     <div class="card-body">
         <form class="m-0" method="get" asp-action="List" asp-route-page="1">
             
